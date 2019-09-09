@@ -1041,17 +1041,19 @@ def main_paper(batch_level = 0):
     #target_dir = "output/combinedMC+Data/2017-02-6-v3-testingMC_full+2017-02-6-v5-reco-sys+corr_full_lH2_full/"
     #target_dir = "output/combinedMC+Data/2017-02-6-v3-testingMC_full+2017-02-6-v5-reco-sys+corr_full_lH2_empty/"
     #target_dir = "output/combinedMC+Data/2017-02-6-v3-testingMC_v2+2017-02-6-v5-reco-sys+corr_full_lH2_full/"
-    target_dir = "output/combinedMC+Data/ownMC/2017-02-6_v2/"
+    #target_dir = "output/combinedMC+Data/ownMC/2017-02-6_v2/"
+    #target_dir = "output/combinedMC+Data/ownMC/2017-02-6_v3/"
+    target_dir = "output/combinedMC+Data/ownMC/2017-02-6_v4/"
     batch_level = 0
     hide_root_errors = True
     do_cuts_summary = True
     if batch_level < 10 and hide_root_errors:
         ROOT.gErrorIgnoreLevel = 6000
     my_dir_list = [
-        ["2017-02-6_3-140_lH2_empty", "2017-02-6_3-140_lH2_empty", "2017-02-6_3-140_lH2_empty",], # TomL
-        #["2017-02-6_3-140_lH2_full", "2017-02-6_3-140_lH2_full", "2017-02-6_3-140_lH2_full",], # TomL
+        #["2017-02-6_3-140_lH2_empty", "2017-02-6_3-140_lH2_empty", "2017-02-6_3-140_lH2_empty",], # TomL
+        ["2017-02-6_3-140_lH2_full", "2017-02-6_3-140_lH2_full", "2017-02-6_3-140_lH2_full",], # TomL
         #["2017-02-6_6-140_lH2_full", "2017-02-6_6-140_lH2_full", "2017-02-6_6-140_lH2_full",], # TomL
-        ["2017-02-6_3-140_lH2_full", "2017-02-6_6-140_lH2_full", "2017-02-6_10-140_lH2_full",], # TomL
+        #["2017-02-6_3-140_lH2_full", "2017-02-6_6-140_lH2_full", "2017-02-6_10-140_lH2_full",], # TomL
         #["2017-2.7_4-140_lH2_empty", "2017-2.7_6-140_lH2_empty", "2017-2.7_10-140_lH2_empty",],
         #["2017-2.7_4-140_lH2_full",  "2017-2.7_6-140_lH2_full",  "2017-2.7_10-140_lH2_full",],
         #["2017-2.7_4-140_None",      "2017-2.7_6-140_None",      "2017-2.7_10-140_None",],
@@ -1059,10 +1061,11 @@ def main_paper(batch_level = 0):
     ]
     #top_labels = ["4-140", "6-140", "10-140"]
     top_labels = ["3-140", "6-140", "10-140"] # TomL
+    #top_labels = ["3-140"] # TomL
     ##top_labels = ["6-140"] # TomL
     #right_labels = ["Empty\nLH_{2}", "Full\nLH_{2}", "No\nabsorber", "LiH"]
-    #right_labels = ["Full\nLH_{2}"]
-    right_labels = ["Empty\nLH_{2}", "Full\nLH_{2}"]
+    right_labels = ["Full\nLH_{2}"]
+    #right_labels = ["Empty\nLH_{2}", "Full\nLH_{2}"]
     #right_labels = ["Empty\nLH_{2}"]
     config_list = [CompareCutsConfig, CompareData1DConfig,
                    CompareOpticsConfig, CompareOpticsMCConfig,

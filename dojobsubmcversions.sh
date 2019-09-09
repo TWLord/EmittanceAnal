@@ -7,14 +7,15 @@ MAUSdir=~/MICE/maus--versions/MAUSv3.3.0
 queue=long
 #queue=xlong
 
-VERSION=3
+VERSION=5
 
 templatedir=config/solenoid/2017-02-6/ABS-TEMPLATE/
 
 ABS=ABS-LH2
 #ABS=ABS-LH2-EMPTY
 
-for opt in "9883,3-140" "9885,6-140" "9886,10-140" ; do 
+#for opt in "9883,3-140" "9885,6-140" "9886,10-140" ; do 
+for opt in "9883,3-140" ; do 
 #for opt in "10243,3-140" ; do 
 
 rn="${opt%,*}"

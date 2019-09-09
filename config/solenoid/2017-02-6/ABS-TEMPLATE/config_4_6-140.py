@@ -249,7 +249,7 @@ class Config(object):
     cut_report[2] += ["extrapolation_cut", "hline"]
 
     src_dir = "not used but retained for compatibility with reco"
-    data_dir = "output/ownMC/2017-02-6-v4/"
+    data_dir = "output/ownMC/2017-02-6-c4_vVERSION/"
     analyses = []
 
 
