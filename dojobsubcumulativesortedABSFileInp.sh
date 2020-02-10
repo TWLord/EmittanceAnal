@@ -4,18 +4,19 @@ here=/home/phumhf/MICE/maus--versions/MAUSv3.3.0/bin/user/first-observation-pape
 MAUSdir=~/MICE/maus--versions/MAUSv3.3.0
 
 queue=xxl
-confignum=5
+confignum=2
+#confignum=5
 #queue=xlong
 #queue=long
 
 
-opt_A=""
-opt_B=""
-opt_C=""
-opt_D=""
-opt_E=""
-opt_F=""
-opt_G=""
+#opt_A=""
+#opt_B=""
+#opt_C=""
+#opt_D=""
+#opt_E=""
+#opt_F=""
+#opt_G=""
 
 #3_140=""
 #4_140=""
@@ -26,6 +27,14 @@ opt_G=""
 #3_240=""
 
 for file in "$@" ; do
+opt_A=""
+opt_B=""
+opt_C=""
+opt_D=""
+opt_E=""
+opt_F=""
+opt_G=""
+
 while read -r line ; do
 #echo $line
  rn=$(echo "${line}" |  cut -d'|' -f1 )
@@ -80,7 +89,7 @@ case $Optics in
 esac
 
 done < $file
-done
+#done
 
 
 if [ ! -z "$opt_A" ] ; then 
@@ -177,5 +186,7 @@ bsub -G micegrp -M 6000 -oo $here/logs/${queue}_${_runs}_c${confignum}.log -q ${
 else
 echo "no runs for $opt"
 fi
+
+done
 
 done

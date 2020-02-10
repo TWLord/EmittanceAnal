@@ -8,6 +8,7 @@ queue=xlong
 
 #for runnumber in 9883 9886; do 
 #for runnumber in 10249 9888 9889; do 
+#for runnumber in 9911; do 
 for runnumber in 9911; do 
 
 configdir=config/runs/$runnumber

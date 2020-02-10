@@ -1,10 +1,10 @@
 import copy
 
-def mc_file_names(datasets):
+def mc_file_names(run_number_list):
     file_list = []
     for run in run_number_list:
         run = str(run).rjust(5, '0')
-        a_file = "/data/mice/phumhf/MC/MAUSv3.3.2/"+run+"/*_sim.root" 
+        a_file = "/data/mice/phumhf/MC/MAUSv3.3.2/"+run+"VERSION/*_sim.root" 
         file_list.append(a_file)
     print file_list
     return file_list
@@ -158,7 +158,7 @@ def get_analysis(run_list, name, tof01_min_max, maus_version, data_dir, emittanc
 class Config(object):
     # location to which data and plots will be dumped following analysis
     info_file = "geometry_08681/Maus_Information.gdml"
-    will_require_tof1 = False #True # require at least one TOF1 Space point to even load the data
+    will_require_tof1 = True # require at least one TOF1 Space point to even load the data
     will_require_tof2 = False # require at least one TOF2 Space point to even load the data
     tk_station = 1 # load data from a particular tracker station
     tk_plane = 0
@@ -253,7 +253,7 @@ class Config(object):
     analyses = []
 
 
-    analyses.append(get_analysis([template],  "template 2017-02-6 3-140 ABS",  [1.5, 6.0], src_dir, data_dir, 3, [[135, 145]], [90, 170], 26)) 
+    analyses.append(get_analysis(["template"],  "template 2017-02-6 3-140 ABS",  [1.5, 6.0], src_dir, data_dir, 3, [[135, 145]], [90, 170], 26)) 
 
     required_trackers = [0, 1] # for space points
     required_number_of_track_points = 12 # doesnt do anything
@@ -262,8 +262,8 @@ class Config(object):
     will_load_tk_space_points = True # determines whether data loader will attempt to load tracker space points
     will_load_tk_track_points = True # determines whether data loader will attempt to load tracker track points
     number_of_spills = None # if set to an integer, limits the number of spills loaded for each sub-analysis
-    preanalysis_number_of_spills = 100 # 20 # number of spills to analyse during "pre-analysis"
-    analysis_number_of_spills = 100 # 20 # number of spills to analyse during each "analysis" step
+    preanalysis_number_of_spills = 5 # 20 # number of spills to analyse during "pre-analysis"
+    analysis_number_of_spills = 10 # 20 # number of spills to analyse during each "analysis" step
     momentum_from_tracker = True # i.e. not from TOFs
     time_from = "tof1"
     tof0_offset = 25.4

@@ -155,7 +155,7 @@ def get_analysis(run_list, name, tof01_min_max, maus_version, data_dir, emittanc
 class Config(object):
     # location to which data and plots will be dumped following analysis
     info_file = "geometry_08681/Maus_Information.gdml"
-    will_require_tof1 = False #True # require at least one TOF1 Space point to even load the data
+    will_require_tof1 = True # require at least one TOF1 Space point to even load the data
     will_require_tof2 = False # require at least one TOF2 Space point to even load the data
     tk_station = 1 # load data from a particular tracker station
     tk_plane = 0

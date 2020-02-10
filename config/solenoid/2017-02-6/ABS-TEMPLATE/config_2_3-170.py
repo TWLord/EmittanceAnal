@@ -176,7 +176,7 @@ class Config(object):
           "pvalue_ds":False,
           "chi2_ds":False,
           "tof01":True,
-          "tof01_tramlines":False, #True,
+          "tof01_tramlines":True,
           "tof12":False,
           "p_tot_us":True,
           "p_tot_us_alt":False,

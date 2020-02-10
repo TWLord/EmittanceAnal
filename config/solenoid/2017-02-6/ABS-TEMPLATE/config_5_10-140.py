@@ -19,8 +19,10 @@ def get_systematics_dir(emittance, suffix, absorber, analysis):
     #print vers
     #a_dir = "output/2017-02-7-Systematics-"+vers+"/plots_Simulated_2017-2.7_"+str(emittance)+\
     #       "-140_"+absorber+"_Systematics_"+suffix+"/"+analysis+"/"+analysis+".json"
-    a_dir = "output/officialMC/2017-02-6-v3-OfficialMC_full/plots_2017-02-6_"+str(emittance)+\
-           "-140_"+absorber+""+suffix+"/"+analysis+"/"+analysis+".json"
+    a_dir = "output/officialMC/corrections/plots_Simulated_2017-02-6_"+str(emittance)+"-140_lH2_empty"+\
+           "/"+analysis+"/"+analysis+".json"
+    #a_dir = "output/officialMC/2017-02-6-v3-OfficialMC_full/plots_2017-02-6_"+str(emittance)+\
+    #       "-140_"+absorber+""+suffix+"/"+analysis+"/"+analysis+".json"
     # a_dir = "output/2017-02-6-v3-mc+density-longmc/plots_2017-02-6_"+str(emittance)+\
     #        "-140_"+absorber+""+suffix+"/"+analysis+"/"+analysis+".json"
     return a_dir

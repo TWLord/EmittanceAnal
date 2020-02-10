@@ -5,6 +5,9 @@ MAUSdir=~/MICE/maus--versions/MAUSv3.3.0
 
 queue=xlong
 
+c=2
+#c=5
+
 #for runnumber in 9883 9885 9886; do 
 #for runnumber in 9885; do 
 for runnumber in 9883 9886; do 
@@ -19,7 +22,7 @@ echo -en "#!/bin/bash \n\
 cd $MAUSdir/bin/user/first-observation-paper-scripts 
 
 
-python bin/run_one_analysis.py $configdir/config_5_OfficialMC_${runnumber}_reco_stat+corr.py
+python bin/run_one_analysis.py $configdir/config_${c}_OfficialMC_${runnumber}_reco_stat+corr.py
 
 " \
 | tee $here/logs/tmp/${runnumber}_recostat+corr.sh

@@ -5,7 +5,8 @@ MAUSdir=~/MICE/maus--versions/MAUSv3.3.0
 
 queue=xlong
 
-for runnumber in 9883 9885 9886; do 
+#for runnumber in 9883 9885 9886; do 
+for runnumber in 10243 10245 10246 10314 10317 10318 10319 10579 10580 10581 10582 9883 9885 9886; do 
 #for runnumber in 9883; do 
 #for runnumber in 9886; do 
 
