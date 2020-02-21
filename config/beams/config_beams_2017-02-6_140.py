@@ -244,7 +244,7 @@ class Config(object):
     #analyses.append(get_analysis([9885],  "9885 2017-02-6 6-140 ABS-LH2",  [1.5, 5.5], src_dir, data_dir, 6, [[135, 145]], [90, 170], 35)) 
     #analyses.append(get_analysis([9886],  "9886 2017-02-6 10-140 ABS-LH2",  [1.5, 4.5], src_dir, data_dir, 10, [[135, 145]], [90, 170], 70)) 
 
-    #analyses.append(get_analysis([10243],  "10243 2017-02-6 3-140 ABS-LH2-EMPTY",  [1.5, 6.0], src_dir, data_dir, 3, [[135, 145]], [90, 170], 26)) 
+    analyses.append(get_analysis([10243],  "10243 2017-02-6 3-140 ABS-LH2-EMPTY",  [1.5, 6.0], src_dir, data_dir, 3, [[135, 145]], [90, 170], 26)) 
     #analyses.append(get_analysis([10245],  "10245 2017-02-6 6-140 ABS-LH2-EMPTY",  [1.5, 5.5], src_dir, data_dir, 6, [[135, 145]], [90, 170], 35)) 
     #analyses.append(get_analysis([10246],  "10246 2017-02-6 10-140 ABS-LH2-EMPTY",  [1.5, 4.5], src_dir, data_dir, 10, [[135, 145]], [90, 170], 70)) 
 
@@ -254,8 +254,8 @@ class Config(object):
     #analyses.append(get_analysis([10319],  "10319 2017-02-6 10-140 ABS-SOLID-EMPTY",  [1.5, 4.5], src_dir, data_dir, 10, [[135, 145]], [90, 170], 70)) 
 
     analyses.append(get_analysis([10508],  "10508 2017-02-6 3-140 ABS-SOLID-LiH",  [1.5, 6.0], src_dir, data_dir, 3, [[135, 145]], [90, 170], 26)) 
-    analyses.append(get_analysis([10504],  "10504 2017-02-6 4-140 ABS-SOLID-LiH",  [1.5, 6.0], src_dir, data_dir, 4, [[135, 145]], [90, 170], 32)) 
-    analyses.append(get_analysis([10509],  "10509 2017-02-6 6-140 ABS-SOLID-LiH",  [1.5, 5.5], src_dir, data_dir, 6, [[135, 145]], [90, 170], 35)) 
+    #analyses.append(get_analysis([10504],  "10504 2017-02-6 4-140 ABS-SOLID-LiH",  [1.5, 6.0], src_dir, data_dir, 4, [[135, 145]], [90, 170], 32)) 
+    #analyses.append(get_analysis([10509],  "10509 2017-02-6 6-140 ABS-SOLID-LiH",  [1.5, 5.5], src_dir, data_dir, 6, [[135, 145]], [90, 170], 35)) 
 
 
     required_trackers = [0, 1] # for space points

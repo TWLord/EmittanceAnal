@@ -4,8 +4,9 @@ here=/home/phumhf/MICE/maus--versions/MAUSv3.3.0/bin/user/first-observation-pape
 MAUSdir=~/MICE/maus--versions/MAUSv3.3.0
 
 #queue=medium
-queue=long
+#queue=long
 #queue=xlong
+queue=xxl
 
 #VERSION=6
 #VERSION=2
@@ -24,7 +25,13 @@ queue=long
 #VERSION=22
 #VERSION=23
 #VERSION=24
-VERSION=25
+#VERSION=25
+#VERSION=26
+VERSION=27
+
+#VERSION="test"
+
+#VERSION=125
 
 #sleep 4h
 
@@ -45,8 +52,8 @@ ABS=ABS-LH2
 #for opt in "9886,10-140" ; do 
 #for opt in "10243,3-140" ; do 
 
-for opt in "9911,3-170" "9910,3-200" "9909,3-240" ; do 
-#for opt in "9909,3-240" ; do 
+#for opt in "9911,3-170" "9910,3-200" "9909,3-240" ; do 
+for opt in "9909,3-240" ; do 
 #for opt in "9911,3-170" "9910,3-200" ; do 
 #for opt in "9910,3-200" "9909,3-240" ; do 
 #for opt in "9911,3-170" ; do 
@@ -100,7 +107,8 @@ python bin/run_one_analysis.py $configdir/config_4_${rn}_full.py
 " \
 | tee $here/logs/tmp/${runnumber}_ownmcv${VERSION}.sh
 chmod +x $here/logs/tmp/${runnumber}_ownmcv${VERSION}.sh
-bsub -G micegrp -M 6000 -oo $here/logs/${runnumber}_ownmcv${VERSION}.log -q ${queue} $here/logs/tmp/${runnumber}_ownmcv${VERSION}.sh
+bsub -G micegrp -M 16000 -oo $here/logs/${runnumber}_ownmcv${VERSION}.log -q ${queue} $here/logs/tmp/${runnumber}_ownmcv${VERSION}.sh
+#bsub -G micegrp -M 6000 -oo $here/logs/${runnumber}_ownmcv${VERSION}.log -q ${queue} $here/logs/tmp/${runnumber}_ownmcv${VERSION}.sh
 
 else
 echo "no runs for $opt"

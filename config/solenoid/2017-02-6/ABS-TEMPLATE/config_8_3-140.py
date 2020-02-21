@@ -11,10 +11,10 @@ def reco_file_names(run_number_list, maus):
 
 def get_systematics_dir(emittance, suffix, absorber, analysis):
     vers = {
-        "amplitude":"v5",
-        "density":"v6", 
-        "density_rogers":"v6",
-        "fractional_emittance":"v5"
+        "amplitude":"v105",
+        "density":"v105", 
+        "density_rogers":"v105",
+        "fractional_emittance":"v105"
     }[analysis]
     #a_dir = "output/officialMC/corrections/plots_Simulated_2017-02-6_"+str(emittance)+"-140_lH2_empty"+\
     #       "/"+analysis+"/"+analysis+".json"

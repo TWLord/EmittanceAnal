@@ -261,6 +261,10 @@ class Config(object):
     analyses.append(get_analysis([9910],  "9910 2017-02-6 3-200 ABS-LH2",  [1.5, 4.5], src_dir, data_dir, 3, [[195, 205]], [150, 230], 24))
     analyses.append(get_analysis([9909],  "9909 2017-02-6 3-240 ABS-LH2",  [1.5, 4.5], src_dir, data_dir, 3, [[235, 245]], [190, 270], 24))
 
+    #analyses.append(get_analysis([10268],  "10268 2017-02-6 3-170 ABS-LH2-EMPTY",  [1.5, 4.5], src_dir, data_dir, 3, [[165, 175]], [120, 200], 24))
+    #analyses.append(get_analysis([10267],  "10267 2017-02-6 3-200 ABS-LH2-EMPTY",  [1.5, 4.5], src_dir, data_dir, 3, [[195, 205]], [150, 230], 24))
+    #analyses.append(get_analysis([10265],  "10265 2017-02-6 3-240 ABS-LH2-EMPTY",  [1.5, 4.5], src_dir, data_dir, 3, [[235, 245]], [190, 270], 24))
+
 
     required_trackers = [0, 1] # for space points
     required_number_of_track_points = 12 # doesnt do anything

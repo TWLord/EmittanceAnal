@@ -10,10 +10,10 @@ queue=xxl
 VERSION="v3"
 #VERSION=""
 
-#ABS=ABS-LH2
+ABS=ABS-LH2
 #ABS=ABS-LH2-EMPTY
 #ABS=ABS-SOLID-EMPTY
-ABS=ABS-SOLID-LiH
+#ABS=ABS-SOLID-LiH
 templatedir=config/solenoid/2017-02-6/ABS-TEMPLATE/
 
 #for opt in "9883,3-140" "9885,6-140" "9886,10-140" ; do 
@@ -24,11 +24,15 @@ templatedir=config/solenoid/2017-02-6/ABS-TEMPLATE/
 #for opt in "10579,3-140" "10580,4-140" "10581,6-140" "10582,10-140" ; do 
 #for opt in "10579,3-140" "10581,6-140" "10582,10-140" ; do 
 #for opt in "10508,3-140" ; do 
-for opt in "10508,3-140" "10504,4-140" "10509,6-140" ; do 
+#for opt in "10508,3-140" "10504,4-140" "10509,6-140" ; do 
 #for opt in "9883,3-140" ; do 
 #for opt in "9885,6-140" ; do 
 #for opt in "9886,10-140" ; do 
 #for opt in "10243,3-140" ; do 
+
+for opt in "9911,3-170" "9910,3-200" "9909,3-240" ; do 
+#for opt in "10268,3-170" "10267,3-200" "10265,3-240" ; do 
+#for opt in "10268,3-170" ; do
 
 rn="${opt%,*}"
 if [ ! -z "$rn" ] ; then 

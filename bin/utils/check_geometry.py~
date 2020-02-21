@@ -195,7 +195,8 @@ def get_z_tk():
     return z_list
 
 def get_z_diffuser():
-    config = importlib.import_module("config.config_reco").Config
+    #config = importlib.import_module("config.config_reco").Config
+    config = importlib.import_module("config_reco").Config
     z_list = [z for z, dummy, name in config.virtual_detectors if "diffuser" in name]
     z_list = sorted(z_list)
     print "Found diffusers at", z_list
@@ -205,14 +206,14 @@ def get_z_diffuser():
 
 def plot_trackers():
     old_time = time.time()
-    ######plot_materials(-250.1, 250.1, 1., 12000, 23000., 1., name = "materials") # takes a long time to run
+    #plot_materials(-250.1, 250.1, 1., 12000, 23000., 1., name = "materials") # takes a long time to run
     try:
         tk_list = get_z_tk()
         print tk_list
         for z_tk, name in tk_list: #
             plot_materials(-2.1, 2.1, 0.01, z_tk-2., z_tk+2, 0.01, name = name) #
-        # diff_z = get_z_diffuser() ##
-        # plot_materials(-500.1, 500.1, 1., min(diff_z)-800., max(diff_z)+500., 0.1, "diffuser") ##
+        diff_z = get_z_diffuser() ##
+        plot_materials(-500.1, 500.1, 1., min(diff_z)-800., max(diff_z)+500., 0.1, "diffuser") ##
     except ImportError:
         print "Failed to do tracker zoom"
         sys.excepthook(*sys.exc_info())

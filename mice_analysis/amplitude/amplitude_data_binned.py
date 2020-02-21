@@ -208,7 +208,15 @@ class AmplitudeDataBinned(object):
 
     def get_rebins(self, a_bin, sample, will_store_amplitude):
         self.emittance = self.get_emittance()
-        self.cov_inv = numpy.linalg.inv(self.cov)
+        #self.cov_inv = numpy.linalg.inv(self.cov) # Chris
+        try :
+          self.cov_inv = numpy.linalg.inv(self.cov)
+        #except LinAlgErr as err:
+        except numpy.linalg.LinAlgError as err:
+          print " ---- inversion error ---- "
+          print err
+          print self.cov
+        # Tom ^
         rebins = [[] for i in range(self.n_bins)]
         amplitudes = [0 for i in range(self.n_events[sample][a_bin])]
         emittance = self.get_emittance()

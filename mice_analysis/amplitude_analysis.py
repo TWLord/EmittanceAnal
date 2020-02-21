@@ -365,7 +365,10 @@ class AmplitudeAnalysis(AnalysisBase):
         reco_mc_sum = sum(reco_mc_pdf[cutoff_index:])
         inefficiency_averaged = copy.deepcopy(inefficiency)
         for i in range(cutoff_index, len(inefficiency_averaged)):
-            inefficiency_averaged[i] = all_mc_sum/reco_mc_sum
+            if reco_mc_sum == 0: # TomL
+                inefficiency_averaged[i] = 1.
+            else:
+                inefficiency_averaged[i] = all_mc_sum/reco_mc_sum
 
         ineff_migration = self.migration_matrix_alt(fractional_reco_mc, fractional_reco)
         self.amplitudes["inefficiency"][target] = {

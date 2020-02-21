@@ -400,9 +400,37 @@ class CompareCutsConfig(CompareConfig):
         ndm1 = str(nd-1)
         nu = str(nu)
         nd = str(nd)
-        self.conglomerate_list = [
-            self.get_conglomerate_2("global_through_virtual_diffuser_us_r_"+nu+"_0", None, "Radius at diffuser (upstream) [mm]", None, True, [0.5, 0.5, 0.9, 0.9], vertical([100], mod)),
-            self.get_conglomerate_2("global_through_virtual_diffuser_ds_r_"+nu+"_0", None, "Radius at diffuser (downstream) [mm]", None, True, [0.5, 0.5, 0.9, 0.9], vertical([100], mod)),
+        if do_higher_mom :
+          self.conglomerate_list = [
+            self.get_conglomerate_2("global_through_virtual_diffuser_us_r_"+nu+"_0", None, "Radius at diffuser (upstream) [mm]", None, True, [0.5, 0.5, 0.9, 0.9], vertical([90], mod)),
+            self.get_conglomerate_2("global_through_virtual_diffuser_ds_r_"+nu+"_0", None, "Radius at diffuser (downstream) [mm]", None, True, [0.5, 0.5, 0.9, 0.9], vertical([90], mod)),
+            self.get_conglomerate_2("tkd_n_tracks_"+nd+"_0", None, "Number of tracks in TKD", None, True, [0.5, 0.5, 0.9, 0.9], vertical([0.5, 1.5], mod)),
+            self.get_conglomerate_2("tkd_chi2_"+nd+"_0", None, "#chi^{2}/D.o.F. in TKD", None, True, [0.5, 0.5, 0.9, 0.9], vertical([8], mod)),
+            self.get_conglomerate_2("tkd_max_r_"+nd+"_0", None, "Maximum radius in TKD stations [mm]", [0., 300.], True, [0.5, 0.5, 0.9, 0.9], vertical([150], mod)),
+            #self.get_conglomerate_2("tkd_p_"+nd1+"_0", None, "Momentum at TKD Reference Plane [MeV/c]", [100., 300.], True, [0.5, 0.5, 0.9, 0.9], vertical([90, 170], mod)),
+            self.get_conglomerate_2("tkd_p_"+nd1+"_0", None, "Momentum at TKD Reference Plane [MeV/c]", [100., 300.], True, [0.5, 0.5, 0.9, 0.9], mod),
+            self.get_conglomerate_2("tku_chi2_"+nu+"_0", None, "#chi^{2}/D.o.F. in TKU", None, True, [0.5, 0.5, 0.9, 0.9], vertical([8], mod)),
+            self.get_conglomerate_2("tku_max_r_"+nu+"_0", None, "Maximum radius in TKU stations [mm]", None, True, [0.5, 0.5, 0.9, 0.9], vertical([150], mod)),
+            self.get_conglomerate_2("tku_n_tracks_"+nu+"_0", None, "Number of tracks in TKU", None, True, [0.5, 0.5, 0.9, 0.9], vertical([0.5, 1.5], mod)), # disable two cuts
+            #self.get_conglomerate_2("tku_p_"+nu+"_0", None, "Momentum at TKU Reference Plane [MeV/c]", [100., 300.], [135, 145], [0.5, 0.5, 0.9, 0.9], vertical([135, 145], mod)),
+            #self.get_conglomerate_2("tku_p_"+nu+"_0", None, "Momentum at TKU Reference Plane [MeV/c]", [100., 300.], [135, 145], [0.5, 0.5, 0.9, 0.9], modifiers = mod),
+            self.get_conglomerate_2("tku_p_"+nu+"_0", None, "Momentum at TKU Reference Plane [MeV/c]", [100., 300.], True, [0.5, 0.5, 0.9, 0.9], modifiers = mod),
+            self.get_conglomerate_2("tof_tof0_n_sp_"+nu+"_0", None, "Number of space points in ToF0", None, True, [0.5, 0.5, 0.9, 0.9], vertical([0.5, 1.5], mod)),
+            self.get_conglomerate_2("tof_tof1_n_sp_"+nu+"_0", None, "Number of space points in ToF1", None, True, [0.5, 0.5, 0.9, 0.9], vertical([0.5, 1.5], mod)),
+            self.get_conglomerate_2("tof_tof01_"+nu+"_0", None, "Time between ToF0 and ToF1 [ns]", [1.0, 5.], True, [0.5, 0.5, 0.9, 0.9], vertical([2.0, 3.0, 4.0], mod)),
+            #self.get_conglomerate_2("tof_delta_tof01_"+nu1+"_0", None, "t(ToF01) - extrapolated t(ToF01) [ns]", None, True, [0.1, 0.5, 0.5, 0.9], mod),
+
+            self.get_conglomerate_2("tku_scifi_n_planes_with_clusters_"+nu1+"_0", None, "Number of planes with clusters in TKU", None, True, [0.1, 0.5, 0.5, 0.9], modifiers = mod),
+            self.get_conglomerate_2("tku_scifi_n_planes_with_clusters_"+nu+"_0",  None, "Number of planes with clusters in TKU", None, True, [0.1, 0.5, 0.5, 0.9], modifiers = mod),
+            self.get_conglomerate_2("tku_scifi_n_planes_with_clusters_"+nu+"_1",  None, "Number of planes with clusters in TKU", None, True, [0.1, 0.5, 0.5, 0.9], modifiers = mod),
+            self.get_conglomerate_2("tkd_scifi_n_planes_with_clusters_"+nu1+"_1", None, "Number of planes with clusters in TKD", None, True, [0.1, 0.5, 0.5, 0.9], modifiers = mod),
+            self.get_conglomerate_2("tkd_scifi_n_planes_with_clusters_"+ndm1+"_1", None, "Number of planes with clusters in TKD", None, True, [0.1, 0.5, 0.5, 0.9], modifiers = mod),
+            self.get_conglomerate_2("tkd_scifi_n_planes_with_clusters_"+nd1+"_0", None, "Number of planes with clusters in TKD", None, True, [0.1, 0.5, 0.5, 0.9], modifiers = mod),
+          ]
+        else : 
+          self.conglomerate_list = [
+            self.get_conglomerate_2("global_through_virtual_diffuser_us_r_"+nu+"_0", None, "Radius at diffuser (upstream) [mm]", None, True, [0.5, 0.5, 0.9, 0.9], vertical([90], mod)),
+            self.get_conglomerate_2("global_through_virtual_diffuser_ds_r_"+nu+"_0", None, "Radius at diffuser (downstream) [mm]", None, True, [0.5, 0.5, 0.9, 0.9], vertical([90], mod)),
             self.get_conglomerate_2("tkd_n_tracks_"+nd+"_0", None, "Number of tracks in TKD", None, True, [0.5, 0.5, 0.9, 0.9], vertical([0.5, 1.5], mod)),
             self.get_conglomerate_2("tkd_chi2_"+nd+"_0", None, "#chi^{2}/D.o.F. in TKD", None, True, [0.5, 0.5, 0.9, 0.9], vertical([8], mod)),
             self.get_conglomerate_2("tkd_max_r_"+nd+"_0", None, "Maximum radius in TKD stations [mm]", [0., 300.], True, [0.5, 0.5, 0.9, 0.9], vertical([150], mod)),
@@ -422,7 +450,8 @@ class CompareCutsConfig(CompareConfig):
             self.get_conglomerate_2("tkd_scifi_n_planes_with_clusters_"+nu1+"_1", None, "Number of planes with clusters in TKD", None, True, [0.1, 0.5, 0.5, 0.9], modifiers = mod),
             self.get_conglomerate_2("tkd_scifi_n_planes_with_clusters_"+ndm1+"_1", None, "Number of planes with clusters in TKD", None, True, [0.1, 0.5, 0.5, 0.9], modifiers = mod),
             self.get_conglomerate_2("tkd_scifi_n_planes_with_clusters_"+nd1+"_0", None, "Number of planes with clusters in TKD", None, True, [0.1, 0.5, 0.5, 0.9], modifiers = mod),
-        ]
+          ]
+
         self.data_caption = [[],]
         self.data_caption[0] = [
             " Samples are listed for None and lH2 empty datasets.",
@@ -458,7 +487,25 @@ class CompareData1DConfig(CompareConfig):
             }
         }
       
-        self.conglomerate_list = [
+        if do_higher_mom :
+          self.conglomerate_list = [
+            self.get_conglomerate_1("tof0_slab_dt", "tof0_slab_dt", "us_cut", "Slab dt for ToF0 [ns]", [-2, 2], False, [0.55, 0.7, 0.9, 0.9], modifiers = modifiers),
+            self.get_conglomerate_1("tof1_slab_dt", "tof1_slab_dt", "us_cut", "Slab dt for ToF1 [ns]", [-2, 2], False, [0.55, 0.7, 0.9, 0.9], modifiers = modifiers),
+            self.get_conglomerate_1("tof2_slab_dt", "tof2_slab_dt", "ds_cut", "Slab dt for ToF2 [ns]", [-2, 2], False, [0.55, 0.7, 0.9, 0.9], modifiers = modifiers),
+            self.get_conglomerate_1("tku_x",  "tku_x",  "us_cut", "x at TKU Reference Plane [mm]",        [-175, 300], False, [0.55, 0.7, 0.9, 0.9], modifiers = modifiers),
+            self.get_conglomerate_1("tku_y",  "tku_y",  "us_cut", "y at TKU Reference Plane [mm]",        [-175, 300], False, [0.55, 0.7, 0.9, 0.9], modifiers = modifiers),
+            self.get_conglomerate_1("tku_px", "tku_px", "us_cut", "p_{x} at TKU Reference Plane [MeV/c]", [-120, 250], False, [0.55, 0.7, 0.9, 0.9], rescale_y = [0., 0.15], modifiers = modifiers),
+            self.get_conglomerate_1("tku_py", "tku_py", "us_cut", "p_{y} at TKU Reference Plane [MeV/c]", [-120, 250], False, [0.55, 0.7, 0.9, 0.9], modifiers = modifiers),
+            self.get_conglomerate_1("tku_p", "tku_p", "us_cut", "p at TKU Reference Plane [MeV/c]",       [89, 270], False, [0.55, 0.7, 0.9, 0.9], modifiers = modifiers),
+            self.get_conglomerate_1("tkd_x",  "tkd_x",  "ds_cut", "x at TKD Reference Plane [mm]",        [-175, 300], False, [0.55, 0.7, 0.9, 0.9], modifiers = modifiers),
+            self.get_conglomerate_1("tkd_y",  "tkd_y",  "ds_cut", "y at TKD Reference Plane [mm]",        [-175, 300], False, [0.55, 0.7, 0.9, 0.9], modifiers = modifiers),
+            self.get_conglomerate_1("tkd_px", "tkd_px", "ds_cut", "p_{x} at TKD Reference Plane [MeV/c]", [-120, 250], False, [0.55, 0.7, 0.9, 0.9], modifiers = modifiers),
+            self.get_conglomerate_1("tkd_py", "tkd_py", "ds_cut", "p_{y} at TKD Reference Plane [MeV/c]", [-120, 250], False, [0.55, 0.7, 0.9, 0.9], modifiers = modifiers),
+            self.get_conglomerate_1("tkd_p", "tkd_p", "ds_cut", "p at TKD Reference Plane [MeV/c]",       [89, 270], False, [0.55, 0.7, 0.9, 0.9], modifiers = modifiers),
+            self.get_conglomerate_1("p_res", "p_res", "ds_cut", "p(TKU) - p(TKD) [MeV/c]",       [-20., 40.], True, [0.55, 0.7, 0.9, 0.9], modifiers = vertical([0., 5., 10., 15., 20.], modifiers)),
+          ]
+        else :
+          self.conglomerate_list = [
             self.get_conglomerate_1("tof0_slab_dt", "tof0_slab_dt", "us_cut", "Slab dt for ToF0 [ns]", [-2, 2], False, [0.55, 0.7, 0.9, 0.9], modifiers = modifiers),
             self.get_conglomerate_1("tof1_slab_dt", "tof1_slab_dt", "us_cut", "Slab dt for ToF1 [ns]", [-2, 2], False, [0.55, 0.7, 0.9, 0.9], modifiers = modifiers),
             self.get_conglomerate_1("tof2_slab_dt", "tof2_slab_dt", "ds_cut", "Slab dt for ToF2 [ns]", [-2, 2], False, [0.55, 0.7, 0.9, 0.9], modifiers = modifiers),
@@ -473,7 +520,7 @@ class CompareData1DConfig(CompareConfig):
             self.get_conglomerate_1("tkd_py", "tkd_py", "ds_cut", "p_{y} at TKD Reference Plane [MeV/c]", [-120, 200], False, [0.55, 0.7, 0.9, 0.9], modifiers = modifiers),
             self.get_conglomerate_1("tkd_p", "tkd_p", "ds_cut", "p at TKD Reference Plane [MeV/c]",       [89, 200], False, [0.55, 0.7, 0.9, 0.9], modifiers = modifiers),
             self.get_conglomerate_1("p_res", "p_res", "ds_cut", "p(TKU) - p(TKD) [MeV/c]",       [-20., 40.], True, [0.55, 0.7, 0.9, 0.9], modifiers = vertical([0., 5., 10., 15., 20.], modifiers)),
-        ]
+          ]
 
 
 class CompareData2DConfig(CompareConfig):
@@ -503,8 +550,34 @@ class CompareData2DConfig(CompareConfig):
         self.conglomerate_list = [
             self.get_conglomerate_3("p_res_vs_global_through_virtual_absorber_centre_r_ds_cut", "p_res_vs_global_through_virtual_absorber_centre_r_ds_cut", "P(TKU) - P(TKD) [MeV/c]", "radius [mm]", modifiers = mod),
             self.get_conglomerate_3("p_res_vs_global_through_virtual_absorber_centre_y_ds_cut", "p_res_vs_global_through_virtual_absorber_centre_y_ds_cut", "P(TKU) - P(TKD) [MeV/c]", "y [mm]", modifiers = mod),
+            self.get_conglomerate_3("tku_px_tku_py_us_cut", "tku_px_tku_py_us_cut", "tku px [MeV/c]", "tku py [MeV/c]", modifiers = mod),
+            self.get_conglomerate_3("tkd_px_tkd_py_ds_cut", "tkd_px_tkd_py_ds_cut", "tkd px [MeV/c]", "tkd py [MeV/c]", modifiers = mod),
         ]
-        mod = {
+        if do_higher_mom :
+         mod = {
+            "merge_options":{
+                "right_labels":right_labels,
+                "top_labels":top_labels
+            },
+            "redraw":{
+                "draw_option":["COL"],
+                "graph":{
+                    "marker_style":None,
+                    "marker_color":None,
+                    "draw_option":["l"]*3,
+                    "transparency":None,
+                    "draw_order":None,
+                    "fill_color":None,
+                    "fill_style":None,
+                }
+            },
+            "rescale_x":[-1.5, 9.5],
+            "rescale_y":[121., 281.],
+            "graph_names":["tramlines_upper", "tramlines_lower", "cuts_graph"],
+            "canvas_fill_color":root_style.get_frame_fill(),
+         }
+        else :
+         mod = {
             "merge_options":{
                 "right_labels":right_labels,
                 "top_labels":top_labels
@@ -525,7 +598,8 @@ class CompareData2DConfig(CompareConfig):
             "rescale_y":[81., 181.],
             "graph_names":["tramlines_upper", "tramlines_lower", "cuts_graph"],
             "canvas_fill_color":root_style.get_frame_fill(),
-        }
+         }
+
         self.conglomerate_list += [
             self.get_conglomerate_3("p_tku_vs_tof01_all", "p_tot_vs_tof", "ToF_{01} [ns]", "P(TKU) [MeV/c]", modifiers = mod),
             self.get_conglomerate_3("p_tku_vs_tof01_us_cut", "p_tot_vs_tof", "ToF_{01} [ns]", "P(TKU) [MeV/c]", modifiers = mod),
@@ -560,8 +634,34 @@ class CompareData2DMCConfig(CompareConfig):
         self.conglomerate_list = [
             self.get_conglomerate_3("p_res_vs_global_through_virtual_absorber_centre_r_ds_cut", "p_res_vs_global_through_virtual_absorber_centre_r_ds_cut", "P(TKU) - P(TKD) [MeV/c]", "radius [mm]", modifiers = mod),
             self.get_conglomerate_3("p_res_vs_global_through_virtual_absorber_centre_y_ds_cut", "p_res_vs_global_through_virtual_absorber_centre_y_ds_cut", "P(TKU) - P(TKD) [MeV/c]", "y [mm]", modifiers = mod),
+            self.get_conglomerate_3("tku_px_tku_py_us_cut", "tku_px_tku_py_us_cut", "tku px [MeV/c]", "tku py [MeV/c]", modifiers = mod),
+            self.get_conglomerate_3("tkd_px_tkd_py_ds_cut", "tkd_px_tkd_py_ds_cut", "tkd px [MeV/c]", "tkd py [MeV/c]", modifiers = mod),
         ]
-        mod = {
+        if do_higher_mom :
+         mod = {
+            "merge_options":{
+                "right_labels":right_labels,
+                "top_labels":top_labels
+            },
+            "redraw":{
+                "draw_option":["COL"],
+                "graph":{
+                    "marker_style":None,
+                    "marker_color":None,
+                    "draw_option":["l"]*3,
+                    "transparency":None,
+                    "draw_order":None,
+                    "fill_color":None,
+                    "fill_style":None,
+                }
+            },
+            "rescale_x":[-1.5, 9.5],
+            "rescale_y":[121., 281.],
+            "graph_names":["tramlines_upper", "tramlines_lower", "cuts_graph"],
+            "canvas_fill_color":root_style.get_frame_fill(),
+         }
+        else :
+         mod = {
             "merge_options":{
                 "right_labels":right_labels,
                 "top_labels":top_labels
@@ -582,7 +682,7 @@ class CompareData2DMCConfig(CompareConfig):
             "rescale_y":[81., 181.],
             "graph_names":["tramlines_upper", "tramlines_lower", "cuts_graph"],
             "canvas_fill_color":root_style.get_frame_fill(),
-        }
+         }
         self.conglomerate_list += [
             self.get_conglomerate_3("p_tku_vs_tof01_all", "p_tot_vs_tof", "ToF_{01} [ns]", "P(TKU) [MeV/c]", modifiers = mod),
             self.get_conglomerate_3("p_tku_vs_tof01_us_cut", "p_tot_vs_tof", "ToF_{01} [ns]", "P(TKU) [MeV/c]", modifiers = mod),
@@ -899,6 +999,12 @@ class CompareAmplitudeConfigData(CompareConfig): # data plots
                                         "pdf_ratio", ["PDF Ratio stats hist"],
                                         ["PDF Ratio stats", "PDF Ratio sys"], x_range = [0.01, 99.9], y_range = [0.501, 2.499], replace_hist = True,
                                         graph_draw_option = ["p", "2"], graph_marker_style=[20, 20], graph_marker_color=[1, 1], graph_draw_order=[1,0], modifiers=ratio_modifiers),
+############## new axes for pdf ratio
+#            self.get_conglomerate_graph("pdf_ratio*", "Amplitude [mm]",
+#                                        "P_{Amp}",
+#                                        "pdf_ratio", ["PDF Ratio stats hist"],
+#                                        ["PDF Ratio stats", "PDF Ratio sys"], x_range = [0.01, 59.9], y_range = [0.501, 7.999], replace_hist = True,
+#                                        graph_draw_option = ["p", "2"], graph_marker_style=[20, 20], graph_marker_color=[1, 1], graph_draw_order=[1,0], modifiers=ratio_modifiers),
             self.get_conglomerate_graph("cdf_ratio*", "Amplitude [mm]",
                                         "R_{Amp}",
                                         "cdf_ratio", ["CDF_Ratio_stats hist"],
@@ -953,10 +1059,18 @@ class CompareAmplitudeConfigBoth(CompareConfig): # comparisons
         }
 
         self.conglomerate_list = [
+#            self.get_conglomerate_graph("pdf_ratio*", "Amplitude [mm]",
+#                                        "#frac{Number out}{Number in}",
+#                                        "pdf_ratio", ["PDF Ratio stats_hist"],
+#                                        ["PDF_Ratio stats", "PDF_Ratio sys"], x_range = [0.01, 99.9], y_range = [0.01, 1.49], replace_hist = True,
+#                                        graph_draw_option = ["p", "3", "p", "3"], graph_marker_style=[20, 20, 22, 22], 
+#                                        graph_marker_color=[1, 1, ROOT.kRed-7, ROOT.kRed-7], graph_draw_order=[3, 1, 2, 0,], 
+#                                        modifiers=ratio_modifiers),
+############# new axes for pdf ratio
             self.get_conglomerate_graph("pdf_ratio*", "Amplitude [mm]",
                                         "#frac{Number out}{Number in}",
                                         "pdf_ratio", ["PDF Ratio stats_hist"],
-                                        ["PDF_Ratio stats", "PDF_Ratio sys"], x_range = [0.01, 99.9], y_range = [0.01, 1.49], replace_hist = True,
+                                        ["PDF_Ratio stats", "PDF_Ratio sys"], x_range = [0.01, 99.9], y_range = [0.01, 7.99], replace_hist = True,
                                         graph_draw_option = ["p", "3", "p", "3"], graph_marker_style=[20, 20, 22, 22], 
                                         graph_marker_color=[1, 1, ROOT.kRed-7, ROOT.kRed-7], graph_draw_order=[3, 1, 2, 0,], 
                                         modifiers=ratio_modifiers),
@@ -1027,6 +1141,11 @@ def print_fail_dict(fail_dict):
             print "        ", fail
 
 def main_paper(batch_level = 0):
+ #for tdir in range(10) :
+ #for tdir in range(3) :
+    #target_dir = ["output/combinedMC+Data/ownMC/2017-02-6_mom_v3/", "output/combinedMC+Data/ownMC/2017-02-6_mom_v4/", "output/combinedMC+Data/ownMC/2017-02-6_mom_v5/", "output/combinedMC+Data/ownMC/2017-02-6_mom_v6/", "output/combinedMC+Data/ownMC/2017-02-6_mom_v7/", "output/combinedMC+Data/ownMC/2017-02-6_mom_v8/", "output/combinedMC+Data/ownMC/2017-02-6_mom_v9_fake/", "output/combinedMC+Data/ownMC/2017-02-6_mom_v10/", "output/combinedMC+Data/ownMC/2017-02-6_mom_v10_c6/", "output/combinedMC+Data/ownMC/2017-02-6_mom_v11/"][tdir]
+    #target_dir = ["output/combinedMC+Data/ownMC/2017-02-6_mom_v10/", "output/combinedMC+Data/ownMC/2017-02-6_mom_v10_c6/", "output/combinedMC+Data/ownMC/2017-02-6_mom_v11/"][tdir]
+
     """
     Main program; 
     - batch_level tells how much output for ROOT: batch_level 0 is silent, 10 is most verbose
@@ -1043,29 +1162,107 @@ def main_paper(batch_level = 0):
     #target_dir = "output/combinedMC+Data/2017-02-6-v3-testingMC_v2+2017-02-6-v5-reco-sys+corr_full_lH2_full/"
     #target_dir = "output/combinedMC+Data/ownMC/2017-02-6_v2/"
     #target_dir = "output/combinedMC+Data/ownMC/2017-02-6_v3/"
-    target_dir = "output/combinedMC+Data/ownMC/2017-02-6_v4/"
+    #target_dir = "output/combinedMC+Data/ownMC/2017-02-6_v4/"
+    #target_dir = "output/combinedMC+Data/officialMC/2017-02-6-v3-OfficialMC_v5fields+2017-02-6-v2-reco_full/"
+    #target_dir = "output/combinedMC+Data/officialMC/2017-02-6-c3-OfficialMC_v3+c5-reco-sys+corr_full/"
+    #target_dir = "output/combinedMC+Data/officialMC/2017-02-6-c3-OfficialMC_v3+c5-reco-sys+corr_full_runscombined/"
+    #target_dir = "output/combinedMC+Data/officialMC/2017-02-6-c3-OfficialMC_v3+c8-reco-sys+corr_full/"
+    
+    #target_dir = "output/combinedMC+Data/ownMC/2017-02-6_v6/"
+    #target_dir = "output/combinedMC+Data/ownMC/2017-02-6_mom_v2/"
+    #target_dir = "output/combinedMC+Data/ownMC/2017-02-6_mom_empty_v2/"
+    #target_dir = "output/combinedMC+Data/ownMC/2017-02-6_mom_v3/"
+    #target_dir = "output/combinedMC+Data/ownMC/2017-02-6_mom_v4/"
+    #target_dir = "output/combinedMC+Data/ownMC/2017-02-6_mom_v5/"
+    #target_dir = "output/combinedMC+Data/ownMC/2017-02-6_mom_v6/"
+    #target_dir = "output/combinedMC+Data/ownMC/2017-02-6_mom_v7/"
+    #target_dir = "output/combinedMC+Data/ownMC/2017-02-6_mom_v8/"
+    #target_dir = "output/combinedMC+Data/ownMC/2017-02-6_mom_v9_fake/"
+    #target_dir = "output/combinedMC+Data/ownMC/2017-02-6_mom_v10/"
+    #target_dir = "output/combinedMC+Data/ownMC/2017-02-6_mom_v10_c6/"
+    #target_dir = "output/combinedMC+Data/ownMC/2017-02-6_mom_v11/"
+    #target_dir = "output/combinedMC+Data/ownMC/2017-02-6_mom_v20/"
+    #target_dir = "output/combinedMC+Data/ownMC/2017-02-6_mom_v21/"
+    #target_dir = "output/combinedMC+Data/ownMC/2017-02-6_mom_v22/"
+    #target_dir = "output/combinedMC+Data/ownMC/2017-02-6_mom_v23/"
+    #target_dir = "output/combinedMC+Data/ownMC/2017-02-6_mom_v24/"
+    #target_dir = "output/combinedMC+Data/ownMC/2017-02-6_mom_v25/"
+    #target_dir = "output/combinedMC+Data/ownMC/2017-02-6_mom_v26/"
+
+    target_dir = "output/combinedMC+Data/officialMC/2017-02-6-c3-OfficialMC_v3+c6-reco-sys+corr_full/"
+
     batch_level = 0
     hide_root_errors = True
-    do_cuts_summary = True
+    do_cuts_summary = False 
+    do_higher_mom = True # False 
     if batch_level < 10 and hide_root_errors:
         ROOT.gErrorIgnoreLevel = 6000
     my_dir_list = [
-        #["2017-02-6_3-140_lH2_empty", "2017-02-6_3-140_lH2_empty", "2017-02-6_3-140_lH2_empty",], # TomL
-        ["2017-02-6_3-140_lH2_full", "2017-02-6_3-140_lH2_full", "2017-02-6_3-140_lH2_full",], # TomL
-        #["2017-02-6_6-140_lH2_full", "2017-02-6_6-140_lH2_full", "2017-02-6_6-140_lH2_full",], # TomL
+        #["2017-02-6_3-140_lH2_empty", "2017-02-6_6-140_lH2_empty", "2017-02-6_10-140_lH2_empty",], # TomL
         #["2017-02-6_3-140_lH2_full", "2017-02-6_6-140_lH2_full", "2017-02-6_10-140_lH2_full",], # TomL
+        #["2017-02-6_3-140_None",      "2017-02-6_6-140_None",      "2017-02-6_10-140_None",], # TomL
+        #["2017-02-6_3-140_LiH",       "2017-02-6_6-140_LiH",       "2017-02-6_4-140_LiH"],
+        #["2017-02-6_3-140_lH2_empty", "2017-02-6_3-140_lH2_empty", "2017-02-6_3-140_lH2_empty",], # TomL
+        #["2017-02-6_3-140_lH2_full", "2017-02-6_3-140_lH2_full", "2017-02-6_3-140_lH2_full",], # TomL
+        #["2017-02-6_6-140_lH2_full", "2017-02-6_6-140_lH2_full", "2017-02-6_6-140_lH2_full",], # TomL
+        #["2017-02-6_3-140_LiH",       "2017-02-6_6-140_LiH",       "2017-02-6_10-140_LiH"],
+        #["2017-02-6_3-140_LiH_10508",       "2017-02-6_6-140_LiH_10508",       "2017-02-6_10-140_LiH_10508"],
+        #["2017-02-6_3-140_LiH",       "2017-02-6_3-140_LiH",       "2017-02-6_3-140_LiH"],
+        #["2017-02-6_3-140_LiH",       "2017-02-6_4-140_LiH",       "2017-02-6_6-140_LiH"],
         #["2017-2.7_4-140_lH2_empty", "2017-2.7_6-140_lH2_empty", "2017-2.7_10-140_lH2_empty",],
         #["2017-2.7_4-140_lH2_full",  "2017-2.7_6-140_lH2_full",  "2017-2.7_10-140_lH2_full",],
         #["2017-2.7_4-140_None",      "2017-2.7_6-140_None",      "2017-2.7_10-140_None",],
         #["2017-2.7_4-140_LiH",       "2017-2.7_6-140_LiH",       "2017-2.7_10-140_LiH"],
+
+        #["2017-02-6_3-140_ABS-LH2-EMPTY", "2017-02-6_6-140_ABS-LH2-EMPTY", "2017-02-6_10-140_ABS-LH2-EMPTY",], # TomL
+        #["2017-02-6_3-140_ABS-LH2", "2017-02-6_6-140_ABS-LH2", "2017-02-6_10-140_ABS-LH2",], # TomL
+        #["2017-02-6_3-140_ABS-SOLID-EMPTY",      "2017-02-6_6-140_ABS-SOLID-EMPTY",      "2017-02-6_10-140_ABS-SOLID-EMPTY",], # TomL
+        #["2017-02-6_3-140_ABS-SOLID-LiH",       "2017-02-6_6-140_ABS-SOLID-LiH",       "2017-02-6_4-140_ABS-SOLID-LiH"],
+
+        #["2017-02-6_3-140_ABS-LH2-EMPTY", "2017-02-6_4-140_ABS-LH2-EMPTY", "2017-02-6_6-140_ABS-LH2-EMPTY", "2017-02-6_10-140_ABS-LH2-EMPTY",], # TomL
+        ####["2017-02-6_3-140_ABS-LH2-EMPTY", "2017-02-6_3-140_ABS-LH2-EMPTY", "2017-02-6_6-140_ABS-LH2-EMPTY", "2017-02-6_10-140_ABS-LH2-EMPTY",], # TomL
+        #["2017-02-6_3-140_ABS-LH2", "2017-02-6_4-140_ABS-LH2", "2017-02-6_6-140_ABS-LH2", "2017-02-6_10-140_ABS-LH2",], # TomL
+        ####["2017-02-6_3-140_ABS-LH2", "2017-02-6_3-140_ABS-LH2", "2017-02-6_6-140_ABS-LH2", "2017-02-6_10-140_ABS-LH2",], # TomL
+        ####["2017-02-6_3-140_ABS-SOLID-EMPTY", "2017-02-6_4-140_ABS-SOLID-EMPTY", "2017-02-6_6-140_ABS-SOLID-EMPTY", "2017-02-6_10-140_ABS-SOLID-EMPTY",], # TomL
+        ####["2017-02-6_3-140_ABS-SOLID-LiH", "2017-02-6_4-140_ABS-SOLID-LiH", "2017-02-6_6-140_ABS-SOLID-LiH", "2017-02-6_4-140_ABS-SOLID-LiH",],
+        #["2017-02-6_3-140_ABS-SOLID-LiH", "2017-02-6_4-140_ABS-SOLID-LiH", "2017-02-6_6-140_ABS-SOLID-LiH",], 
+
+        #["2017-02-6_3-140_ABS-LH2-EMPTY",   "2017-02-6_3-140_ABS-LH2-EMPTY",   "2017-02-6_6-140_ABS-LH2-EMPTY",   "2017-02-6_10-140_ABS-LH2-EMPTY",], # TomL
+        #["2017-02-6_3-140_ABS-LH2",         "2017-02-6_3-140_ABS-LH2",         "2017-02-6_6-140_ABS-LH2",         "2017-02-6_10-140_ABS-LH2",], # TomL
+        #["2017-02-6_3-140_ABS-SOLID-EMPTY", "2017-02-6_4-140_ABS-SOLID-EMPTY", "2017-02-6_6-140_ABS-SOLID-EMPTY", "2017-02-6_10-140_ABS-SOLID-EMPTY",], # TomL
+        #["2017-02-6_3-140_ABS-SOLID-LiH",   "2017-02-6_4-140_ABS-SOLID-LiH",   "2017-02-6_6-140_ABS-SOLID-LiH",   "2017-02-6_6-140_ABS-SOLID-LiH",],
+
+        #["2017-02-6_3-140_ABS-LH2-EMPTY",   "2017-02-6_4-140_ABS-LH2-EMPTY",   "2017-02-6_6-140_ABS-LH2-EMPTY",   "2017-02-6_10-140_ABS-LH2-EMPTY",], # TomL
+        #["2017-02-6_3-140_ABS-LH2",         "2017-02-6_4-140_ABS-LH2",         "2017-02-6_6-140_ABS-LH2",         "2017-02-6_10-140_ABS-LH2",], # TomL
+        #["2017-02-6_3-140_ABS-SOLID-EMPTY", "2017-02-6_4-140_ABS-SOLID-EMPTY", "2017-02-6_6-140_ABS-SOLID-EMPTY", "2017-02-6_10-140_ABS-SOLID-EMPTY",], # TomL
+        #["2017-02-6_3-140_ABS-SOLID-LiH",   "2017-02-6_4-140_ABS-SOLID-LiH",   "2017-02-6_6-140_ABS-SOLID-LiH",   "2017-02-6_10-140_ABS-SOLID-LiH",],
+
+
+
+
+        ["2017-02-6_3-170_ABS-LH2-EMPTY", "2017-02-6_3-200_ABS-LH2-EMPTY", "2017-02-6_3-240_ABS-LH2-EMPTY",], # TomL
+        ["2017-02-6_3-170_ABS-LH2", "2017-02-6_3-200_ABS-LH2", "2017-02-6_3-240_ABS-LH2",], # TomL
+        #["2017-02-6_3-200_ABS-LH2", "2017-02-6_3-240_ABS-LH2",], # TomL
+        #["2017-02-6_3-170_ABS-LH2", "2017-02-6_3-200_ABS-LH2",], # TomL
+        #["2017-02-6_3-170_ABS-LH2",], # TomL
+        #["2017-02-6_3-170_lH2_full",], # TomL
     ]
     #top_labels = ["4-140", "6-140", "10-140"]
-    top_labels = ["3-140", "6-140", "10-140"] # TomL
+    ####top_labels = ["3-140", "4-140", "6-140", "10-140"] # TomL
+    #top_labels = ["3-140", "6-140", "10-140"] # TomL
+    top_labels = ["3-170", "3-200", "3-240"] # TomL
+    #top_labels = ["3-170", "3-200"] # TomL
+    #top_labels = ["3-200", "3-240"] # TomL
+    #top_labels = ["3-170",] # TomL
     #top_labels = ["3-140"] # TomL
     ##top_labels = ["6-140"] # TomL
     #right_labels = ["Empty\nLH_{2}", "Full\nLH_{2}", "No\nabsorber", "LiH"]
-    right_labels = ["Full\nLH_{2}"]
-    #right_labels = ["Empty\nLH_{2}", "Full\nLH_{2}"]
+    #right_labels = ["Empty\nLH_{2}", "Full\nLH_{2}", "LiH", "LiH_10508"]
+    #right_labels = ["Empty\nLH_{2}", "Full\nLH_{2}", "No\nabsorber", "LiH", "LiH_10508"]
+    ####right_labels = ["Empty\nLH_{2}", "Full\nLH_{2}", "No\nabsorber", "LiH"]
+    #right_labels = ["Full\nLH_{2}"]
+    #right_labels = ["Full\nLH_{2}", "LiH"]
+    right_labels = ["Empty\nLH_{2}", "Full\nLH_{2}"]
     #right_labels = ["Empty\nLH_{2}"]
     config_list = [CompareCutsConfig, CompareData1DConfig,
                    CompareOpticsConfig, CompareOpticsMCConfig,
@@ -1080,14 +1277,15 @@ def main_paper(batch_level = 0):
     ]
                    #CompareAmplitudeConfigMC,
     fd_1 = run_conglomerate(batch_level, config_list, my_dir_list, do_cuts_summary, target_dir, top_labels, right_labels)
-    config_list = [CompareDensityConfig]#, CompareDensityRatioConfig,  CompareFractionalEmittanceConfig, 
+    #config_list = [CompareDensityConfig]#, CompareDensityRatioConfig,  CompareFractionalEmittanceConfig, # dont need 
     #fd_2 = run_conglomerate(batch_level, config_list, my_dir_list, False, target_dir, top_labels, right_labels)
     print_fail_dict(fd_0)
     print_fail_dict(fd_1)
-    print_fail_dict(fd_2)
+    #print_fail_dict(fd_2)
 
 
 if __name__ == "__main__":
+    do_higher_mom = True # False 
     main_paper()
     if not ROOT.gROOT.IsBatch():
         raw_input("Finished - press <CR> to end")

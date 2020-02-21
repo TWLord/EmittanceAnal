@@ -47,7 +47,29 @@ def initialise_maus():
 def plot_hps(z_list, different_markers, flip_z = None):
     ssu_offset = 6 # mm, compare MICE Note 518 with MICE Note 501
     ssd_offset = 10 # mm, compare MICE Note 518 with MICE Note 501
+    # vals from hall probe files
     hp_z_positions = {
+        "hp_77":14104.+ssu_offset,
+        "hp_79":14429.+ssu_offset,
+        "hp_65":14429.+ssu_offset,
+        "hp_67":15286.+ssu_offset,
+        "hp_66":18625.+ssd_offset,
+        "hp_72":19482.+ssd_offset,
+        "hp_73":19807.+ssd_offset,
+        "hp_80":19482.+ssd_offset,
+    }
+    hp_btot = {
+        "hp_77":3.073,
+        "hp_79":3.038,
+        "hp_67":3.2296,
+        "hp_65":3.0398,
+        "hp_66":2.3371,
+        "hp_72":2.1226,
+        "hp_73":-1e9, #3.0571025,
+        "hp_80":-1e9, #3.012287,
+    }
+    # oldvals
+    """hp_z_positions = {
         "hp_77":14104.+ssu_offset,
         "hp_79":14429.+ssu_offset,
         "hp_65":14429.+ssu_offset,
@@ -66,7 +88,7 @@ def plot_hps(z_list, different_markers, flip_z = None):
         "hp_72":2.1196,
         "hp_73":-1e9, #3.0571025,
         "hp_80":-1e9, #3.012287,
-    }
+    }"""
     graph_list = []
     hp_color_list = [1, 2, 4, 6, 8]
     i = 0
@@ -193,7 +215,10 @@ def plot_z_range(z_list, b_min_max, name, canvas):
         for z_pos in z_list:
             (bx_field, by_field, bz_field, ex_field, ey_field, ez_field) = \
                                      field.get_field_value(r_pos, 0., z_pos, 0.)
-            btot = bz_field#(bx_field**2+by_field**2+bz_field**2)**0.5
+            #btot = bz_field#(bx_field**2+by_field**2+bz_field**2)**0.5
+            btot = (bx_field**2+by_field**2+bz_field**2)**0.5
+            if (btot - bz_field) > 1E-4 :
+              print "difference in Bt - Bz = " + str(btot - bz_field)
             if bz_field < 0:
                 btot *= +1
             btot_list.append(btot*1e3)  # btot in T
@@ -215,7 +240,8 @@ def plot_z_range(z_list, b_min_max, name, canvas):
         graph_list.append(graph)
         graph.Draw('l same')
         canvas.Update()
-    graph_list += plot_hps(z_list, False, flip_z=17000)
+    #graph_list += plot_hps(z_list, False, flip_z=17000)
+    graph_list += plot_hps(z_list, False, flip_z=None)
     plot_tracker_stations(z_list, btot_list)
     text_box(graph_list)
     canvas.Update()

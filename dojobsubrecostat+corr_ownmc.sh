@@ -4,23 +4,26 @@ here=/home/phumhf/MICE/maus--versions/MAUSv3.3.0/bin/user/first-observation-pape
 MAUSdir=~/MICE/maus--versions/MAUSv3.3.0
 
 #queue=medium
-queue=long
+#queue=long
 #queue=xlong
+queue=xxl
 
 #VERSION=2
 #VERSION=10
 #VERSION=11
-VERSION=20
+#VERSION=20
+#VERSION=26
+VERSION=300
 
 #configdir=config/runs/$runnumber
 templatedir=config/solenoid/2017-02-6/ABS-TEMPLATE/
 
-#ABS=ABS-LH2
-ABS=ABS-LH2-EMPTY
+ABS=ABS-LH2
+#ABS=ABS-LH2-EMPTY
 
 #for opt in "9883,3-140" "9885,6-140" "9886,10-140" ; do 
-#for opt in "9911,3-170" "9910,3-200" "9909,3-240" ; do 
-for opt in "10268,3-170" "10267,3-200" "10265,3-240" ; do 
+for opt in "9911,3-170" "9910,3-200" "9909,3-240" ; do 
+#for opt in "10268,3-170" "10267,3-200" "10265,3-240" ; do 
 
 rn="${opt%,*}"
 if [ ! -z "$rn" ] ; then 
