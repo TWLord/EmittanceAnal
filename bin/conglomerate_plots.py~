@@ -414,7 +414,7 @@ class CompareCutsConfig(CompareConfig):
             self.get_conglomerate_2("tku_n_tracks_"+nu+"_0", None, "Number of tracks in TKU", None, True, [0.5, 0.5, 0.9, 0.9], vertical([0.5, 1.5], mod)), # disable two cuts
             #self.get_conglomerate_2("tku_p_"+nu+"_0", None, "Momentum at TKU Reference Plane [MeV/c]", [100., 300.], [135, 145], [0.5, 0.5, 0.9, 0.9], vertical([135, 145], mod)),
             #self.get_conglomerate_2("tku_p_"+nu+"_0", None, "Momentum at TKU Reference Plane [MeV/c]", [100., 300.], [135, 145], [0.5, 0.5, 0.9, 0.9], modifiers = mod),
-            self.get_conglomerate_2("tku_p_"+nu+"_0", None, "Momentum at TKU Reference Plane [MeV/c]", [100., 300.], True, [0.5, 0.5, 0.9, 0.9], modifiers = mod),
+            #self.get_conglomerate_2("tku_p_"+nu+"_0", None, "Momentum at TKU Reference Plane [MeV/c]", [100., 300.], True, [0.5, 0.5, 0.9, 0.9], modifiers = mod), # okay one for higher mom
             self.get_conglomerate_2("tof_tof0_n_sp_"+nu+"_0", None, "Number of space points in ToF0", None, True, [0.5, 0.5, 0.9, 0.9], vertical([0.5, 1.5], mod)),
             self.get_conglomerate_2("tof_tof1_n_sp_"+nu+"_0", None, "Number of space points in ToF1", None, True, [0.5, 0.5, 0.9, 0.9], vertical([0.5, 1.5], mod)),
             self.get_conglomerate_2("tof_tof01_"+nu+"_0", None, "Time between ToF0 and ToF1 [ns]", [1.0, 5.], True, [0.5, 0.5, 0.9, 0.9], vertical([2.0, 3.0, 4.0], mod)),
@@ -426,6 +426,9 @@ class CompareCutsConfig(CompareConfig):
             self.get_conglomerate_2("tkd_scifi_n_planes_with_clusters_"+nu1+"_1", None, "Number of planes with clusters in TKD", None, True, [0.1, 0.5, 0.5, 0.9], modifiers = mod),
             self.get_conglomerate_2("tkd_scifi_n_planes_with_clusters_"+ndm1+"_1", None, "Number of planes with clusters in TKD", None, True, [0.1, 0.5, 0.5, 0.9], modifiers = mod),
             self.get_conglomerate_2("tkd_scifi_n_planes_with_clusters_"+nd1+"_0", None, "Number of planes with clusters in TKD", None, True, [0.1, 0.5, 0.5, 0.9], modifiers = mod),
+            ###mod["graph_names"] = ["TPaveText",]
+            self.get_conglomerate_2("tku_p_"+nu+"_0", None, "Momentum at TKU Reference Plane [MeV/c]", [100., 300.], True, [0.5, 0.5, 0.9, 0.9], modifiers = mod),
+
           ]
         else : 
           self.conglomerate_list = [
@@ -550,6 +553,29 @@ class CompareData2DConfig(CompareConfig):
         self.conglomerate_list = [
             self.get_conglomerate_3("p_res_vs_global_through_virtual_absorber_centre_r_ds_cut", "p_res_vs_global_through_virtual_absorber_centre_r_ds_cut", "P(TKU) - P(TKD) [MeV/c]", "radius [mm]", modifiers = mod),
             self.get_conglomerate_3("p_res_vs_global_through_virtual_absorber_centre_y_ds_cut", "p_res_vs_global_through_virtual_absorber_centre_y_ds_cut", "P(TKU) - P(TKD) [MeV/c]", "y [mm]", modifiers = mod),
+        ]
+
+        mod = {
+            "merge_options":{
+                "right_labels":right_labels,
+                "top_labels":top_labels
+            },
+            "redraw":{
+                "draw_option":["COL"],
+            },
+            "rescale_x":[-97.5, 97.5],
+            "rescale_y":[-97.5, 97.5],
+            #"graph_names":["tramlines_upper", "tramlines_lower", "cuts_graph"],
+            "canvas_fill_color":root_style.get_frame_fill(),
+            "extra_lines":{
+                "verticals":[
+                  {"x_value":x_value, "line_color":ROOT.kRed+2, "line_style":2, "line_width":2} for x_value in [0,]
+                ],
+                "horizontals":[],
+            }
+        }
+
+        self.conglomerate_list = [
             self.get_conglomerate_3("tku_px_tku_py_us_cut", "tku_px_tku_py_us_cut", "tku px [MeV/c]", "tku py [MeV/c]", modifiers = mod),
             self.get_conglomerate_3("tkd_px_tkd_py_ds_cut", "tkd_px_tkd_py_ds_cut", "tkd px [MeV/c]", "tkd py [MeV/c]", modifiers = mod),
         ]
@@ -634,6 +660,8 @@ class CompareData2DMCConfig(CompareConfig):
         self.conglomerate_list = [
             self.get_conglomerate_3("p_res_vs_global_through_virtual_absorber_centre_r_ds_cut", "p_res_vs_global_through_virtual_absorber_centre_r_ds_cut", "P(TKU) - P(TKD) [MeV/c]", "radius [mm]", modifiers = mod),
             self.get_conglomerate_3("p_res_vs_global_through_virtual_absorber_centre_y_ds_cut", "p_res_vs_global_through_virtual_absorber_centre_y_ds_cut", "P(TKU) - P(TKD) [MeV/c]", "y [mm]", modifiers = mod),
+            self.get_conglomerate_3("tku_px_tku_py_us_cut", "tku_px_tku_py_us_cut", "tku px [MeV/c]", "tku py [MeV/c]", modifiers = mod),
+            self.get_conglomerate_3("tkd_px_tkd_py_ds_cut", "tkd_px_tkd_py_ds_cut", "tkd px [MeV/c]", "tkd py [MeV/c]", modifiers = mod),
         ]
         if do_higher_mom :
          mod = {
@@ -1188,6 +1216,7 @@ def main_paper(batch_level = 0):
     #target_dir = "output/combinedMC+Data/ownMC/2017-02-6_mom_v26/"
 
     target_dir = "output/combinedMC+Data/officialMC/2017-02-6-c3-OfficialMC_v3+c6-reco-sys+corr_full/"
+    #target_dir = "output/combinedMC+Data/testingTOFTrackerCombined/"
 
     batch_level = 0
     hide_root_errors = True
@@ -1244,6 +1273,8 @@ def main_paper(batch_level = 0):
         #["2017-02-6_3-170_ABS-LH2", "2017-02-6_3-200_ABS-LH2",], # TomL
         #["2017-02-6_3-170_ABS-LH2",], # TomL
         #["2017-02-6_3-170_lH2_full",], # TomL
+        #["2017-02-6_3-240_ABS-LH2-EMPTY",], # TomL
+        #["2017-02-6_3-240_ABS-LH2",], # TomL
     ]
     #top_labels = ["4-140", "6-140", "10-140"]
     ####top_labels = ["3-140", "4-140", "6-140", "10-140"] # TomL
@@ -1251,6 +1282,7 @@ def main_paper(batch_level = 0):
     top_labels = ["3-170", "3-200", "3-240"] # TomL
     #top_labels = ["3-170", "3-200"] # TomL
     #top_labels = ["3-200", "3-240"] # TomL
+    #top_labels = ["3-240"] # TomL
     #top_labels = ["3-170",] # TomL
     #top_labels = ["3-140"] # TomL
     ##top_labels = ["6-140"] # TomL
@@ -1274,11 +1306,11 @@ def main_paper(batch_level = 0):
                    CompareDensityConfig,
     ]
                    #CompareAmplitudeConfigMC,
-    fd_1 = run_conglomerate(batch_level, config_list, my_dir_list, do_cuts_summary, target_dir, top_labels, right_labels)
+    #fd_1 = run_conglomerate(batch_level, config_list, my_dir_list, do_cuts_summary, target_dir, top_labels, right_labels)
     #config_list = [CompareDensityConfig]#, CompareDensityRatioConfig,  CompareFractionalEmittanceConfig, # dont need 
     #fd_2 = run_conglomerate(batch_level, config_list, my_dir_list, False, target_dir, top_labels, right_labels)
     print_fail_dict(fd_0)
-    print_fail_dict(fd_1)
+    #print_fail_dict(fd_1)
     #print_fail_dict(fd_2)
 
 

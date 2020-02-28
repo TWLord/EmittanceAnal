@@ -15,6 +15,8 @@ from conglomerate.conglomerate_one import ConglomerateOne
 from conglomerate.conglomerate_one import ConglomerateContainer
 from conglomerate.merge_cuts_summary_tex import MergeCutsSummaryTex
 
+HighMom = True
+
 class CompareCutsSystematicConfig(CompareConfig):
     def __init__(self, beam, absorber, sys_abs, systematic, ref):
         self.sys_abs = sys_abs
@@ -54,20 +56,25 @@ class CompareCutsSystematicConfig(CompareConfig):
 
     def finalise_setup(self):
         #sys_root = self.sys_src+"/plots_Simulated_"+self.beam+"_"+self.sys_abs+"_Systematics_"
+        #print 'self.sys_src+\"/plots_"+self.beam+"_"+self.sys_abs+"_"'
         sys_root = self.sys_src+"/plots_"+self.beam+"_"+self.sys_abs+"_"
-        #print "fart"
-        #print sys_root
-        #print self.data_src+"plots_"+self.beam+"_"+self.absorber+"/"
-        #print sys_root+self.ref+"/"
-        #print "fart"
+        """print ' sys_root'
+        print sys_root
+        print ' self.data_src+"plots_"+self.beam+"_"+self.absorber+"/"'
+        print self.data_src+"plots_"+self.beam+"_"+self.absorber+"/"
+        print ' sys_root+self.ref+"/"'
+        print sys_root+self.ref+"/" """
         dir_list = [
             self.data_src+"plots_"+self.beam+"_"+self.absorber+"/",
             self.data_src+"plots_"+self.beam+"_"+self.absorber+"/",
             #self.mc_src+"plots_Simulated_"+self.beam+"_"+self.absorber+"/",
             sys_root+self.ref+"/",
         ]
+        #print ' sys_root+self.ref+"/"'
+        #print sys_root+self.ref+"/"
         for sys in self.systematic:
             dir_list.append(sys_root+sys+"/")
+            #print ' sys_root+sys+"/"'
             #print sys_root+sys+"/"
         import time
         #time.sleep(60)
@@ -274,10 +281,21 @@ class SystematicsConglomerate(object):
         for ref, systematic, sys_abs, fname, hist, x_range, normalise, anal_dir in sys_list:
             conglomerate_list = []
             for beam in dir_list:
-                [beam, absorber] = beam.split("140_")
-                beam += "140"
+                if HighMom:
+                  #print beam.split("0_")
+                  [beam, absorber] = beam.split("0_")
+                  beam += "0"
+                  #print " ---- beam ---- "
+                  #print beam
+                  #print " ---- absorber ---- "
+                  #print absorber
+                else:
+                  [beam, absorber] = beam.split("140_")
+                  beam += "140"
                 try:
                     config = CompareCutsSystematicConfig(beam, absorber, sys_abs, systematic, ref)
+                    #config.set_dirs(self.target_dir, self.target_dir, self.sys_run,  # TomL
+                    #                self.target_dir, self.dir_name, anal_dir) # TomL
                     config.set_dirs(self.target_dir, self.target_dir, self.sys_run, 
                                     self.target_dir, self.dir_name, anal_dir)
                     if first:
@@ -308,20 +326,41 @@ class SystematicsConglomerate(object):
 
 
 def main():
-    #target_dir = "output/2017-02-7-v11/"
-    #systematics_source_dir = "output/2017-02-7-Systematics-v5/"
-    target_dir = "output/systematics/2017-02-6_v105/"
-    systematics_source_dir = "output/systematics/2017-02-6-c7_v105/"
+
+    ##### REQUIRES A COPY OF ORIGINAL ANALYSED DATA (NO SYS) INTO COMBINED AREA FOR TARGET AREA
+
+    #target_dir = "output/systematics/2017-02-6_compare_v105/"
+    #systematics_source_dir = "output/systematics/2017-02-6-c7_v105/"
+    #version=105
+    version=106
+
+    systematics_source_dir = "output/systematics/2017-02-6-c7_v"+str(version)+"/"
+
+    #HighMom = True
+    if HighMom:
+      target_dir = "output/systematics/2017-02-6_mom_compare_v"+str(version)+"/"
+      #top_labels = ["3-170", "3-200", "3-240"]
+      top_labels = ["3-200", "3-240"]
+      #top_labels = ["3-140", "3-170", "3-200", "3-240"]
+      #lh2_empty_dir_list = [["2017-02-6_3-170_ABS-LH2-EMPTY", "2017-02-6_3-200_ABS-LH2-EMPTY", "2017-02-6_3-240_ABS-LH2-EMPTY",],]
+      lh2_empty_dir_list = [["2017-02-6_3-200_ABS-LH2-EMPTY", "2017-02-6_3-240_ABS-LH2-EMPTY",],]
+      #lh2_empty_dir_list = [["2017-02-6_3-140_ABS-LH2-EMPTY", "2017-02-6_3-170_ABS-LH2-EMPTY", "2017-02-6_3-200_ABS-LH2-EMPTY", "2017-02-6_3-240_ABS-LH2-EMPTY",],]
+      right_labels = ["Empty\nLH2",]
+
+    else:
+      target_dir = "output/systematics/2017-02-6_compare_v"+version+"/"
+      top_labels = ["3-140", "6-140", "10-140"]
+      #top_labels = ["3-140", "4-140", "6-140", "10-140"]
+      lh2_empty_dir_list = [["2017-02-6_3-140_ABS-LH2-EMPTY", "2017-02-6_6-140_ABS-LH2-EMPTY", "2017-02-6_10-140_ABS-LH2-EMPTY",],]
+      right_labels = ["Empty\nLH2",]
+
+
     #systematics_cut_summary(systematics_source_dir)
     root_style.setup_gstyle()
     ROOT.gROOT.SetBatch(True)
-    top_labels = ["3-140", "6-140", "10-140"]
-    #top_labels = ["3-140", "4-140", "6-140", "10-140"]
 
     dir_name = "compare_recon_systematics"
     #lh2_empty_dir_list = [["2017-02-6_3-140_ABS-LH2-EMPTY", "2017-02-6_4-140_ABS-LH2-EMPTY", "2017-02-6_6-140_ABS-LH2-EMPTY", "2017-02-6_10-140_ABS-LH2-EMPTY",],]
-    lh2_empty_dir_list = [["2017-02-6_3-140_ABS-LH2-EMPTY", "2017-02-6_6-140_ABS-LH2-EMPTY", "2017-02-6_10-140_ABS-LH2-EMPTY",],]
-    right_labels = ["Empty\nLH2",]
     sys_conglomerate = SystematicsConglomerate(top_labels, right_labels, target_dir, systematics_source_dir, dir_name)
     sys_conglomerate.lh2_empty(lh2_empty_dir_list)
 
