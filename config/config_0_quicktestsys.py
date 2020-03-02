@@ -4,7 +4,7 @@ def mc_file_names(datasets):
     file_list = []
     for run in datasets: 
         run = str(run)
-        a_file = "/data/mice/phumhf/analMC/"+run+"_systematics_vVERSION/SYSTEMATIC/*/maus_reconstruction.root" 
+        a_file = "/data/mice/phumhf/analMC/"+run+"_systematics_v105/tku_base/*/maus_reconstruction.root" 
         file_list.append(a_file)
     print file_list
     return file_list
@@ -245,19 +245,19 @@ class Config(object):
     cut_report[1] += ["downstream_cut", "hline",]
 
     src_dir = "not used but retained for compatibility with reco"
-    data_dir = "output/systematics/2017-02-6-c7_vVERSION/"
+    data_dir = "output/systematicstest/2017-02-6-c7_v105/"
     analyses = []
 
 
-    analyses.append(get_analysis([template],  "2017-02-6 10-140 ABS SYSTEMATIC",  [1.5, 4.5], src_dir, data_dir, 10, [[135, 145]], [90, 170], 70)) 
-    if analyses[0]["name"].find("tku_base") >= 0 :
+    analyses.append(get_analysis([9886],  "2017-02-6 10-140 ABS-LH2 tku_base",  [1.5, 4.5], src_dir, data_dir, 10, [[135, 145]], [90, 170], 70)) 
+    if analyses[0]["name"].find("tku_base") :
         print "also running --- "
         print " tku_base_tkd_fiducial_radius"
-        analyses.append(get_analysis([template],  "2017-02-6 10-140 ABS tku_base_tkd_fiducial_radius",  [1.5, 4.5], src_dir, data_dir, 10, [[135, 145]], [90, 170], 70))
+        analyses.append(get_analysis([9883],  "2017-02-6 3-140 ABS-LH2 tku_base_tkd_fiducial_radius",  [1.5, 6.0], src_dir, data_dir, 3, [[135, 145]], [90, 170], 26))
         analyses[1]["tkd_fiducial_radius"] = 148. # r2 ~ pt/bz/c_light ~ pt [mm]
 
         print " tkd_chi2_threshold"
-        analyses.append(get_analysis([template],  "2017-02-6 10-140 ABS tku_base_tkd_chi2_threshold",  [1.5, 4.5], src_dir, data_dir, 10, [[135, 145]], [90, 170], 70))
+        analyses.append(get_analysis([9883],  "2017-02-6 3-140 ABS-LH2 tku_base_tkd_chi2_threshold",  [1.5, 6.0], src_dir, data_dir, 3, [[135, 145]], [90, 170], 26))
         analyses[2]["tkd_chi2_threshold"] = 8.3
 
     required_trackers = [0, 1] # for space points
@@ -266,9 +266,9 @@ class Config(object):
     global_max_step_size = 100. # for extrapolation, set the extrapolation step size
     will_load_tk_space_points = True # determines whether data loader will attempt to load tracker space points
     will_load_tk_track_points = True # determines whether data loader will attempt to load tracker track points
-    number_of_spills = None # if set to an integer, limits the number of spills loaded for each sub-analysis
-    preanalysis_number_of_spills = 500 # 20 # number of spills to analyse during "pre-analysis"
-    analysis_number_of_spills = 500 # 20 # number of spills to analyse during each "analysis" step
+    number_of_spills = 100 # None # if set to an integer, limits the number of spills loaded for each sub-analysis
+    preanalysis_number_of_spills = 10 # 500 # 20 # number of spills to analyse during "pre-analysis"
+    analysis_number_of_spills = 50 # 500 # 20 # number of spills to analyse during each "analysis" step
     momentum_from_tracker = True # i.e. not from TOFs
     time_from = "tof1"
     tof0_offset = 25.4
@@ -390,12 +390,12 @@ class Config(object):
             #"tkd":"virtual_tkd_tp",#
             "tku_tp":["mc_virtual_tku_tp", "mc_virtual_tku_2", "mc_virtual_tku_3", "mc_virtual_tku_4", "mc_virtual_tku_5",],
             "tkd_tp":["mc_virtual_tkd_tp", "mc_virtual_tkd_2", "mc_virtual_tkd_3", "mc_virtual_tkd_4", "mc_virtual_tkd_5",],
-            #"tof0":["mc_virtual_tof0"],
-            #"tof1":["mc_virtual_tof1"],
-            #"tof01":["mc_virtual_tof0", "mc_virtual_tof1"],
-            #"tof12":["mc_virtual_tof1", "mc_virtual_tof2"],
-            #"global_through_virtual_diffuser_us":["mc_virtual_diffuser_us"],
-            #"global_through_virtual_diffuser_ds":["mc_virtual_diffuser_ds"],
+            "tof0":["mc_virtual_tof0"],
+            "tof1":["mc_virtual_tof1"],
+            "tof01":["mc_virtual_tof0", "mc_virtual_tof1"],
+            "tof12":["mc_virtual_tof1", "mc_virtual_tof2"],
+            "global_through_virtual_diffuser_us":["mc_virtual_diffuser_us"],
+            "global_through_virtual_diffuser_ds":["mc_virtual_diffuser_ds"],
         }
     }
     bz_tku = 3e-3

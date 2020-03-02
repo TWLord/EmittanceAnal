@@ -377,8 +377,16 @@ class MCPlotter(AnalysisBase):
 
                 mc_data = mc_dict[var]
                 hist = self.plots[canvas_name]["histograms"]["mc_"+var]
-                for item in mc_data:
-                    hist.Fill(item)
+                #for item in mc_data:
+                #    hist.Fill(item)
+                try: # TomL
+                    for item in mc_data: # TomL
+                        hist.Fill(item) # TomL
+                except TypeError: # TomL
+                    print "Process data detector residuals in mc_plotter failed to Fill with type error" # TomL
+                    print canvas_name, detector, var, virtual_station # TomL
+                    print item # TomL
+                    sys.excepthook(*sys.exc_info()) # TomL
 
                 det_data = det_dict[var]
                 hist = self.plots[canvas_name]["histograms"]["det_"+var]

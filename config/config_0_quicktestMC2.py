@@ -2,7 +2,7 @@ import copy
 
 def mc_file_names(datasets):
     #file_list = ["/data/mice/phumhf/analMC/"+datasets+"_v5/*/*output.root"]
-    file_list = ["/data/mice/phumhf/analMC/"+datasets+"_systematics_v102/tku_base/*/maus_reconstruction.root"]
+    file_list = ["/data/mice/phumhf/analMC/"+datasets+"_systematics_v105/tku_base/*/maus_reconstruction.root"]
     #file_list = ["/data/mice/phumhf/MC/MAUSv3.3.0/"+datasets+"/mausoutput/0/"+datasets+"_full_100Spills_2.0NPEDcut_4.0NPEcut_2*.root"]
     #file_list = ["/data/mice/phumhf/MC/MAUSv3.3.0/"+datasets+"/mausoutput/0/"+datasets+"_100Spills_2.0NPEDcut_2.0NPEcut_*.root"]
     return file_list
@@ -138,14 +138,14 @@ def get_analysis(run_list, name, tof01_min_max, maus_version, data_dir, emittanc
             "do_mc":True, #False,
             "do_magnet_alignment":False,
             "do_fractional_emittance":False,
-            "do_efficiency":True, ##False,
+            "do_efficiency":False, #True, ##False,
             "do_extrapolation":False, #True, ##False,
             "do_globals":False, #True, ##False
-            "do_amplitude":False, #True,
+            "do_amplitude":True,
             "do_density":True,
-            "do_density_rogers":True, #False,
-            "do_plots":True, #False
-            "do_cuts_plots":True,
+            "do_density_rogers":False, #True, #False,
+            "do_plots":False, #True, #False
+            "do_cuts_plots":False, #True,
             "do_tof01_weighting":False,
             "do_optics":False, #True,
             "do_data_recorder":False, #True,
@@ -268,10 +268,10 @@ class Config(object):
     analyses.append(get_analysis("special_10486/"+files, "Simulated 2017-2.7 10-140 LiH",       [1.5, 4.5], src_dir, data_dir, 10, [[135, 145]], [90, 170], 70))
     analyses.append(get_analysis("special_10447/"+files, "Simulated 2017-2.7 10-140 None",      [1.5, 4.5], src_dir, data_dir, 10, [[135, 145]], [90, 170], 70))"""
 
-    #analyses.append(get_analysis("09883",  "2017-02-6 3-140 lH2 full",  [1.5, 6.0], src_dir, data_dir, 3, [[135, 145]], [90, 170], 26))
+    analyses.append(get_analysis("9883",  "2017-02-6 3-140 lH2 full",  [1.5, 6.0], src_dir, data_dir, 3, [[135, 145]], [90, 170], 26))
     #analyses.append(get_analysis("09885",  "2017-02-6 6-140 lH2 full",  [1.5, 5.5], src_dir, data_dir, 6, [[135, 145]], [90, 170], 35))
     #analyses.append(get_analysis("10243",  "2017-02-6 3-140 lH2 empty",  [1.5, 6.0], src_dir, data_dir, 3, [[135, 145]], [90, 170], 26))
-    analyses.append(get_analysis("10069",  "2017-02-6 3-140 lH2 empty",  [1.5, 6.0], src_dir, data_dir, 3, [[135, 145]], [90, 170], 26))
+    #analyses.append(get_analysis("10069",  "2017-02-6 3-140 lH2 empty",  [1.5, 6.0], src_dir, data_dir, 3, [[135, 145]], [90, 170], 26))
     #analyses.append(get_analysis("09886",  "2017-02-6 10-140 lH2 full",  [1.5, 6.0], src_dir, data_dir, 10, [[135, 145]], [90, 170], 70))
 
     required_trackers = [0, 1] # for space points
@@ -280,9 +280,9 @@ class Config(object):
     global_max_step_size = 100. # for extrapolation, set the extrapolation step size
     will_load_tk_space_points = True # determines whether data loader will attempt to load tracker space points
     will_load_tk_track_points = True # determines whether data loader will attempt to load tracker track points
-    number_of_spills = None # if set to an integer, limits the number of spills loaded for each sub-analysis
+    number_of_spills = 100 # if set to an integer, limits the number of spills loaded for each sub-analysis
     preanalysis_number_of_spills = 100 # 20 # number of spills to analyse during "pre-analysis"
-    analysis_number_of_spills = 100 # 20 # number of spills to analyse during each "analysis" step
+    analysis_number_of_spills = 500 # 20 # number of spills to analyse during each "analysis" step
     momentum_from_tracker = True # i.e. not from TOFs
     time_from = "tof1"
     tof0_offset = 25.4

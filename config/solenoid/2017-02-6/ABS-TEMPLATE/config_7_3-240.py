@@ -250,7 +250,7 @@ class Config(object):
 
 
     analyses.append(get_analysis([template],  "2017-02-6 3-240 ABS SYSTEMATIC",  [1.5, 4.5], src_dir, data_dir, 3, [[235, 245]], [190, 270], 24)) 
-    if analyses[0]["name"].find("tku_base") :
+    if analyses[0]["name"].find("tku_base") >= 0 :
         print "also running --- "
         print " tku_base_tkd_fiducial_radius"
         analyses.append(get_analysis([template],  "2017-02-6 3-240 ABS tku_base_tkd_fiducial_radius",  [1.5, 4.5], src_dir, data_dir, 3, [[235, 245]], [190, 270], 24))
@@ -390,12 +390,12 @@ class Config(object):
             #"tkd":"virtual_tkd_tp",#
             "tku_tp":["mc_virtual_tku_tp", "mc_virtual_tku_2", "mc_virtual_tku_3", "mc_virtual_tku_4", "mc_virtual_tku_5",],
             "tkd_tp":["mc_virtual_tkd_tp", "mc_virtual_tkd_2", "mc_virtual_tkd_3", "mc_virtual_tkd_4", "mc_virtual_tkd_5",],
-            "tof0":["mc_virtual_tof0"],
-            "tof1":["mc_virtual_tof1"],
-            "tof01":["mc_virtual_tof0", "mc_virtual_tof1"],
-            "tof12":["mc_virtual_tof1", "mc_virtual_tof2"],
-            "global_through_virtual_diffuser_us":["mc_virtual_diffuser_us"],
-            "global_through_virtual_diffuser_ds":["mc_virtual_diffuser_ds"],
+            #"tof0":["mc_virtual_tof0"],
+            #"tof1":["mc_virtual_tof1"],
+            #"tof01":["mc_virtual_tof0", "mc_virtual_tof1"],
+            #"tof12":["mc_virtual_tof1", "mc_virtual_tof2"],
+            #"global_through_virtual_diffuser_us":["mc_virtual_diffuser_us"],
+            #"global_through_virtual_diffuser_ds":["mc_virtual_diffuser_ds"],
         }
     }
     bz_tku = 3e-3

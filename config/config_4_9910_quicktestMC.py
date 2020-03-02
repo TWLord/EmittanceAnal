@@ -3,8 +3,9 @@ import copy
 def mc_file_names(datasets):
     file_list = []
     for run in datasets: 
-        run = str(run)
-        a_file = "/data/mice/phumhf/analMC/"+run+"_systematics_vVERSION/SYSTEMATIC/*/maus_reconstruction.root" 
+        run = str(run).rjust(5, '0')
+        # a_file = "/data/mice/phumhf/analMC/"+run+"_v11/*/maus_output.root" 
+        a_file = "/data/mice/phumhf/analMC/"+run+"_v20/*/maus_output.root" 
         file_list.append(a_file)
     print file_list
     return file_list
@@ -83,8 +84,8 @@ def get_analysis(run_list, name, tof01_min_max, maus_version, data_dir, emittanc
             "delta_tof01_upper":+1.5, # Delta TOF01 cut upper bound 
             "delta_tof12_lower":-5., # Delta TOF01 cut lower bound 
             "delta_tof12_upper":5., # Delta TOF01 cut upper bound 
-            "tof01_tramline_lower":-15.+tramlines_dp, # p_tof01 - p_tku
-            "tof01_tramline_upper":+15.+tramlines_dp, # p_tof01 - p_tku
+            "tof01_tramline_lower":-25.+tramlines_dp, # p_tof01 - p_tku
+            "tof01_tramline_upper":+25.+tramlines_dp, # p_tof01 - p_tku
             "tof01_cut_low":tof01_min_max[0], # TOF01 cut lower bound
             "tof01_cut_high":tof01_min_max[1], # TOF01 cut upper bound
             "p_bins":p_bins, # set of momentum bins; for now really it is just a lower and upper bound
@@ -143,9 +144,9 @@ def get_analysis(run_list, name, tof01_min_max, maus_version, data_dir, emittanc
             "do_efficiency":True, ##False,
             "do_extrapolation":True, ##False,
             "do_globals":True, ##False
-            "do_amplitude":True,
-            "do_density":True,
-            "do_density_rogers":True, #False,
+            "do_amplitude":False, #True,
+            "do_density":False, #True,
+            "do_density_rogers":False, #True, #False,
             "do_plots":True, #False
             "do_cuts_plots":True,
             "do_tof01_weighting":False,
@@ -158,7 +159,7 @@ def get_analysis(run_list, name, tof01_min_max, maus_version, data_dir, emittanc
 class Config(object):
     # location to which data and plots will be dumped following analysis
     info_file = "geometry_08681/Maus_Information.gdml"
-    will_require_tof1 = True # require at least one TOF1 Space point to even load the data
+    will_require_tof1 = False #True # require at least one TOF1 Space point to even load the data
     will_require_tof2 = False # require at least one TOF2 Space point to even load the data
     tk_station = 1 # load data from a particular tracker station
     tk_plane = 0
@@ -174,7 +175,7 @@ class Config(object):
           "scifi_fiducial_us":True,
           "aperture_us":False,
           "pvalue_us":False,
-          "chi2_us":True,
+          "chi2_us":True, #True,
           "aperture_ds":False,
           "scifi_tracks_ds":False,
           "scifi_nan_ds":False,
@@ -182,22 +183,22 @@ class Config(object):
           "scifi_fiducial_ds":False,
           "pvalue_ds":False,
           "chi2_ds":False,
-          "tof01":False,
-          "tof01_tramlines":False,
+          "tof01":True,
+          "tof01_tramlines":False, #True,
           "tof12":False,
           "p_tot_us":True,
           "p_tot_us_alt":False,
           "p_tot_ds":False,
-          "tof_0_sp":False,
-          "tof_1_sp":False,
+          "tof_0_sp":True,
+          "tof_1_sp":True,
           "tof_2_sp":False,
-          "upstream_aperture_cut":False,
+          "upstream_aperture_cut":False, #True
           "downstream_aperture_cut":False,
           "delta_tof01":False, #True, #extrapolatedtof01 compared to recon tof01
           "delta_tof12":False, #extrapolatedtof12 compared to recon tof12
           "global_through_tof0":False,
           "global_through_tof1":False,
-          "global_through_us_apertures":False, #True,
+          "global_through_us_apertures":True, #True
           "global_through_tku_tp":False,
           "global_through_tkd_tp":False,
           "global_through_tof2":False,
@@ -213,7 +214,7 @@ class Config(object):
     data_recorder_cuts["p_tot_us"] = False
     data_recorder_cuts["p_tot_us_alt"] = False
     downstream_cuts = copy.deepcopy(upstream_cuts)
-    downstream_cuts["p_tot_ds"] = True
+    downstream_cuts["p_tot_ds"] = False
     downstream_cuts["tof2_sp"] = False
     downstream_cuts["pvalue_ds"] = False
     downstream_cuts["chi2_ds"] = True
@@ -234,31 +235,28 @@ class Config(object):
     mc_true_ds_cuts["mc_scifi_fiducial_ds"] = True
     mc_true_ds_cuts["mc_p_ds"] = True
 
-    cut_report  = [[], []]
+    cut_report  = [[], [], []]
     cut_report[0] = ["hline", "all events", "hline",]
-    cut_report[0] += ["scifi_tracks_us", "chi2_us", "scifi_fiducial_us", "hline",]
-    cut_report[0] += ["p_tot_us", "hline",]
+    cut_report[0] += ["tof_1_sp", "tof_0_sp", "scifi_tracks_us", "chi2_us", "scifi_fiducial_us", "hline",]
+    cut_report[0] += ["tof01", "p_tot_us", "tof01_tramlines", "hline",]
+    cut_report[0] += ["global_through_us_apertures"]
+    cut_report[0] += ["upstream_aperture_cut", "hline",]
     cut_report[0] += ["upstream_cut", "hline",]
-
     cut_report[1] += ["hline", "upstream_cut", "hline",]
     cut_report[1] += ["scifi_tracks_ds", "chi2_ds", "scifi_fiducial_ds", "hline",]
     cut_report[1] += ["downstream_cut", "hline",]
+    cut_report[2] =  ["hline", "downstream_cut", "hline",]
+    cut_report[2] += ["downstream_aperture_cut", "tof_2_sp", "global_through_tkd_tp", "global_through_tof2", "hline",]
+    cut_report[2] += ["extrapolation_cut", "hline"]
 
     src_dir = "not used but retained for compatibility with reco"
-    data_dir = "output/systematics/2017-02-6-c7_vVERSION/"
+    data_dir = "output/quicktest2/ownMC/2017-02-6-c4_v11/"
     analyses = []
 
 
-    analyses.append(get_analysis([template],  "2017-02-6 10-140 ABS SYSTEMATIC",  [1.5, 4.5], src_dir, data_dir, 10, [[135, 145]], [90, 170], 70)) 
-    if analyses[0]["name"].find("tku_base") >= 0 :
-        print "also running --- "
-        print " tku_base_tkd_fiducial_radius"
-        analyses.append(get_analysis([template],  "2017-02-6 10-140 ABS tku_base_tkd_fiducial_radius",  [1.5, 4.5], src_dir, data_dir, 10, [[135, 145]], [90, 170], 70))
-        analyses[1]["tkd_fiducial_radius"] = 148. # r2 ~ pt/bz/c_light ~ pt [mm]
-
-        print " tkd_chi2_threshold"
-        analyses.append(get_analysis([template],  "2017-02-6 10-140 ABS tku_base_tkd_chi2_threshold",  [1.5, 4.5], src_dir, data_dir, 10, [[135, 145]], [90, 170], 70))
-        analyses[2]["tkd_chi2_threshold"] = 8.3
+    analyses.append(get_analysis([10267],  "10267 2017-02-6 3-200 ABS-LH2-EMPTY",  [1.5, 4.5], src_dir, data_dir, 3, [[100, 205]], [150, 230], 24)) 
+    ###analyses.append(get_analysis([9910],  "9910 2017-02-6 3-200 ABS-LH2",  [1.5, 4.5], src_dir, data_dir, 3, [[100, 205]], [150, 230], 24)) 
+    #analyses.append(get_analysis([9911],  "9911 2017-02-6 3-240 ABS-LH2",  [1.5, 4.5], src_dir, data_dir, 3, [[140, 245]], [190, 270], 26)) 
 
     required_trackers = [0, 1] # for space points
     required_number_of_track_points = 12 # doesnt do anything
@@ -266,9 +264,9 @@ class Config(object):
     global_max_step_size = 100. # for extrapolation, set the extrapolation step size
     will_load_tk_space_points = True # determines whether data loader will attempt to load tracker space points
     will_load_tk_track_points = True # determines whether data loader will attempt to load tracker track points
-    number_of_spills = None # if set to an integer, limits the number of spills loaded for each sub-analysis
-    preanalysis_number_of_spills = 500 # 20 # number of spills to analyse during "pre-analysis"
-    analysis_number_of_spills = 500 # 20 # number of spills to analyse during each "analysis" step
+    number_of_spills = None # 200 # if set to an integer, limits the number of spills loaded for each sub-analysis
+    preanalysis_number_of_spills = 10 # number of spills to analyse during "pre-analysis"
+    analysis_number_of_spills = 50 # number of spills to analyse during each "analysis" step
     momentum_from_tracker = True # i.e. not from TOFs
     time_from = "tof1"
     tof0_offset = 25.4
@@ -390,12 +388,12 @@ class Config(object):
             #"tkd":"virtual_tkd_tp",#
             "tku_tp":["mc_virtual_tku_tp", "mc_virtual_tku_2", "mc_virtual_tku_3", "mc_virtual_tku_4", "mc_virtual_tku_5",],
             "tkd_tp":["mc_virtual_tkd_tp", "mc_virtual_tkd_2", "mc_virtual_tkd_3", "mc_virtual_tkd_4", "mc_virtual_tkd_5",],
-            #"tof0":["mc_virtual_tof0"],
-            #"tof1":["mc_virtual_tof1"],
-            #"tof01":["mc_virtual_tof0", "mc_virtual_tof1"],
-            #"tof12":["mc_virtual_tof1", "mc_virtual_tof2"],
-            #"global_through_virtual_diffuser_us":["mc_virtual_diffuser_us"],
-            #"global_through_virtual_diffuser_ds":["mc_virtual_diffuser_ds"],
+            "tof0":["mc_virtual_tof0"],
+            "tof1":["mc_virtual_tof1"],
+            "tof01":["mc_virtual_tof0", "mc_virtual_tof1"],
+            "tof12":["mc_virtual_tof1", "mc_virtual_tof2"],
+            "global_through_virtual_diffuser_us":["mc_virtual_diffuser_us"],
+            "global_through_virtual_diffuser_ds":["mc_virtual_diffuser_ds"],
         }
     }
     bz_tku = 3e-3

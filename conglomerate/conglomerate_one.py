@@ -377,6 +377,8 @@ class ConglomerateOne(object):
             hist.GetXaxis().SetRangeUser(redraw["x_range"][0], redraw["x_range"][1])
         if redraw["y_range"] != None:
             hist.GetYaxis().SetRangeUser(redraw["y_range"][0], redraw["y_range"][1])
+        if redraw["z_range"] != None:
+            hist.GetZaxis().SetRangeUser(redraw["z_range"][0], redraw["z_range"][1])
         same = ""
         for i in draw_order:
             hist_list[i].Draw(same+draw_option[i])

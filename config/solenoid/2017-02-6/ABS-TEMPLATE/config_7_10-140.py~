@@ -250,7 +250,7 @@ class Config(object):
 
 
     analyses.append(get_analysis([template],  "2017-02-6 10-140 ABS SYSTEMATIC",  [1.5, 4.5], src_dir, data_dir, 10, [[135, 145]], [90, 170], 70)) 
-    if analyses[0]["name"].find("tku_base") :
+    if analyses[0]["name"].find("tku_base") >= 0 :
         print "also running --- "
         print " tku_base_tkd_fiducial_radius"
         analyses.append(get_analysis([template],  "2017-02-6 10-140 ABS tku_base_tkd_fiducial_radius",  [1.5, 4.5], src_dir, data_dir, 10, [[135, 145]], [90, 170], 70))
@@ -258,7 +258,6 @@ class Config(object):
 
         print " tkd_chi2_threshold"
         analyses.append(get_analysis([template],  "2017-02-6 10-140 ABS tku_base_tkd_chi2_threshold",  [1.5, 4.5], src_dir, data_dir, 10, [[135, 145]], [90, 170], 70))
-        analyses.append(get_analysis([9883],  "2017-02-6 3-140 ABS tku_base_tkd_chi2_threshold",  [1.5, 6.0], src_dir, data_dir, 3, [[135, 145]], [90, 170], 26))
         analyses[2]["tkd_chi2_threshold"] = 8.3
 
     required_trackers = [0, 1] # for space points
