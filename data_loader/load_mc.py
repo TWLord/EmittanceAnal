@@ -165,9 +165,15 @@ class LoadMC(object):
         if "mc_virtual_tku_tp" in mc_tku_hits:
             hit = mc_tku_hits["mc_virtual_tku_tp"]["hit"]
             virtual_cuts["mc_p_us"] = hit["p"] > tku_p_high or hit["p"] < tku_p_low
+            #if "mc_pt_us" in virtual_cuts: # Consider removing
+            if "pt_us_low" in self.config_anal: # Consider removing
+                virtual_cuts["mc_pt_us"] = hit["pt"] > self.config_anal["pt_us_high"] or hit["pt"] < self.config_anal["pt_us_low"] # Consider removing
         if "mc_virtual_tkd_tp" in mc_tkd_hits:
             hit = mc_tkd_hits["mc_virtual_tkd_tp"]["hit"]
             virtual_cuts["mc_p_ds"] = hit["p"] > tkd_p_high or hit["p"] < tkd_p_low
+            #if "mc_pt_ds" in virtual_cuts: # Consider removing
+            if "pt_ds_low" in self.config_anal: # Consider removing
+                virtual_cuts["mc_pt_ds"] = hit["pt"] > self.config_anal["pt_ds_high"] or hit["pt"] < self.config_anal["pt_ds_low"] # Consider removing
         virtual_cuts["mc_stations_us"] = len(mc_tku_hits) != len(mc_tku_stations)
         virtual_cuts["mc_stations_ds"] = len(mc_tkd_hits) != len(mc_tkd_stations)
         for bz, hit_dict, key in [(self.config.bz_tku, mc_tku_hits, "us"),
@@ -253,5 +259,5 @@ class LoadMC(object):
                   "and rms", format(numpy.std(z_values), '.2e')
 
 
-    virtual_cut_list = ["mc_stations_us", "mc_scifi_fiducial_us", "mc_p_us",
-                        "mc_stations_ds", "mc_scifi_fiducial_ds", "mc_p_ds"]
+    virtual_cut_list = ["mc_stations_us", "mc_scifi_fiducial_us", "mc_p_us", "mc_pt_us",
+                        "mc_stations_ds", "mc_scifi_fiducial_ds", "mc_p_ds", "mc_pt_ds"]

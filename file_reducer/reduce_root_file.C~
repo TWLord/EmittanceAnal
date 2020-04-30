@@ -159,8 +159,6 @@ void process_run( std::string filename, Double_t t_a, Double_t t_b, Double_t t_c
     
     infile >> branchName("data") >> data;
     spill = data.GetSpill();
-
-    if (spill == NULL) std::cout << " ----- SPILL NULL ----- " << std::endl;
     
     if (spill == NULL || !(spill->GetDaqEventType() == "physics_event")) continue;
     

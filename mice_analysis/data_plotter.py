@@ -67,7 +67,7 @@ class DataPlotter(AnalysisBase):
         self.birth_var_2d("x", "tku", "y", "tku", [-150, 150], [-150, 150], "us cut", None, None)
         self.birth_var_2d("x", "tku", "y", "tku", [-150, 150], [-150, 150], "all", None, None)
         self.birth_var_2d("r", "tku", "pt", "tku", [0, 150*1.5], [0, 100*1.5], "all", None, None)
-        self.birth_var_2d("pz", "tku", "pt", "tku", [0., 150.], [0, 100*1.5], "all", None, None)
+        self.birth_var_2d("pz", "tku", "pt", "tku", [0., 250.], [0, 100*2.5], "all", None, None)
 
         my_options = {
           "sub_dir":"space_points",
@@ -103,7 +103,7 @@ class DataPlotter(AnalysisBase):
         self.birth_var_2d("x", "tkd", "y", "tkd", [-150, 150], [-150, 150], "ds cut", None, None)
         self.birth_var_2d("x", "tkd", "y", "tkd", [-150, 150], [-150, 150], "all", None, None)
         self.birth_var_2d("r", "tkd", "pt", "tkd", [0, 150*1.5], [0, 100*1.5], "all", None, None)
-        self.birth_var_2d("pz", "tkd", "pt", "tkd", [0., 150.], [0, 100*1.5], "all", None, None)
+        self.birth_var_2d("pz", "tkd", "pt", "tkd", [0., 250.], [0, 100*2.5], "all", None, None)
         self.birth_var_2d("x", "tof0", "x", "tof1", [-200, 200.], [-210, 210.], "us cut", None, None, n_bins_x=10, n_bins_y=7)
         self.birth_var_2d("y", "tof0", "y", "tof1", [-200, 200.], [-210, 210.], "us cut", None, None, n_bins_x=10, n_bins_y=7)
 

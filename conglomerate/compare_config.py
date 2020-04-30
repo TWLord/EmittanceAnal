@@ -247,6 +247,7 @@ class CompareConfig(object):
                     "x":x_axis_title,
                     "y":y_axis_title,
                 },
+                "wide_axis":None,
                 "unique_id":None,
             }
         self.recursive_modify_dict(my_config, modifiers)

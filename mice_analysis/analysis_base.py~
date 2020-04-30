@@ -113,7 +113,7 @@ class AnalysisBase(object):
         hist.SetStats(stats)
         ###### xboa ends here
 
-        my_plot["histograms"][name_string] = hist
+        my_plot["histograms"][args[0]] = hist
         return hist
 
     def make_root_graph(self, name, *args):

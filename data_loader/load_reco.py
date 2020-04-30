@@ -685,6 +685,8 @@ class LoadReco(object):
         global_loaded = self.load_global_event(global_event, verbose)
         #print "    Loaded", len(global_loaded[0]), "global hits"
         event["data"] += scifi_loaded[0]+tof_loaded[0]+global_loaded[0]
+        #print event["data"]
+        #print event["data"][0]["n_channels"]
         event["tof_slabs"] = self.load_n_slabs(tof_event)
         event["scifi_n_tracks"] = self.get_n_tracks(scifi_event)
         event["scifi_n_planes_with_clusters"] = self.get_n_planes_with_used_clusters(scifi_event)
@@ -716,6 +718,18 @@ class LoadReco(object):
             return False
         return event["tkd"]["p"] < self.config_anal["p_tot_ds_low"] or \
                event["tkd"]["p"] > self.config_anal["p_tot_ds_high"]
+
+    def will_do_pt_cut_us(self, event):
+        if event["tku"] == None:
+            return False
+        return event["tku"]["pt"] < self.config_anal["pt_us_low"] or \
+               event["tku"]["pt"] > self.config_anal["pt_us_high"]
+
+    def will_do_pt_cut_ds(self, event):
+        if event["tkd"] == None:
+            return False
+        return event["tkd"]["pt"] < self.config_anal["pt_ds_low"] or \
+               event["tkd"]["pt"] > self.config_anal["pt_ds_high"]
 
     def will_do_delta_tof01_cut(self, event):
         delta_tof01 = event["delta_tof01"]
@@ -846,6 +860,12 @@ class LoadReco(object):
         event["will_cut"]["p_tot_ds"] = self.will_do_p_cut_ds(event)
         event["will_cut"]["tof01_selection"] = False
         event["will_cut"]["tof01_tramlines"] = self.will_do_tof01_tramlines(event)
+        #if "pt_us" in event["will_cut"]: # Consider removing
+        if "pt_us_low" in self.config_anal: # Consider removing
+            event["will_cut"]["pt_us"] = self.will_do_pt_cut_us(event) # Consider removing
+        #if "pt_ds" in event["will_cut"]: # Consider removing
+        if "pt_ds_low" in self.config_anal: # Consider removing
+            event["will_cut"]["pt_ds"] = self.will_do_pt_cut_ds(event) # Consider removing
         return event
 
     def get_det_pos(self):

@@ -98,6 +98,10 @@ class EventPreSelection(object):
                             "tof1":self.config.tof1_offset,
                             "tof2":self.config.tof2_offset}  
 
+        self.fast_preanalysis = False
+        if hasattr(self.config, "fast_preanalysis"):
+            self.fast_preanalysis = self.config.fast_preanalysis
+
     def reduce_spills(self, number_of_daq_events):
         """
         Load a number of spills from the files
@@ -279,19 +283,27 @@ class EventPreSelection(object):
                 event = {"data":[]}
                 #print "Event number(s) : ", ev_number, self.this_event
                 try:
-                    reco_event = spill.GetReconEvents()[ev_number]
-                    spill_number = spill.GetSpillNumber()
-                    tof_event = reco_event.GetTOFEvent()
-                    scifi_event = reco_event.GetSciFiEvent()
-                    tof_loaded = self.load_tof_event(tof_event) 
-                    scifi_loaded = self.load_scifi_event(scifi_event)
-                    #tof_spacepoints = tof_event.GetTOFEventSpacePoint()
+                    if self.fast_preanalysis:
+                        self.load_internal(event, spill, ev_number)
+                    else:
+                        self.load_external(event, spill, ev_number)
                 except ValueError:
                     print "spill", spill.GetSpillNumber(), "particle_number", reco_event.GetPartEventNumber()
                     sys.excepthook(*sys.exc_info())
                 except ZeroDivisionError:
                     print "Zero Division Error???"
                     pass
+
+
+    def load_internal(self, event, spill, ev_number):
+                reco_event = spill.GetReconEvents()[ev_number]
+                spill_number = spill.GetSpillNumber()
+                tof_event = reco_event.GetTOFEvent()
+                scifi_event = reco_event.GetSciFiEvent()
+                tof_loaded = self.load_tof_event(tof_event) 
+                scifi_loaded = self.load_scifi_event(scifi_event)
+                #tof_spacepoints = tof_event.GetTOFEventSpacePoint()
+
                 event["run"] = self.this_run
                 self.event_count += 1
                 event["spill"] = spill.GetSpillNumber()
@@ -309,22 +321,30 @@ class EventPreSelection(object):
                     #self.reduced_events_dict["spill"]["event"][self.this_event] = False
                     self.reduced_events_dict[self.this_spill][self.this_event] = False
                     self.rejected_count += 1
-                    continue
+                    return
+                    #continue
 
                 self.accepted_count += 1
                 #self.reduced_events_dict["spill"]["event"][self.this_event] = True
                 self.reduced_events_dict[self.this_spill][self.this_event] = True
 
-            """try:
+    def load_external(self, event, spill, ev_number):
+                """try:
                     self.reco_loader.load(event, spill, ev_number)
                     if len(event["data"]) == 0: # missing TOF1 - not considered further
                         continue 
-                    self.mc_loader.load(event, spill, ev_number)
                 except ValueError:
                     print "spill", spill.GetSpillNumber(), "particle_number", reco_event.GetPartEventNumber()
                     sys.excepthook(*sys.exc_info())
                 except ZeroDivisionError:
-                    pass
+                    pass"""
+
+                self.reco_loader.load(event, spill, ev_number)
+                if len(event["data"]) == 0  : # missing TOF1 - not considered further
+                    self.reduced_events_dict[self.this_spill][self.this_event] = False
+                    self.rejected_count += 1
+                    return
+
                 event["run"] = self.this_run
                 self.event_count += 1
                 event["spill"] = spill.GetSpillNumber()
@@ -334,7 +354,26 @@ class EventPreSelection(object):
                     hit["hit"]["event_number"] = ev_number
                     hit["hit"]["spill"] = spill.GetSpillNumber()
                     hit["hit"]["particle_number"] = self.this_run
-                event["data"] = sorted(event["data"], key = lambda hit: hit["hit"]["z"])"""
+                event["data"] = sorted(event["data"], key = lambda hit: hit["hit"]["z"])
+
+                # Sorting out cut definitions
+                event["upstream_cut"] = False
+                #event["upstream_preanalysis_cut"] = False
+                event["data_recorder_cut"] = False
+                for key, value in event["will_cut"].iteritems():
+                    if value and self.config.upstream_cuts[key]:
+                        event["upstream_cut"] = True
+
+                if event["upstream_cut"] :
+                    self.reduced_events_dict[self.this_spill][self.this_event] = False
+                    self.rejected_count += 1
+                    return
+
+                    #continue 
+                #self.mc_loader.load(event, spill, ev_number)
+
+                self.accepted_count += 1
+                self.reduced_events_dict[self.this_spill][self.this_event] = True
 
 
     def load_tof_sp(self, tof_sp, station):

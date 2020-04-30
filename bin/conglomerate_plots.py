@@ -547,14 +547,16 @@ class CompareData2DConfig(CompareConfig):
                   {"x_value":x_value, "line_color":ROOT.kRed+2, "line_style":2, "line_width":2} for x_value in [0, 20]
                 ],
                 "horizontals":[],
-            }
+            },
+            "axis_title":{
+                "wide":True,
+            },
         }
 
         self.conglomerate_list = [
             self.get_conglomerate_3("p_res_vs_global_through_virtual_absorber_centre_r_ds_cut", "p_res_vs_global_through_virtual_absorber_centre_r_ds_cut", "P(TKU) - P(TKD) [MeV/c]", "radius [mm]", modifiers = mod),
             self.get_conglomerate_3("p_res_vs_global_through_virtual_absorber_centre_y_ds_cut", "p_res_vs_global_through_virtual_absorber_centre_y_ds_cut", "P(TKU) - P(TKD) [MeV/c]", "y [mm]", modifiers = mod),
         ]
-
         mod = {
             "merge_options":{
                 "right_labels":right_labels,
@@ -572,10 +574,13 @@ class CompareData2DConfig(CompareConfig):
                   {"x_value":x_value, "line_color":ROOT.kRed+2, "line_style":2, "line_width":2} for x_value in [0,]
                 ],
                 "horizontals":[],
-            }
+            },
+            "axis_title":{
+                "wide":True,
+            },
         }
 
-        self.conglomerate_list = [
+        self.conglomerate_list += [
             self.get_conglomerate_3("tku_px_tku_py_us_cut", "tku_px_tku_py_us_cut", "tku px [MeV/c]", "tku py [MeV/c]", modifiers = mod),
             self.get_conglomerate_3("tkd_px_tkd_py_ds_cut", "tkd_px_tkd_py_ds_cut", "tkd px [MeV/c]", "tkd py [MeV/c]", modifiers = mod),
         ]
@@ -601,6 +606,9 @@ class CompareData2DConfig(CompareConfig):
             "rescale_y":[121., 281.],
             "graph_names":["tramlines_upper", "tramlines_lower", "cuts_graph"],
             "canvas_fill_color":root_style.get_frame_fill(),
+            "axis_title":{
+                "wide":True,
+            },
          }
         else :
          mod = {
@@ -624,6 +632,9 @@ class CompareData2DConfig(CompareConfig):
             "rescale_y":[81., 181.],
             "graph_names":["tramlines_upper", "tramlines_lower", "cuts_graph"],
             "canvas_fill_color":root_style.get_frame_fill(),
+            "axis_title":{
+                "wide":True,
+            },
          }
 
         self.conglomerate_list += [
@@ -654,7 +665,10 @@ class CompareData2DMCConfig(CompareConfig):
                   {"x_value":x_value, "line_color":ROOT.kRed+2, "line_style":2, "line_width":2} for x_value in [0, 20]
                 ],
                 "horizontals":[],
-            }
+            },
+            "axis_title":{
+                "wide":True,
+            },
         }
 
         self.conglomerate_list = [
@@ -685,6 +699,9 @@ class CompareData2DMCConfig(CompareConfig):
             "rescale_y":[121., 281.],
             "graph_names":["tramlines_upper", "tramlines_lower", "cuts_graph"],
             "canvas_fill_color":root_style.get_frame_fill(),
+            "axis_title":{
+                "wide":True,
+            },
          }
         else :
          mod = {
@@ -708,6 +725,9 @@ class CompareData2DMCConfig(CompareConfig):
             "rescale_y":[81., 181.],
             "graph_names":["tramlines_upper", "tramlines_lower", "cuts_graph"],
             "canvas_fill_color":root_style.get_frame_fill(),
+            "axis_title":{
+                "wide":True,
+            },
          }
         self.conglomerate_list += [
             self.get_conglomerate_3("p_tku_vs_tof01_all", "p_tot_vs_tof", "ToF_{01} [ns]", "P(TKU) [MeV/c]", modifiers = mod),
@@ -1217,6 +1237,7 @@ def main_paper(batch_level = 0):
 
     target_dir = "output/combinedMC+Data/officialMC/2017-02-6-c3-OfficialMC_v3+c6-reco-sys+corr_full/"
     #target_dir = "output/combinedMC+Data/testingTOFTrackerCombined/"
+    #target_dir = "output/combinedMC+Data/testingTOFTrackerCombined2/"
 
     batch_level = 0
     hide_root_errors = True
@@ -1294,11 +1315,12 @@ def main_paper(batch_level = 0):
     #right_labels = ["Full\nLH_{2}", "LiH"]
     right_labels = ["Empty\nLH_{2}", "Full\nLH_{2}"]
     #right_labels = ["Empty\nLH_{2}"]
+    #config_list = [CompareData2DConfig,CompareData2DMCConfig,]
     config_list = [CompareCutsConfig, CompareData1DConfig,
                    CompareOpticsConfig, CompareOpticsMCConfig,
                    CompareGlobalsConfig, CompareMCConfig,
                    CompareData2DConfig, CompareData2DMCConfig,
-                  ] 
+                  ]
     fd_0 = run_conglomerate(batch_level, config_list, my_dir_list, do_cuts_summary, target_dir, top_labels, right_labels)
     config_list = [
                    CompareAmplitudeConfigBoth,

@@ -3,6 +3,9 @@ import glob
 import time
 import bisect
 
+import pickle
+import os
+
 import ROOT
 import libMausCpp
 import numpy
@@ -89,6 +92,12 @@ class LoadAll(object):
         self.this_tree = None
         self.all_root_files = [None] # f@@@ing root deletes histograms randomly if I let files go out of scope
 
+        self.reduced_dict_path = None
+        self.reduced_dict = None
+        if hasattr(self.config, "reduced_dict_path"):
+            self.reduced_dict_path = self.config.reduced_dict_path
+            print "Looking for reduced dicts in", self.reduced_dict_path
+
         self.mc_loader = LoadMC(config, config_anal)
         self.reco_loader = LoadReco(config, config_anal)
 
@@ -131,7 +140,10 @@ class LoadAll(object):
                     self.this_daq_event = self.this_tree.GetEntries()
                     break
                 spill = self.this_data.GetSpill()
-                self.load_one_spill(spill)
+                if self.reduced_dict != None:
+                    self.load_from_dict(spill)
+                else:
+                    self.load_one_spill(spill)
                 load_spills_daq_event += 1
                 self.this_daq_event += 1
             if self.this_daq_event >= self.this_tree.GetEntries():
@@ -152,6 +164,7 @@ class LoadAll(object):
         self.update_cuts()
         # return True if there are more events
         if True:
+            #print "Doing weird load_mc virt_data if True statement"
             virt_data = [(numpy.mean(self.mc_loader.virtual_dict[key]),
                           numpy.std(self.mc_loader.virtual_dict[key]), key) 
                           for key in self.mc_loader.virtual_dict.keys()]
@@ -227,6 +240,18 @@ class LoadAll(object):
                 self.this_tree = None
                 self.next_file()
                 continue
+            if self.reduced_dict_path != None:
+                self.reduced_dict = None
+                reduced_dict_filename = self.this_file_name.split("/")[-1].split(".root")[0] + ".p"
+                reduced_dict_filename = os.path.join(self.reduced_dict_path, reduced_dict_filename)
+                try:
+                    self.reduced_dict = pickle.load( open( reduced_dict_filename, "rb" ) )
+                except:
+                    sys.excepthook(*sys.exc_info())
+                    print "[WARNING]: Failed to load reduced dict from pickle file", reduced_dict_filename 
+                    print "Running without dict for file", self.this_root_file
+                    sys.exit()####
+
 
     def load_one_spill(self, spill):
         """
@@ -276,6 +301,57 @@ class LoadAll(object):
                     hit["hit"]["particle_number"] = self.this_run
                 event["data"] = sorted(event["data"], key = lambda hit: hit["hit"]["z"])
 
+    def load_from_dict(self, spill):
+        """
+        Load the contents of one spill using a preanalysis dict. If dict flag
+        is false, skip event. If true, loop over reco_events and mc_events;
+        get reco_loader mc_loader to load the respective event type. 
+        """
+        old_this_run = self.this_run
+        try:
+            self.this_run = max(spill.GetRunNumber(), self.this_file_number) # mc runs all have run number 0
+        except ReferenceError:
+            print "WARNING: Spill was NULL"
+            self.suspect_spill_count += 1
+            return
+        self.run_numbers.add(self.this_run)
+        self.this_spill = spill.GetSpillNumber()
+        if old_this_run != None and old_this_run != self.this_run:
+            # Nb: Durga figured out this issue was related to DAQ saturating
+            # and failing to fill the "run number" int for some spills
+            print "WARNING: run number changed from", old_this_run, "to", self.this_run,
+            print "in file", self.this_file_name, "daq event", self.this_daq_event,
+            print "spill", spill.GetSpillNumber(), "n recon events", spill.GetReconEvents().size(), "<------------WARNING"
+            self.suspect_spill_count += 1
+        if spill.GetDaqEventType() == "physics_event":
+            self.spill_count += 1
+            for ev_number, reco_event in enumerate(spill.GetReconEvents()):
+                if not self.reduced_dict[self.this_spill][ev_number]:
+                    continue
+                self.this_event = reco_event.GetPartEventNumber()
+                event = {"data":[]}
+                try:
+                    self.reco_loader.load(event, spill, ev_number)
+                    if len(event["data"]) == 0: # missing TOF1 - not considered further
+                        continue 
+                    self.mc_loader.load(event, spill, ev_number)
+                except ValueError:
+                    print "spill", spill.GetSpillNumber(), "particle_number", reco_event.GetPartEventNumber()
+                    sys.excepthook(*sys.exc_info())
+                except ZeroDivisionError:
+                    pass
+                event["run"] = self.this_run
+                self.event_count += 1
+                event["spill"] = spill.GetSpillNumber()
+                self.events.append(event)
+                event["event_number"] = ev_number
+                for hit in event["data"]:
+                    hit["hit"]["event_number"] = ev_number
+                    hit["hit"]["spill"] = spill.GetSpillNumber()
+                    hit["hit"]["particle_number"] = self.this_run
+                event["data"] = sorted(event["data"], key = lambda hit: hit["hit"]["z"])
+
+       
 
     def update_cuts(self):
         """For a given event, update the cuts based on MC and reco data"""

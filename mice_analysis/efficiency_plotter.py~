@@ -46,6 +46,7 @@ class EfficiencyPlotter(AnalysisBase):
 
 
     def setup_plots(self):
+        # Plotter binning / axes defined here! ## TomL
         arg_list = [
             ("x",  20, [-200., 200.], "y",  20, [-200., 200.]),
             ("x",  20, [-200., 200.], "px", 20, [-100., 100.]),

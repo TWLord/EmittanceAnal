@@ -282,6 +282,9 @@ class ConglomerateOne(object):
         x_min = 0.04 # 0.08 # 
         # min x for y axis label:
         y_min = 0.11 # 0.17 #
+        if "wide" in self.options["axis_title"]:
+            if self.options["axis_title"]["wide"] != None:
+                y_min = 0.06
         if self.options["axis_title"]["x"] != None:
             x_text_box = ROOT.TPaveText(0.10, x_min, 0.97, x_min+0.06, "NDC")
             x_text_box.SetFillStyle(0)
