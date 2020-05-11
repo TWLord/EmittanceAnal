@@ -51,11 +51,28 @@ class MCPlotter(AnalysisBase):
             #print "Doing MC plots comparing.. "
             #print " detector : " + detector
             #print " virt_station_list[0] : " + virt_station_list[0]
+
+            # Tracker plots using all stations
+            if "tku_tp" in detector or "tkd_tp" in detector:
+                for virt_station in virt_station_list: 
+                    self.birth_var_two_d_scatter("x_vs_y_at_"+virt_station, virt_station, "pid", "x", "y", pid_colors, True)
+                    self.birth_var_two_d_scatter("px_vs_py_at_"+virt_station, virt_station, "pid", "px", "py", pid_colors, True)
+                    self.birth_var_two_d_hist("x_vs_y_at_"+virt_station+"_us_cut_hist", virt_station, "x", "y", "upstream_cut", xmin = -150, xmax = 150, ymin = -150, ymax = 150)
+                    self.birth_var_two_d_hist("x_vs_y_at_"+virt_station+"_ds_cut_hist", virt_station, "x", "y", "downstream_cut", -150, 150, -150, 150)
+                    self.birth_var_two_d_hist("px_vs_py_at_"+virt_station+"_us_cut_hist", virt_station, "px", "py", "upstream_cut", -150, 150, -150, 150)
+
+            # Tracker plots only using tk*_tp
             virt_station = virt_station_list[0]
+            # but first doing x and y for all mc stations
+            self.birth_var_two_d_hist("x_vs_y_at_"+virt_station+"_us_cut_hist_large", virt_station, "x", "y", "upstream_cut", xmin = -250, xmax = 250, ymin = -250, ymax = 250)
+            self.birth_var_two_d_hist("x_vs_y_at_"+virt_station+"_ds_cut_hist_large", virt_station, "x", "y", "downstream_cut", -250, 250, -250, 250)
+            self.birth_var_two_d_hist("px_vs_py_at_"+virt_station+"_us_cut_hist_large", virt_station, "px", "py", "upstream_cut", -250, 250, -250, 250)
+            self.birth_var_two_d_hist("px_vs_py_at_"+virt_station+"_ds_cut_hist_large", virt_station, "px", "py", "downstream_cut", -250, 250, -250, 250)
+
             self.birth_var_one_d("p_at_"+virt_station, virt_station, "pid", "p", pid_colors, "us cut", 0., 300.)
             self.birth_var_one_d("pt_at_"+virt_station, virt_station, "pid", "pt", pid_colors, "us cut", 0., 100.)
             self.birth_var_one_d("r_at_"+virt_station, virt_station, "pid", "r", pid_colors, "us cut", 0., 300.)
-            self.birth_var_two_d_hist("pt_vs_pz_at_"+virt_station+"_us_cut_hist", virt_station, "pt", "pz", "us cut")
+            self.birth_var_two_d_hist("pt_vs_pz_at_"+virt_station+"_us_cut_hist", virt_station, "pt", "pz", "upstream_cut")
             self.birth_var_two_d_scatter("x_vs_px_at_"+virt_station, virt_station, "pid", "x", "px", pid_colors, True)
             self.birth_var_two_d_scatter("pt_vs_pz_at_"+virt_station, virt_station, "pid", "pt", "pz", pid_colors, True) # TomL
             self.birth_var_two_d_scatter("pt_vs_pz_at_"+detector, detector, "pid", "pt", "pz", pid_colors, True) # TomL
@@ -266,7 +283,8 @@ class MCPlotter(AnalysisBase):
     def get_data_var_two_d_hist(self, name, *args):
         track_final = ([], [])
         for event in self.data_loader.events:
-            if args[3] and event["downstream_cut"]:
+            #if args[3] and event["downstream_cut"]:
+            if args[3] and event[args[3]]:
                 continue
             for detector_hit in event["data"]:
                 if detector_hit["detector"] != args[0]:
@@ -293,18 +311,20 @@ class MCPlotter(AnalysisBase):
                 hist.Fill(x, y)
 
 
-    def birth_var_two_d_hist(self, canvas_name, detector, plot_variable_1, plot_variable_2, cuts=False):
+    def birth_var_two_d_hist(self, canvas_name, detector, plot_variable_1, plot_variable_2, cuts=False, xmin = None, xmax = None, ymin = None, ymax = None):
         track_final = self.get_data_var_two_d_hist(canvas_name, detector, plot_variable_1, plot_variable_2, cuts)
         if len(track_final) == 0:
             print "No tracks for", detector
             return
-        xmin, xmax, ymin, ymax = 0., 0., 0., 0.
         x_list = track_final[0]
         y_list = track_final[1]
-        xmin = min([xmin]+x_list)
-        xmax = max([xmax]+x_list)
-        ymin = min([ymin]+y_list)
-        ymax = max([ymax]+y_list)
+
+        if xmin is None or ymin is None or xmax is None or ymax is None:
+            xmin, xmax, ymin, ymax = 0., 0., 0., 0.
+            xmin = min([xmin]+x_list)
+            xmax = max([xmax]+x_list)
+            ymin = min([ymin]+y_list)
+            ymax = max([ymax]+y_list)
         name = canvas_name
         label_1 = plot_variable_1+" ["+utilities.utilities.default_units(plot_variable_1)+"]"
         label_2 = plot_variable_2+" ["+utilities.utilities.default_units(plot_variable_2)+"]"
@@ -940,7 +960,8 @@ class MCPlotter(AnalysisBase):
             cut = "downstream_cut"
             mc_cut = "mc_true_ds_cut"
         for event in self.data_loader.events:
-            if event[mc_cut]: # skip events cut by mc_cuts
+            #if event[mc_cut]: # skip events cut by mc_cuts
+            if event["upstream_cut"]: # skip events cut by us_cuts
                 continue
             if not event[cut]: # skip events not cut by us/ds cut
                 continue
@@ -1030,6 +1051,24 @@ class MCPlotter(AnalysisBase):
                     for item in det_only_data:
                         hist.Fill(item)
 
+                dict_of_dicts = {
+                                "mc":mc_dict,
+                                "data":det_dict,
+                                "mc_only":mc_only_dict,
+                                "data_only":det_only_dict,
+                                }
+
+                for var1, var2 in (["x", "y"], ["px", "py"]):
+                    for data_type in dict_of_dicts.keys():
+                        if var1 not in dict_of_dicts[data_type].keys():
+                            continue
+                        data_x = dict_of_dicts[data_type][var1]
+                        data_y = dict_of_dicts[data_type][var2]
+                        canvas_name = "failed_"+cut+"_"+detector+"_"+var1+"_vs_"+var2+"_"+data_type
+                        hist = self.plots[canvas_name]["histograms"][data_type]
+                        for x, y in izip(data_x, data_y):
+                            hist.Fill(x, y)
+
     def birth_compare_bad_tracks(self):
         dummy_canvas = xboa.common.make_root_canvas("dummy")
         us_cut_list = self.us_cut_list
@@ -1098,6 +1137,36 @@ class MCPlotter(AnalysisBase):
                         hist.SetMarkerColor(ROOT.kBlue)
                         hist.Draw("P SAME")
                         dummy_canvas.cd() # make sure we don't accidentally overwrite "current" canvas
+
+                        #if cut == "all":
+                        #self.check_empty(self.get_x_min_max_compare, var1, [mc_dict, det_dict, mc_only_dict, det_only_dict])
+                        #self.check_empty(self.get_x_min_max_compare, var2, [mc_dict, det_dict, mc_only_dict, det_only_dict])
+
+                    dict_of_dicts = {
+                                    "mc":mc_dict,
+                                    "data":det_dict,
+                                    "mc_only":mc_only_dict,
+                                    "data_only":det_only_dict,
+                                    }
+
+                    for var1, var2 in (["x", "y"], ["px", "py"]): 
+                        for data_type in dict_of_dicts.keys():
+                            if var1 not in dict_of_dicts[data_type].keys():
+                                continue
+                            data_x = dict_of_dicts[data_type][var1]
+                            data_y = dict_of_dicts[data_type][var2]
+
+                            canvas_name = "failed_"+cut+"_"+detector+"_"+var1+"_vs_"+var2+"_"+data_type
+                            name = data_type
+                            xmin, xmax = self.get_x_min_max_compare(var1)
+                            ymin, ymax = self.get_x_min_max_compare(var2)
+                            label_1 = var1+" ["+utilities.utilities.default_units(var1)+"]"
+                            label_2 = var2+" ["+utilities.utilities.default_units(var2)+"]"
+                            hist = self.make_root_histogram(canvas_name, name,
+                                data_x, label_1, 100, data_y, label_2, 100, [],
+                                xmin, xmax, ymin, ymax)
+                            hist.Draw("COLZ")
+                            dummy_canvas.cd() # make sure we don't accidentally overwrite "current" canvas
 
     def get_data_spacepoints(self, det_name, virt_name, this_cut):
         #if det_name in ["tku_sp", "tkd_sp"]:
@@ -1219,14 +1288,23 @@ class MCPlotter(AnalysisBase):
                         print "minY:", min(mc_only_y)
                         print "maxY:", max(mc_only_y) """
 
-                    graph_dict = self.plots[canvas_name]["graphs"]
+                    for canvas_name in [canvas_name, canvas_name+"_separate"]:
+                        graph_dict = self.plots[canvas_name]["graphs"]
+                        graph = graph_dict[plot_name]
+                        n_points = len(mc_only_x)
+                        n_orig = graph.GetN()
+                        graph.Set(n_orig+n_points)
+                        for i in range(n_points):
+                            graph_dict[plot_name].SetPoint(i + n_orig, mc_only_x[i], mc_only_y[i])
+
+                    """graph_dict = self.plots[canvas_name]["graphs"]
                     graph = graph_dict[plot_name]
                     n_points = len(mc_only_x)
                     n_orig = graph.GetN()
-                    """print "n_orig:", n_orig"""
+                    #print "n_orig:", n_orig
                     graph.Set(n_orig+n_points)
                     for i in range(n_points):
-                        graph_dict[plot_name].SetPoint(i + n_orig, mc_only_x[i], mc_only_y[i])
+                        graph_dict[plot_name].SetPoint(i + n_orig, mc_only_x[i], mc_only_y[i])"""
 
     def birth_spacepoints(self, colors_dict):
         dummy_canvas = xboa.common.make_root_canvas("dummy")
@@ -1252,7 +1330,7 @@ class MCPlotter(AnalysisBase):
 
                 for var in sorted(residual_dict.keys()):
                     self.check_empty(self.get_x_min_max, var, [residual_dict])
-                    self.check_empty(self.get_x_min_max_compare, var, [mc_dict, det_dict, #mc_only_dict, det_only_dict])
+                    self.check_empty(self.get_x_min_max_compare, var, [mc_dict, det_dict, mc_only_dict, det_only_dict])
                     canvas_name = "spacepoints_"+cut+"_"+detector+"_"+var+"_residual"
                     data = residual_dict[var]
                     xmin, xmax = self.get_x_min_max(var)
@@ -1316,7 +1394,11 @@ class MCPlotter(AnalysisBase):
                         canvas_name = "tku_spacepoints_clusters_station_"+detector.split("_")[2]+"_all"
                     if "tkd" in detector:
                         canvas_name = "tkd_spacepoints_clusters_station_"+detector.split("_")[2]+"_all"
-                    #self.get_plot(canvas_name)
+
+                    my_plot = self.get_plot(canvas_name)
+                    my_plot["canvas"].cd()
+                    my_plot["pad"].Draw()
+
                     #name = slice_variable+" = "+str(pid)
                     #name = "n_channels = 0"
                     name = "mc_only"
@@ -1327,10 +1409,12 @@ class MCPlotter(AnalysisBase):
                     hist, graph = self.make_root_graph(canvas_name, name,
                         mc_only_x, label_1, mc_only_y, label_2, True,
                         xmin, xmax, ymin, ymax)
-                    hist.Draw()
+                    #hist.Draw()
+
                     graph.SetMarkerColor(ROOT.kBlack)
                     graph.SetMarkerStyle(6)
                     graph.Draw("PSAME")
+                    dummy_canvas.cd() # make sure we don't accidentally overwrite "current" canvas
 
                     canvas_name += "_separate" 
                     hist, graph = self.make_root_graph(canvas_name, name,
@@ -1453,9 +1537,9 @@ class MCPlotter(AnalysisBase):
         for a_dict in dict_list:
             data = a_dict[var]  
             if len(data) == 0:
-                #print "found empty data dict"
+                print "found empty data dict"
                 #print data
-                #print "Filling.."
+                print "Filling.."
                 #data = [xmax+(xmax-xmin)*100.]
                 data.append(xmax+(xmax-xmin)*100.)
                 #print data

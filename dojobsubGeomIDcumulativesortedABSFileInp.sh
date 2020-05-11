@@ -263,8 +263,8 @@ fi
 #	echo $(echo $key)
 #done
 
-for opt in "$opt_A,3-140" "$opt_B,4-140" "$opt_C,6-140" "$opt_D,10-140" "$opt_E,3-170" "$opt_F,3-200" "$opt_G,3-240" "$opt_H,4-170" "$opt_I,4-200" "$opt_J,4-240" "$opt_K,6-170" "$opt_L,6-200" "$opt_M,6-240" "$opt_N,10-170" "$opt_O,10-200" "$opt_P,10-240"; do 
-#for opt in "$opt_E,3-170" "$opt_F,3-200" "$opt_G,3-240" "$opt_H,4-170" "$opt_I,4-200" "$opt_J,4-240" "$opt_K,6-170" "$opt_L,6-200" "$opt_M,6-240" "$opt_N,10-170" "$opt_O,10-200" "$opt_P,10-240"; do 
+#for opt in "$opt_A,3-140" "$opt_B,4-140" "$opt_C,6-140" "$opt_D,10-140" "$opt_E,3-170" "$opt_F,3-200" "$opt_G,3-240" "$opt_H,4-170" "$opt_I,4-200" "$opt_J,4-240" "$opt_K,6-170" "$opt_L,6-200" "$opt_M,6-240" "$opt_N,10-170" "$opt_O,10-200" "$opt_P,10-240"; do 
+for opt in "$opt_E,3-170" "$opt_F,3-200" "$opt_G,3-240" "$opt_H,4-170" "$opt_I,4-200" "$opt_J,4-240" "$opt_K,6-170" "$opt_L,6-200" "$opt_M,6-240" "$opt_N,10-170" "$opt_O,10-200" "$opt_P,10-240"; do 
 
 runs="${opt%,*}"
 if [ ! -z "$runs" ] ; then 

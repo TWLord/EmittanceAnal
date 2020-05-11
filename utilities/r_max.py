@@ -157,7 +157,8 @@ def setup(bz):
     if not maus_cpp.globals.has_instance():
         config = Configuration.Configuration().getConfigJSON()
         maus_cpp.globals.birth(config)
-    module = maus_cpp.mice_module.MiceModule("scripts/dedx/test_track.dat")
+    #module = maus_cpp.mice_module.MiceModule("scripts/dedx/test_track.dat")
+    module = maus_cpp.mice_module.MiceModule("dedx/test_track.dat")
     children = module.get_children()
     for child in children:
         if child.get_name() == "Field":
@@ -181,6 +182,17 @@ def main():
         for py_quad in [1, -1]:
             for bz in [3e-3, -3e-3]:
                 print "\n\n*****************************************************************"
+                test_get_r_max(bz, 50., 100., px_quad*20., py_quad*30., 170., [100, 300]) # not quite through phi_max (bz)
+                print "\n\n*****************************************************************"
+                test_get_r_max(bz, 50., 100., px_quad*20., py_quad*30., 170., [100, 400]) # not quite through phi_max (-bz); just pass phi_max (bz)
+                print "\n\n*****************************************************************"
+                test_get_r_max(bz, 50., 100., px_quad*20., py_quad*30., 170., [100, 500]) # just past phi_max (-bz)
+                print "\n\n*****************************************************************"
+                test_get_r_max(bz, 50., 100., px_quad*20., py_quad*30., 170., [100, 1000]) # almost 2pi
+                print "\n\n*****************************************************************"
+                test_get_r_max(bz, 50., 100., px_quad*20., py_quad*30., 170., [100, 1100]) # just past 2pi
+
+                """print "\n\n*****************************************************************"
                 test_get_r_max(bz, 50., 100., px_quad*20., py_quad*30., 140., [100, 300]) # not quite through phi_max (bz)
                 print "\n\n*****************************************************************"
                 test_get_r_max(bz, 50., 100., px_quad*20., py_quad*30., 140., [100, 400]) # not quite through phi_max (-bz); just pass phi_max (bz)
@@ -189,7 +201,7 @@ def main():
                 print "\n\n*****************************************************************"
                 test_get_r_max(bz, 50., 100., px_quad*20., py_quad*30., 140., [100, 1000]) # almost 2pi
                 print "\n\n*****************************************************************"
-                test_get_r_max(bz, 50., 100., px_quad*20., py_quad*30., 140., [100, 1100]) # just past 2pi
+                test_get_r_max(bz, 50., 100., px_quad*20., py_quad*30., 140., [100, 1100]) # just past 2pi """
 
 if __name__ == "__main__":
     main()

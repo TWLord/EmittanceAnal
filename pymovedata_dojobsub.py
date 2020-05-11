@@ -63,7 +63,19 @@ def get_mc_settings(CC):
                 "4-140":["10504",],
                 "6-140":["10509",],
             },
-        }
+        },
+        "2017-02-5":{
+            "ABS-LH2":{
+                "3-140":["9920",],
+                "6-140":["9921",],
+                "10-140":["9922",],
+            },
+            #"ABS-LH2-EMPTY":{
+            #    "3-140":["10143",],
+            #    "6-140":["10144",],
+            #    "10-140":["10145",],
+            #},
+        },
     }[CC]
 
     return settings
@@ -100,6 +112,18 @@ def get_data_settings(CC):
 #                "6-140":["10509", "10510"],
 #            },
         },
+        "2017-02-5":{
+            "ABS-LH2":{
+                "3-140":["9918", "9920", "9923", "9926", "9932",],
+                "6-140":["9921", "9924", "9927", "9931",],
+                "10-140":["9922", "9925", "9928", "9929", "9930",],
+            },
+            "ABS-LH2-EMPTY":{
+                "3-140":["10142", "10143", "10147",],
+                "6-140":["10141", "10144", "10148",],
+                "10-140":["10138", "10139", "10140", "10145", "10146", "10149", "10150",],
+            },
+        },
     }[CC]
 
     return settings
@@ -121,10 +145,13 @@ def get_jobsuffix(config):
 if __name__ == "__main__":
   
     queue = "xxl" #"medium" #"xxl"
-    version = "v3"
-    config = "3f"
+    #version = "v3"
+    #config = "3f"
     #config = "c3"
-    CC = "2017-02-6"
+    version = "v1"
+    config = "c4"
+    CC = "2017-02-5"
+    #CC = "2017-02-6"
 
     #run_function = run_single
     run_function = run_cumulative
@@ -142,7 +169,7 @@ if __name__ == "__main__":
     else:
         scriptname = "./pymovedata_dojobsub.sh"
 
-    if config == "c3" or config == "c3" or config == "c7" or config == "3f":
+    if config == "c3" or config == "c4" or config == "c7" or config == "3f":
         run_function = run_single
         settings = get_mc_settings(CC)
     elif config == "2f":
