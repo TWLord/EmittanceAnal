@@ -180,7 +180,7 @@ python bin/run_one_analysis.py $configdir/config_${confignum}_${_runs}_full.py
 " \
 | tee $here/logs/tmp/${queue}_${_runs}_c${confignum}.sh
 chmod +x $here/logs/tmp/${queue}_${_runs}_c${confignum}.sh
-#bsub -G micegrp -M 6000 -oo $here/logs/${queue}_${_runs}_c${confignum}.log -q ${queue} $here/logs/tmp/${queue}_${_runs}_c${confignum}.sh
+bsub -G micegrp -M 6000 -oo $here/logs/${queue}_${_runs}_c${confignum}.log -q ${queue} $here/logs/tmp/${queue}_${_runs}_c${confignum}.sh
 
 else
 echo "no runs for $opt"

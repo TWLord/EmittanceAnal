@@ -8,7 +8,7 @@ confignum=2
 # CC is set from GeomID file. 
 # CC template currently set as 2017-02-6
 
-# Loop set to only submit higher mom runs
+### Loop can be set to only submit higher mom runs
 
 #confignum=5
 #queue=xlong

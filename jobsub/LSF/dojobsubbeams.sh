@@ -6,8 +6,8 @@ MAUSdir=~/MICE/maus--versions/MAUSv3.3.0
 queue=xlong
 
 configdir=config/beams
-configfile=beams_2017-02-6_140
-#configfile=beams_2017-02-6_140_2
+#configfile=beams_2017-02-6_140
+configfile=beams_2017-02-6_140_2
 #configfile=beams_2017-02-6_highmom
 #configfile=beams_2017-02-6_highmom2
 

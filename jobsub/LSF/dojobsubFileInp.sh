@@ -3,8 +3,8 @@
 here=/home/phumhf/MICE/maus--versions/MAUSv3.3.0/bin/user/first-observation-paper-scripts
 MAUSdir=~/MICE/maus--versions/MAUSv3.3.0
 
-#queue=xlong
-queue=long
+queue=xlong
+#queue=long
 
 for file in "$@" ; do
 while read -r line ; do

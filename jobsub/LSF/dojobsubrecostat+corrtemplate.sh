@@ -12,16 +12,16 @@ c=8
 
 #ABS=ABS-LH2
 #ABS=ABS-LH2-EMPTY
-ABS=ABS-SOLID-EMPTY
-#ABS=ABS-SOLID-LiH
+#ABS=ABS-SOLID-EMPTY
+ABS=ABS-SOLID-LiH
 templatedir=config/solenoid/2017-02-6/ABS-TEMPLATE/
 
 #for opt in "9883,3-140" "9885,6-140" "9886,10-140" ; do 
 #for opt in "10243,3-140" "10245,6-140" "10246,10-140" ; do 
-for opt in "10314,3-140" "10317,4-140" "10318,6-140" "10319,10-140" ; do 
+#for opt in "10314,3-140" "10317,4-140" "10318,6-140" "10319,10-140" ; do 
 #for opt in "10314,3-140" "10318,6-140" "10319,10-140" ; do 
 #for opt in "10579,3-140" "1080,4-140" "10581,6-140" "10582,10-140" ; do 
-#for opt in "10508,3-140" "10504,4-140" "10509,6-140" ; do 
+for opt in "10508,3-140" "10504,4-140" "10509,6-140" ; do 
 #for opt in "10579,3-140" "10581,6-140" "10582,10-140" ; do 
 #for opt in "9883,3-140" ; do 
 #for opt in "9885,6-140" ; do 
