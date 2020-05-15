@@ -93,7 +93,7 @@ sed -i \"s%.*a_file = .*%        a_file = \\\"\$mytempdir\/\\*.root\\\"%\" $here
 echo \"Copied files : \"
 echo \"\$(ls)\"
 
-cd $MAUSdir/bin/user/first-observation-paper-scripts 
+cd $here 
 
 PYTHONPATH=\$PYTHONPATH:$here
 echo \$PYTHONPATH
@@ -104,6 +104,5 @@ python $here/bin/run_one_analysis.py $configdir/config_${config}_${rn}_full.py
 chmod +x $here/logs/tmp/${runnumber}_${jobsuffix}_movedata.sh
 #bsub -G micegrp -M 20000 -oo $here/logs/${runnumber}_${jobsuffix}_movedata.log -q ${queue} $here/logs/tmp/${runnumber}_${jobsuffix}_movedata.sh
 
-echo "sbatch -o $here/logs/${runnumber}_${jobsuffix}_movedata.log -p epp -t ${TIME} $here/logs/tmp/${runnumber}_${jobsuffix}_movedata.sh"
-sbatch -o $here/logs/${runnumber}_${jobsuffix}_movedata.log -p epp -t ${TIME} $here/logs/tmp/${runnumber}_${jobsuffix}_movedata.sh
+sbatch --mem 20000 -o $here/logs/${runnumber}_${jobsuffix}_movedata.log -p epp -t ${TIME} $here/logs/tmp/${runnumber}_${jobsuffix}_movedata.sh
 

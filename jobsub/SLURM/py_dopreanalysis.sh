@@ -66,7 +66,7 @@ fi
 echo -en "#!/bin/bash \n\
 
 . $MAUSdir/env.sh 
-cd $MAUSdir/bin/user/first-observation-paper-scripts 
+cd $here
 
 PYTHONPATH=\$PYTHONPATH:$here
 echo \$PYTHONPATH
@@ -78,4 +78,5 @@ chmod +x $here/logs/tmp/${runnumber}_${jobsuffix}.sh
 #bsub -G micegrp -M 2000 -oo $here/logs/${runnumber}_${jobsuffix}.log -q ${queue} $here/logs/tmp/${runnumber}_${jobsuffix}.sh
 #bsub -G micegrp -M 20000 -oo $here/logs/${runnumber}_${jobsuffix}.log -q ${queue} $here/logs/tmp/${runnumber}_${jobsuffix}.sh
 
-sbatch -o $here/logs/${runnumber}_${jobsuffix}.log -t ${time} $here/logs/tmp/${runnumber}_${jobsuffix}.sh
+#sbatch -o $here/logs/${runnumber}_${jobsuffix}.log -t ${time} $here/logs/tmp/${runnumber}_${jobsuffix}.sh
+sbatch --mem 20000 -o $here/logs/${runnumber}_${jobsuffix}.log -t ${time} $here/logs/tmp/${runnumber}_${jobsuffix}.sh

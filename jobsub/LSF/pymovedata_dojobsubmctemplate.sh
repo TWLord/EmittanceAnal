@@ -71,7 +71,7 @@ sed -i \"s%.*a_file = .*%        a_file = \\\"\$mytempdir\/\\*_sim.root\\\"%\" $
 echo \"Copied files : \"
 echo \"\$(ls)\"
 
-cd $MAUSdir/bin/user/first-observation-paper-scripts 
+cd $here
 
 PYTHONPATH=\$PYTHONPATH:$here
 echo \$PYTHONPATH

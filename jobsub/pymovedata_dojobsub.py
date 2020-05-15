@@ -30,39 +30,41 @@ def run_cumulative(scriptname, queue, version, config, templatedir, jobsuffix, C
         for Optics, run_list in all_optics.iteritems():
             runs = ""
             for run in run_list:
-                runs += run+", "
+                #runs += run+", "
+                runs += run+"_"
+            runs = runs.substring(0, runs.length() -1)
             rc = subprocess.check_call([scriptname, ABS, runs, Optics, CC, version, config, queue, templatedir, jobsuffix])
 
 def get_mc_settings(CC):
     settings = {
         "2017-02-6":{
             "ABS-LH2":{
-                "3-140":["9883",],
-                "6-140":["9885",],
-                "10-140":["9886",],
-                "3-170":["9911",],
-                "3-200":["9910",],
+                #"3-140":["9883",],
+                #"6-140":["9885",],
+                #"10-140":["9886",],
+                #"3-170":["9911",],
+                #"3-200":["9910",],
                 "3-240":["9909",],
             },
-            "ABS-LH2-EMPTY":{
-                "3-140":["10243",],
-                "6-140":["10245",],
-                "10-140":["10246",],
-                "3-170":["10268",],
-                "3-200":["10267",],
-                "3-240":["10265",],
-            },
-            "ABS-SOLID-EMPTY":{
-                "3-140":["10314",],
-                "4-140":["10317",],
-                "6-140":["10318",],
-                "10-140":["10319",],
-            },
-            "ABS-SOLID-LiH":{
-                "3-140":["10508",],
-                "4-140":["10504",],
-                "6-140":["10509",],
-            },
+            #"ABS-LH2-EMPTY":{
+            #    "3-140":["10243",],
+            #    "6-140":["10245",],
+            #    "10-140":["10246",],
+            #    "3-170":["10268",],
+            #    "3-200":["10267",],
+            #    "3-240":["10265",],
+            #},
+            #"ABS-SOLID-EMPTY":{
+            #    "3-140":["10314",],
+            #    "4-140":["10317",],
+            #    "6-140":["10318",],
+            #    "10-140":["10319",],
+            #},
+            #"ABS-SOLID-LiH":{
+            #    "3-140":["10508",],
+            #    "4-140":["10504",],
+            #    "6-140":["10509",],
+            #},
         },
         "2017-02-5":{
             "ABS-LH2":{
@@ -146,16 +148,16 @@ if __name__ == "__main__":
   
     # RUN SETTINGS HERE
     ######################
-    queue = "xxl" #"medium" #"xxl"
+    queue = "xxl" #"medium" #"xxl" #### Currently redundant for SLURM jobsub
     version = "v3"
     #config = "3f"
-    #config = "c3"
-    version = "v1"
+    config = "c3"
+    #version = "v2"
     #config = "c4"
     #CC = "2017-02-5"
     CC = "2017-02-6"
 
-    config = "c2"
+    #config = "c2"
 
     SLURM = True
 
@@ -170,17 +172,17 @@ if __name__ == "__main__":
     jobsuffix = get_jobsuffix(config)
   
     if config == "c7":
-        scriptname = "./pymovedata_dojobsub_systematics.sh"
+        scriptname = "pymovedata_dojobsub_systematics.sh"
     elif config == "2f" or config == "3f":
-        scriptname = "./py_dopreanalysis.sh"
+        scriptname = "py_dopreanalysis.sh"
         templatedir = "config/templates/file_reducer"
     else:
-        scriptname = "./pymovedata_dojobsub.sh"
+        scriptname = "pymovedata_dojobsub.sh"
 
     if SLURM:
-        scriptname = "SLURM/" + scriptname
+        scriptname = "./SLURM/" + scriptname
     else:
-        scriptname = "LSF/" + scriptname
+        scriptname = "./LSF/" + scriptname
 
     if config == "c3" or config == "c4" or config == "c7" or config == "3f":
         run_function = run_single

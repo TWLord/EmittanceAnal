@@ -61,7 +61,7 @@ fi
 echo -en "#!/bin/bash \n\
 
 . $MAUSdir/env.sh 
-cd $MAUSdir/bin/user/first-observation-paper-scripts 
+cd $here
 
 PYTHONPATH=\$PYTHONPATH:$here
 echo \$PYTHONPATH

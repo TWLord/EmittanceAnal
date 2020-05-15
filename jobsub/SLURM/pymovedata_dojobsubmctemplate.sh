@@ -76,7 +76,7 @@ sed -i \"s%.*a_file = .*%        a_file = \\\"\$mytempdir\/\\*_sim.root\\\"%\" $
 echo \"Copied files : \"
 echo \"\$(ls)\"
 
-cd $MAUSdir/bin/user/first-observation-paper-scripts 
+cd $here
 
 PYTHONPATH=\$PYTHONPATH:$here
 echo \$PYTHONPATH
@@ -87,7 +87,8 @@ python $here/bin/run_one_analysis.py $configdir/config_3_${rn}_full.py
 chmod +x $here/logs/tmp/${runnumber}_mc_movedata.sh
 #bsub -G micegrp -M 20000 -oo $here/logs/${runnumber}_mc_movedata.log -q ${queue} $here/logs/tmp/${runnumber}_mc_movedata.sh
 
-sbatch -o $here/logs/${runnumber}_mc_movedata.log -t ${time} $here/logs/tmp/${runnumber}_mc_movedata.sh
+#sbatch -o $here/logs/${runnumber}_mc_movedata.log -t ${time} $here/logs/tmp/${runnumber}_mc_movedata.sh
+sbatch --mem 20000 -o $here/logs/${runnumber}_mc_movedata.log -t ${time} $here/logs/tmp/${runnumber}_mc_movedata.sh
 
 else
 echo "no runs for $opt"
