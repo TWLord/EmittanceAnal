@@ -53,21 +53,28 @@ class MCPlotter(AnalysisBase):
             #print " virt_station_list[0] : " + virt_station_list[0]
 
             # Tracker plots using all stations
-            if "tku_tp" in detector or "tkd_tp" in detector:
-                for virt_station in virt_station_list: 
-                    self.birth_var_two_d_scatter("x_vs_y_at_"+virt_station, virt_station, "pid", "x", "y", pid_colors, True)
-                    self.birth_var_two_d_scatter("px_vs_py_at_"+virt_station, virt_station, "pid", "px", "py", pid_colors, True)
-                    self.birth_var_two_d_hist("x_vs_y_at_"+virt_station+"_us_cut_hist", virt_station, "x", "y", "upstream_cut", xmin = -150, xmax = 150, ymin = -150, ymax = 150)
-                    self.birth_var_two_d_hist("x_vs_y_at_"+virt_station+"_ds_cut_hist", virt_station, "x", "y", "downstream_cut", -150, 150, -150, 150)
-                    self.birth_var_two_d_hist("px_vs_py_at_"+virt_station+"_us_cut_hist", virt_station, "px", "py", "upstream_cut", -150, 150, -150, 150)
+            #if "tku_tp" in detector or "tkd_tp" in detector:
+            for virt_station in virt_station_list: 
+                #self.birth_var_two_d_scatter("x_vs_y_at_"+virt_station, virt_station, "pid", "x", "y", pid_colors, True) # TomL
+                #self.birth_var_two_d_scatter("px_vs_py_at_"+virt_station, virt_station, "pid", "px", "py", pid_colors, True) # TomL
+                self.birth_var_two_d_hist("x_vs_y_at_"+virt_station+"_us_cut_hist", virt_station, "x", "y", "upstream_cut", xmin = -150, xmax = 150, ymin = -150, ymax = 150) # TomL
+                self.birth_var_two_d_hist("x_vs_y_at_"+virt_station+"_ds_cut_hist", virt_station, "x", "y", "downstream_cut", -150, 150, -150, 150) # TomL
+                self.birth_var_two_d_hist("px_vs_py_at_"+virt_station+"_us_cut_hist", virt_station, "px", "py", "upstream_cut", -150, 150, -150, 150) # TomL
+                self.birth_var_two_d_hist("px_vs_py_at_"+virt_station+"_ds_cut_hist", virt_station, "px", "py", "downstream_cut", -150, 150, -150, 150) # TomL
+                self.birth_var_two_d_hist("x_vs_y_at_"+virt_station+"_us_cut_hist_large", virt_station, "x", "y", "upstream_cut", xmin = -250, xmax = 250, ymin = -250, ymax = 250) # TomL
+                self.birth_var_two_d_hist("x_vs_y_at_"+virt_station+"_ds_cut_hist_large", virt_station, "x", "y", "downstream_cut", -250, 250, -250, 250) # TomL
+                self.birth_var_two_d_hist("px_vs_py_at_"+virt_station+"_us_cut_hist_large", virt_station, "px", "py", "upstream_cut", -250, 250, -250, 250) # TomL
+                self.birth_var_two_d_hist("px_vs_py_at_"+virt_station+"_ds_cut_hist_large", virt_station, "px", "py", "downstream_cut", -250, 250, -250, 250) # TomL
+
 
             # Tracker plots only using tk*_tp
             virt_station = virt_station_list[0]
-            # but first doing x and y for all mc stations
-            self.birth_var_two_d_hist("x_vs_y_at_"+virt_station+"_us_cut_hist_large", virt_station, "x", "y", "upstream_cut", xmin = -250, xmax = 250, ymin = -250, ymax = 250)
-            self.birth_var_two_d_hist("x_vs_y_at_"+virt_station+"_ds_cut_hist_large", virt_station, "x", "y", "downstream_cut", -250, 250, -250, 250)
-            self.birth_var_two_d_hist("px_vs_py_at_"+virt_station+"_us_cut_hist_large", virt_station, "px", "py", "upstream_cut", -250, 250, -250, 250)
-            self.birth_var_two_d_hist("px_vs_py_at_"+virt_station+"_ds_cut_hist_large", virt_station, "px", "py", "downstream_cut", -250, 250, -250, 250)
+            # but first doing xy & pxpy for all mc stations
+            # moved these to loop above
+            #self.birth_var_two_d_hist("x_vs_y_at_"+virt_station+"_us_cut_hist_large", virt_station, "x", "y", "upstream_cut", xmin = -250, xmax = 250, ymin = -250, ymax = 250) # TomL
+            #self.birth_var_two_d_hist("x_vs_y_at_"+virt_station+"_ds_cut_hist_large", virt_station, "x", "y", "downstream_cut", -250, 250, -250, 250) # TomL
+            #self.birth_var_two_d_hist("px_vs_py_at_"+virt_station+"_us_cut_hist_large", virt_station, "px", "py", "upstream_cut", -250, 250, -250, 250) # TomL
+            #self.birth_var_two_d_hist("px_vs_py_at_"+virt_station+"_ds_cut_hist_large", virt_station, "px", "py", "downstream_cut", -250, 250, -250, 250) # TomL
 
             self.birth_var_one_d("p_at_"+virt_station, virt_station, "pid", "p", pid_colors, "us cut", 0., 300.)
             self.birth_var_one_d("pt_at_"+virt_station, virt_station, "pid", "pt", pid_colors, "us cut", 0., 100.)
