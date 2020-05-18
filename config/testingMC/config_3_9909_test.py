@@ -149,7 +149,7 @@ def get_analysis(run_list, name, tof01_min_max, maus_version, data_dir, emittanc
             "do_plots":False, #True, #False
             "do_cuts_plots":False, #True,
             "do_tof01_weighting":False,
-            "do_optics":False, #True,
+            "do_optics":True,
             "do_data_recorder":False, #True,
     }
     return analysis_variables
