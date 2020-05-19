@@ -12,7 +12,7 @@ VERSION="$6"
 config="$7"
 queue="$8"
 templatedir="$9"
-jobsuffix="$10"
+jobsuffix="${10}"
 #datadir="$11"
 
 echo $rn
