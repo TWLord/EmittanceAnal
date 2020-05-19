@@ -1,4 +1,12 @@
+import sys
 import subprocess
+import os
+
+def is_csc():
+    uname = subprocess.check_output(['uname', '-a'])
+    #uname = "blank"
+    #uname = "epp-ui01"
+    return '.warwick.' in uname
 
 def run_single(scriptname, queue, version, config, templatedir, jobsuffix, CC, settings):
     print "Running each run individually"
@@ -11,7 +19,8 @@ def run_single(scriptname, queue, version, config, templatedir, jobsuffix, CC, s
     for ABS, all_optics in settings.iteritems():
         for Optics, run_list in all_optics.iteritems():
             for run in run_list:
-                rc = subprocess.check_call([scriptname, ABS, run, Optics, CC, version, config, queue, templatedir, jobsuffix])
+                rn = str(run).rjust(5, '0')
+                rc = subprocess.check_call([scriptname, ABS, run, rn, Optics, CC, version, config, queue, templatedir, jobsuffix])
 
 
 
@@ -28,12 +37,18 @@ def run_cumulative(scriptname, queue, version, config, templatedir, jobsuffix, C
 
     for ABS, all_optics in settings.iteritems():
         for Optics, run_list in all_optics.iteritems():
-            runs = ""
+            runs_ = ""
+            runscomma = ""
             for run in run_list:
-                #runs += run+", "
-                runs += run+"_"
-            runs = runs.substring(0, runs.length() -1)
-            rc = subprocess.check_call([scriptname, ABS, runs, Optics, CC, version, config, queue, templatedir, jobsuffix])
+                runs_ += run+"_"
+                #runscomma += '\\"'+run+'\\", '
+                runscomma += run+', '
+            runs_ = runs_[0:len(runs_)-1]
+            runscomma = runscomma[0:len(runscomma)-2]
+            print runs_
+            print runscomma
+            raw_input("Press Enter..")
+            rc = subprocess.check_call([scriptname, ABS, runs_, runscomma, Optics, CC, version, config, queue, templatedir, jobsuffix])
 
 def get_mc_settings(CC):
     settings = {
@@ -151,7 +166,8 @@ if __name__ == "__main__":
     queue = "xxl" #"medium" #"xxl" #### Currently redundant for SLURM jobsub
     version = "v3"
     #config = "3f"
-    config = "c3"
+    #config = "c3"
+    config = "c2"
     #version = "v2"
     #config = "c4"
     #CC = "2017-02-5"
@@ -159,7 +175,9 @@ if __name__ == "__main__":
 
     #config = "c2"
 
-    SLURM = True
+    #SLURM = False # True
+    SLURM = is_csc()
+    print "is csc -", SLURM
 
     ###################### 
 
@@ -176,6 +194,8 @@ if __name__ == "__main__":
     elif config == "2f" or config == "3f":
         scriptname = "py_dopreanalysis.sh"
         templatedir = "config/templates/file_reducer"
+    elif config == "c2" or config == "c5" or config == "c6" or config == "c8":
+        scriptname = "py_dojobsub.sh"
     else:
         scriptname = "pymovedata_dojobsub.sh"
 
@@ -196,4 +216,3 @@ if __name__ == "__main__":
     print "Config", config
     config = config.strip("c")
     run_function(scriptname, queue, version, config, templatedir, jobsuffix, CC, settings)
-

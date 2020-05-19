@@ -5,24 +5,25 @@ MAUSdir=~/MICE/maus--versions/MAUSv3.3.0
 
 ABS="$1"
 rn="$2"
-Optics="$3"
-CC="$4"
-VERSION="$5"
-config="$6"
-queue="$7"
-templatedir="$8"
-jobsuffix="$9"
-#datadir="$10"
+runnumber="$3"
+Optics="$4"
+CC="$5"
+VERSION="$6"
+config="$7"
+queue="$8"
+templatedir="$9"
+jobsuffix="$10"
+#datadir="$11"
 
 echo $rn
 echo $Optics
 
-if [ $rn -lt 10000 ] ; then
-runnumber=0$rn
-else 
-runnumber=$rn
-fi
-rn=$rn
+#if [ $rn -lt 10000 ] ; then
+#runnumber=0$rn
+#else 
+#runnumber=$rn
+#fi
+#rn=$rn
 
 if [ $config == "2" ] ; then
 datadir=/data/mice/phumhf/ReconData/MAUSv3.3.2/$runnumber
