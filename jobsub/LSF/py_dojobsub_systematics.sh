@@ -52,7 +52,7 @@ echo "jobsuffix: $jobsuffix "
 
 
 
-configdir=config/c$config
+configdir=config/c$config/$VERSION
 
 if [ ! -d $here/config/c$config ] ; then
 
@@ -61,7 +61,7 @@ mkdir -p $here/config/c$config
 cp -f $here/$templatedir/__init__.py $here/config/c$config/
 fi
 
-if [ ! -e $here/$configdir/config_${config}_${rn}_full.py  ] ; then
+if [ ! -e $here/$configdir/config_${config}_${rn}_full_${SYSTEMATIC}.py  ] ; then
 
 echo "Missing config file for run $rn"
 echo "Making config for run $rn from template"
@@ -69,7 +69,7 @@ echo "Making config for run $rn from template"
 mkdir -p $here/$configdir
 cp -f $here/$templatedir/__init__.py $here/$configdir/
 
-sed -e "s/template/${rn}/g" -e "s/ABS/$ABS/g" -e "s/CC/$CC/g" -e "s/VERSION/$VERSION/g" -e "s/SYSTEMATIC/$SYSTEMATIC/g" $here/$templatedir/config_${config}_${Optics}.py > $here/$configdir/config_${config}_${rn}_full.py
+sed -e "s/template/${rn}/g" -e "s/ABS/$ABS/g" -e "s/CC/$CC/g" -e "s/VERSION/$VERSION/g" -e "s/SYSTEMATIC/$SYSTEMATIC/g" $here/$templatedir/config_${config}_${Optics}.py > $here/$configdir/config_${config}_${rn}_full_${SYSTEMATIC}.py
 
 else 
 echo "Running config for run $rn"
@@ -85,10 +85,10 @@ cd $here
 
 PYTHONPATH=\$PYTHONPATH:$here
 echo \$PYTHONPATH
-python $here/bin/run_one_analysis.py $configdir/config_${config}_${rn}_full.py
+python $here/bin/run_one_analysis.py $configdir/config_${config}_${rn}_full_${SYSTEMATIC}.py
 
 " \
-| tee $here/logs/tmp/${rn}_${jobsuffix}.sh
-chmod +x $here/logs/tmp/${rn}_${jobsuffix}.sh
-bsub -G micegrp -M 20000 -oo $here/logs/${rn}_${jobsuffix}.log -q ${queue} $here/logs/tmp/${rn}_${jobsuffix}.sh
+| tee $here/logs/tmp/${rn}_${jobsuffix}_${SYSTEMATIC}${VERSION}.sh
+chmod +x $here/logs/tmp/${rn}_${jobsuffix}_${SYSTEMATIC}${VERSION}.sh
+bsub -G micegrp -M 20000 -oo $here/logs/${rn}_${jobsuffix}_${SYSTEMATIC}${VERSION}.log -q ${queue} $here/logs/tmp/${rn}_${jobsuffix}_${SYSTEMATIC}${VERSION}.sh
 

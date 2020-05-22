@@ -8,8 +8,9 @@ def is_csc():
     #uname = "epp-ui01"
     return '.warwick.' in uname
 
-def run_single(scriptname, queue, version, config, templatedir, jobsuffix, CC, settings):
+def run_single(scriptname, queue, version, config, templatedir, jobsuffix, CC, settings, use_preanal):
     print "Running each run individually"
+    print "with use_preanal =", use_preanal
     raw_input("Press Enter to continue...")
     for ABS, all_optics in settings.iteritems():
         for Optics, run_list in all_optics.iteritems():
@@ -19,13 +20,15 @@ def run_single(scriptname, queue, version, config, templatedir, jobsuffix, CC, s
     for ABS, all_optics in settings.iteritems():
         for Optics, run_list in all_optics.iteritems():
             for run in run_list:
-                rn = str(run).rjust(5, '0')
-                rc = subprocess.check_call([scriptname, ABS, run, rn, Optics, CC, version, config, queue, templatedir, jobsuffix])
+                runnumber = str(run).rjust(5, '0')
+                rc = subprocess.check_call([scriptname, ABS, run, runnumber, Optics, CC, version, config, queue, templatedir, jobsuffix, use_preanal])
+                #rc = subprocess.check_call([scriptname, ABS, run, runnumber, Optics, CC, version, config, queue, templatedir, jobsuffix])
 
 
 
-def run_cumulative(scriptname, queue, version, config, templatedir, jobsuffix, CC, settings):
+def run_cumulative(scriptname, queue, version, config, templatedir, jobsuffix, CC, settings, use_preanal):
     print "Running data runs cumulatively"
+    print "Can't use preanal here yet"
     raw_input("Press Enter to continue...")
     for ABS, all_optics in settings.iteritems():
         for Optics, run_list in all_optics.iteritems():
@@ -45,30 +48,87 @@ def run_cumulative(scriptname, queue, version, config, templatedir, jobsuffix, C
                 runscomma += run+', '
             runs_ = runs_[0:len(runs_)-1]
             runscomma = runscomma[0:len(runscomma)-2]
-            print runs_
-            print runscomma
-            raw_input("Press Enter..")
+            #print runs_
+            #print runscomma
+            #raw_input("Press Enter..")
             rc = subprocess.check_call([scriptname, ABS, runs_, runscomma, Optics, CC, version, config, queue, templatedir, jobsuffix])
+
+
+def run_systematics(scriptname, queue, version, config, templatedir, jobsuffix, CC, settings, base_only):
+    print "Running each run individually"
+    print "Doing systematics with base_only =", base_only 
+    raw_input("Press Enter to continue...")
+
+    sys_list = ["tku_pos_plus", "tku_rot_plus", "tku_scale_C_plus", "tku_scale_E1_plus", "tku_scale_E2_plus", "tku_density_plus", "tkd_rot_plus", "tkd_pos_plus", "tkd_scale_C_plus", "tkd_scale_E1_plus", "tkd_scale_E2_plus", "tkd_density_plus"]
+
+    for ABS, all_optics in settings.iteritems():
+        for Optics, run_list in all_optics.iteritems():
+            for run in run_list:
+                print "Running", ABS, Optics, run
+    raw_input("Press Enter to continue...")
+    for ABS, all_optics in settings.iteritems():
+        for Optics, run_list in all_optics.iteritems():
+            for run in run_list:
+                runnumber = str(run).rjust(5, '0')
+                systematic = "tku_base"
+                rc = subprocess.check_call([scriptname, ABS, run, runnumber, Optics, CC, version, config, queue, templatedir, jobsuffix, systematic])
+                if base_only:
+                    continue
+                for systematic in sys_list:
+                    rc = subprocess.check_call([scriptname, ABS, run, runnumber, Optics, CC, version, config, queue, templatedir, jobsuffix, systematic])
+
+def get_sys_settings(CC):
+    settings = {
+        "2017-02-6":{
+            "ABS-LH2":{
+                "3-140":["9883",],
+                "6-140":["9885",],
+                #"10-140":["9886",],
+                #"3-170":["9911",],
+                #"3-200":["9910",],
+                #"3-240":["9909",],
+            },
+            #"ABS-SOLID-EMPTY":{
+            #    "4-140":["10317",],
+            #},
+        },
+        "2017-02-5":{
+            "ABS-LH2":{
+                "3-140":["9920",],
+                "6-140":["9921",],
+                "10-140":["9922",],
+            },
+            "ABS-LH2-EMPTY":{
+                "3-140":["10143",],
+                "6-140":["10144",],
+                "10-140":["10145",],
+            },
+        },
+    }[CC]
+
+    return settings
+
+
 
 def get_mc_settings(CC):
     settings = {
         "2017-02-6":{
-            "ABS-LH2":{
-                #"3-140":["9883",],
-                #"6-140":["9885",],
-                #"10-140":["9886",],
-                #"3-170":["9911",],
-                #"3-200":["9910",],
-                "3-240":["9909",],
-            },
-            #"ABS-LH2-EMPTY":{
+            #"ABS-LH2":{
+            #    #"3-140":["9883",],
+            #    #"6-140":["9885",],
+            #    #"10-140":["9886",],
+            #    "3-170":["9911",],
+            #    #"3-200":["9910",],
+            #    "3-240":["9909",],
+            #},
+            "ABS-LH2-EMPTY":{
             #    "3-140":["10243",],
             #    "6-140":["10245",],
             #    "10-140":["10246",],
             #    "3-170":["10268",],
             #    "3-200":["10267",],
-            #    "3-240":["10265",],
-            #},
+                "3-240":["10265",],
+            },
             #"ABS-SOLID-EMPTY":{
             #    "3-140":["10314",],
             #    "4-140":["10317",],
@@ -87,11 +147,11 @@ def get_mc_settings(CC):
                 "6-140":["9921",],
                 "10-140":["9922",],
             },
-            #"ABS-LH2-EMPTY":{
-            #    "3-140":["10143",],
-            #    "6-140":["10144",],
-            #    "10-140":["10145",],
-            #},
+            "ABS-LH2-EMPTY":{
+                "3-140":["10143",],
+                "6-140":["10144",],
+                "10-140":["10145",],
+            },
         },
     }[CC]
 
@@ -101,33 +161,33 @@ def get_mc_settings(CC):
 def get_data_settings(CC):
     settings = {
         "2017-02-6":{
-            "ABS-LH2":{
-                #"3-140":["9883", "9888", "9893", "9897", "9903", "9906",],
-                #"6-140":["9884", "9885", "9889", "9894", "9898", "9904", "9905",],
-                #"10-140":["9886", "9887", "9890", "9891", "9892", "9895", "9896", "9899", "9900", "9901", "9902",],
-                #"3-170":["9911",],
-                #"3-200":["9910", "9915"],
-                "3-240":["9907", "9908", "9909", "9912", "9913", "9914",],
+            #"ABS-LH2":{
+            #    "3-140":["9883", "9888", "9893", "9897", "9903", "9906",],
+            #    "6-140":["9884", "9885", "9889", "9894", "9898", "9904", "9905",],
+            #    "10-140":["9886", "9887", "9890", "9891", "9892", "9895", "9896", "9899", "9900", "9901", "9902",],
+            #    "3-170":["9911",],
+            #    "3-200":["9910", "9915"],
+            #    "3-240":["9907", "9908", "9909", "9912", "9913", "9914",],
+            #},
+            #"ABS-LH2-EMPTY":{
+            #    "3-140":["10243", "10248", "10253", "10254", "10255", "10256",],
+            #    "6-140":["10245", "10247", "10249",],
+            #    "10-140":["10246", "10250", "10251", "10252", "10257", "10258", "10259", "10260",],
+            #    "3-170":["10268", "10269",],
+            #    "3-200":["10262", "10266", "10267", "10275",],
+            #    "3-240":["10261", "10264", "10265", "10270", "10271", "10272", "10273", "10274",],
+            #},
+            "ABS-SOLID-EMPTY":{
+                "3-140":["10313", "10314", "10323", "10327", "10333",],
+            #    "4-140":["10315", "10317", "10322", "10328", "10334",],
+            #    "6-140":["10318", "10324", "10329", "10335",],
+            #    "10-140":["10319", "10321", "10325", "10326", "10330", "10331", "10332",],
             },
-#            "ABS-LH2-EMPTY":{
-#                "3-140":["10243", "10248", "10253", "10254", "10255", "10256",],
-#                "6-140":["10245", "10247", "10249",],
-#                "10-140":["10246", "10250", "10251", "10252", "10257", "10258", "10259", "10260",],
-#                "3-170":["10268", "10269",],
-#                "3-200":["10262", "10266", "10267", "10275",],
-#                "3-240":["10261", "10264", "10265", "10270", "10271", "10272", "10273", "10274",],
-#            },
-#            "ABS-SOLID-EMPTY":{
-#                "3-140":["10313", "10314", "10323", "10327", "10333",],
-#                "4-140":["10315", "10317", "10322", "10328", "10334",],
-#                "6-140":["10318", "10324", "10329", "10335",],
-#                "10-140":["10319", "10321", "10325", "10326", "10330", "10331", "10332",],
-#            },
-#            "ABS-SOLID-LiH":{
-#                "3-140":["10508", "10511",],
-#                "4-140":["10504", "10505", "10506", "10507",],
-#                "6-140":["10509", "10510"],
-#            },
+            #"ABS-SOLID-LiH":{
+            #    "3-140":["10508", "10511",],
+            #    "4-140":["10504", "10505", "10506", "10507",],
+            #    "6-140":["10509", "10510"],
+            #},
         },
         "2017-02-5":{
             "ABS-LH2":{
@@ -164,14 +224,25 @@ if __name__ == "__main__":
     # RUN SETTINGS HERE
     ######################
     queue = "xxl" #"medium" #"xxl" #### Currently redundant for SLURM jobsub
-    version = "v3"
+    #version = "v3"
     #config = "3f"
     #config = "c3"
-    config = "c2"
-    #version = "v2"
+    #config = "c5"
+    #config = "c8"
+    #config = "c2"
+
     #config = "c4"
+    #version = "v1"
+    #version = "v2"
+
+    config = "c7"
+    version = "v107"
+
     #CC = "2017-02-5"
     CC = "2017-02-6"
+
+    use_preanal = "FALSE" # "True"
+    base_only = False #True # False 
 
     #config = "c2"
 
@@ -190,7 +261,8 @@ if __name__ == "__main__":
     jobsuffix = get_jobsuffix(config)
   
     if config == "c7":
-        scriptname = "pymovedata_dojobsub_systematics.sh"
+        scriptname = "py_dojobsub_systematics.sh"
+        #scriptname = "py_dojobsub.sh"
     elif config == "2f" or config == "3f":
         scriptname = "py_dopreanalysis.sh"
         templatedir = "config/templates/file_reducer"
@@ -204,15 +276,23 @@ if __name__ == "__main__":
     else:
         scriptname = "./LSF/" + scriptname
 
-    if config == "c3" or config == "c4" or config == "c7" or config == "3f":
+    if config == "c3" or config == "c4" or config == "3f":
         run_function = run_single
         settings = get_mc_settings(CC)
+        extra_opt = use_preanal
     elif config == "2f":
         run_function = run_single
         settings = get_data_settings(CC)
+    elif config == "3f":
+        run_function = run_single
+        settings = get_mc_settings(CC)
+    elif config == "c7":
+        run_function = run_systematics
+        settings = get_sys_settings(CC)
+        extra_opt = base_only
     else:
         settings = get_data_settings(CC)
   
     print "Config", config
     config = config.strip("c")
-    run_function(scriptname, queue, version, config, templatedir, jobsuffix, CC, settings)
+    run_function(scriptname, queue, version, config, templatedir, jobsuffix, CC, settings, extra_opt)

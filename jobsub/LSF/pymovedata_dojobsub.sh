@@ -13,6 +13,7 @@ config="$7"
 queue="$8"
 templatedir="$9"
 jobsuffix="${10}"
+use_preanal="${11}"
 #datadir="$11"
 
 echo $rn
@@ -30,7 +31,8 @@ datadir=/data/mice/phumhf/ReconData/MAUSv3.3.2/$runnumber
 elif [ $config == "3" ] ; then
 datadir=/data/mice/phumhf/MC/MAUSv3.3.2/$runnumber$VERSION
 elif [ $config == "4" ] ; then
-datadir=/data/mice/phumhf/analMC/${runnumber}_$VERSION/*/
+datadir=/data/mice/phumhf/analMC/${runnumber}_$VERSION
+copydir=*/maus_output
 elif [ $config == "5" ] ; then
 datadir=/data/mice/phumhf/ReconData/MAUSv3.3.2/$runnumber
 elif [ $config == "6" ] ; then
@@ -41,8 +43,6 @@ exit 1
 elif [ $config == "8" ] ; then
 datadir=/data/mice/phumhf/ReconData/MAUSv3.3.2/$runnumber
 fi
-
-
 
 
 configdir=config/c$config/movedata
@@ -64,9 +64,19 @@ cp -f $here/$templatedir/__init__.py $here/$configdir/
 
 sed -e "s/template/${rn}/g" -e "s/ABS/$ABS/g" -e "s/CC/$CC/g" -e "s/VERSION/$VERSION/g" $here/$templatedir/config_${config}_${Optics}.py > $here/$configdir/config_${config}_${rn}_full.py
 
+
 else 
 echo "Running config for run $rn"
 fi
+
+if [ $use_preanal == "True" ] ; then
+echo "Using preanal dicts"
+sed -i "254s?.*?    reduced_dict_path = \"reduced_files/MC$VERSION/${rn}/\"?" $here/$configdir/config_${config}_${rn}_full.py 
+else
+echo "Not using preanal dicts"
+#sed -i "254s?.*? ?" $here/$configdir/config_${config}_${rn}_full.py 
+fi
+
 echo -en "#!/bin/bash \n\
 
 . $MAUSdir/env.sh 
@@ -77,10 +87,14 @@ cd \$mytempdir
 echo \"Making temp dir \$mytempdir \"
 
 echo \" ---- Copying root files for analysis ---- \"
-echo cp $datadir/*.root \$mytempdir/
-cp $datadir/*.root \$mytempdir/
+cd $datadir
+echo cp --parents ./${copydir}*.root \$mytempdir/
+cp --parents ./${copydir}*.root \$mytempdir/
 
-sed -i \"s%.*a_file = .*%        a_file = \\\"\$mytempdir\/\\*_sim.root\\\"%\" $here/$configdir/config_${config}_${rn}_full.py
+#echo cp $datadir/*.root \$mytempdir/
+#cp $datadir/*.root \$mytempdir/
+
+sed -i \"s%.*a_file = .*%        a_file = \\\"\$mytempdir\/\\${copydir}*.root\\\"%\" $here/$configdir/config_${config}_${rn}_full.py
 
 echo \"Copied files : \"
 echo \"\$(ls)\"
