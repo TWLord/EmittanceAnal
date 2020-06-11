@@ -14,6 +14,8 @@ queue="$8"
 templatedir="$9"
 jobsuffix="${10}"
 use_preanal="${11}"
+SYSTEMATIC="${12}"
+SYSVERS="${13}"
 #datadir="$11"
 
 echo $rn
@@ -42,6 +44,14 @@ echo "[ERROR]: Shouldn't be running systematics from this script. Exiting.."
 exit 1
 elif [ $config == "8" ] ; then
 datadir=/data/mice/phumhf/ReconData/MAUSv3.3.2/$runnumber
+elif [ $config == "9" ] ; then
+datadir=/data/mice/phumhf/MC/MAUSv3.3.2/$runnumber$VERSION
+elif [ $config == "10" ] ; then
+datadir=/data/mice/phumhf/ReconData/MAUSv3.3.2/$runnumber
+elif [ $config == "11" ] ; then
+datadir=/data/mice/phumhf/MC/MAUSv3.3.2/$runnumber$VERSION
+else 
+echo "NO CONFIG SET UP FOR $config in pymovedata_jobsub script ---- EXITING"
 fi
 
 
@@ -62,7 +72,9 @@ echo "Making config for run $rn from template"
 mkdir -p $here/$configdir
 cp -f $here/$templatedir/__init__.py $here/$configdir/
 
-sed -e "s/template/${rn}/g" -e "s/ABS/$ABS/g" -e "s/CC/$CC/g" -e "s/VERSION/$VERSION/g" $here/$templatedir/config_${config}_${Optics}.py > $here/$configdir/config_${config}_${rn}_full.py
+sed -e "s/template/${rn}/g" -e "s/ABS/$ABS/g" -e "s/CC/$CC/g" -e "s/VERSION/$VERSION/g" -e "s/SYSTEMATIC/$SYSTEMATIC/g" -e "s/SYSVERS/$SYSVERS/g" $here/$templatedir/config_${config}_${Optics}.py > $here/$configdir/config_${config}_${rn}_full.py
+
+#sed -e "s/template/${rn}/g" -e "s/ABS/$ABS/g" -e "s/CC/$CC/g" -e "s/VERSION/$VERSION/g" $here/$templatedir/config_${config}_${Optics}.py > $here/$configdir/config_${config}_${rn}_full.py
 
 
 else 
@@ -71,9 +83,12 @@ fi
 
 if [ $use_preanal == "True" ] ; then
 echo "Using preanal dicts"
-sed -i "254s?.*?    reduced_dict_path = \"reduced_files/MC$VERSION/${rn}/\"?" $here/$configdir/config_${config}_${rn}_full.py 
+sed -i "s?reduced_dict_path = .*?reduced_dict_path = \"reduced_files/MC$VERSION/${rn}/\"?" $here/$configdir/config_${config}_${rn}_full.py 
+
+#sed -i "254s?.*?    reduced_dict_path = \"reduced_files/MC$VERSION/${rn}/\"?" $here/$configdir/config_${config}_${rn}_full.py 
 else
 echo "Not using preanal dicts"
+sed -i "s?reduced_dict_path = *?reduced_dict_path = None?" $here/$configdir/config_${config}_${rn}_full.py 
 #sed -i "254s?.*? ?" $here/$configdir/config_${config}_${rn}_full.py 
 fi
 
