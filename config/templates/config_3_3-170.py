@@ -251,6 +251,7 @@ class Config(object):
     src_dir = "not used but retained for compatibility with reco"
     data_dir = "output/c3/VERSION/"
     analyses = []
+    reduced_dict_path = None
 
 
     analyses.append(get_analysis(["template"],  "Simulated CC 3-170 ABS",  [1.5, 4.5], src_dir, data_dir, 3, [[165, 175]], [120, 200], 24)) 

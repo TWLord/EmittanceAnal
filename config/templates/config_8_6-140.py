@@ -16,7 +16,7 @@ def get_systematics_dir(emittance, suffix, absorber, analysis):
         "density_rogers":"v105",
         "fractional_emittance":"v105"
     }[analysis]
-    a_dir = "output/c7/VERSION/plots_CC_"+str(emittance)+\
+    a_dir = "output/c7/SYSVERS/plots_CC_"+str(emittance)+\
             "-140_"+absorber+"_"+suffix+"/"+analysis+"/"+analysis+".json"
     return a_dir
 
@@ -235,7 +235,7 @@ class Config(object):
     cut_report[2] += ["extrapolation_cut", "hline"]
 
 
-    data_dir = "output/c8/VERSION/"
+    data_dir = "output/c8/SYSVERS/"
     src_dir = "Production-v3"
     analyses = []
 

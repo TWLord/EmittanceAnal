@@ -1,10 +1,10 @@
 import copy
 
-def mc_file_names(run_number_list):
+def mc_file_names(datasets):
     file_list = []
-    for run in run_number_list:
-        run = str(run).rjust(5, '0')
-        a_file = "/data/mice/phumhf/MC/MAUSv3.3.2/"+run+"VERSION/*_sim.root" 
+    for run in datasets: 
+        run = str(run)
+        a_file = "/data/mice/phumhf/analMC/"+run+"_systematics_VERSION/SYSTEMATIC/*/maus_reconstruction.root" 
         file_list.append(a_file)
     print file_list
     return file_list
@@ -137,7 +137,7 @@ def get_analysis(run_list, name, tof01_min_max, maus_version, data_dir, emittanc
             "density_rogers_corrections":None, #get_systematics_dir(emittance, "tku_base", "lH2_empty", "density_rogers"),
             "density_rogers_systematics":None, #get_systematics(emittance, "density_rogers"),
 
-            "do_mc":True, #False,
+            "do_mc":False, #False,
             "do_magnet_alignment":False,
             "do_fractional_emittance":False,
             "do_efficiency":True, ##False,
@@ -182,22 +182,22 @@ class Config(object):
           "scifi_fiducial_ds":False,
           "pvalue_ds":False,
           "chi2_ds":False,
-          "tof01":True,
-          "tof01_tramlines":True,
+          "tof01":False,
+          "tof01_tramlines":False,
           "tof12":False,
           "p_tot_us":True,
           "p_tot_us_alt":False,
           "p_tot_ds":False,
-          "tof_0_sp":True,
-          "tof_1_sp":True,
+          "tof_0_sp":False,
+          "tof_1_sp":False,
           "tof_2_sp":False,
-          "upstream_aperture_cut":True,
+          "upstream_aperture_cut":False,
           "downstream_aperture_cut":False,
           "delta_tof01":False, #True, #extrapolatedtof01 compared to recon tof01
           "delta_tof12":False, #extrapolatedtof12 compared to recon tof12
           "global_through_tof0":False,
           "global_through_tof1":False,
-          "global_through_us_apertures":True,
+          "global_through_us_apertures":False, #True,
           "global_through_tku_tp":False,
           "global_through_tkd_tp":False,
           "global_through_tof2":False,
@@ -213,7 +213,7 @@ class Config(object):
     data_recorder_cuts["p_tot_us"] = False
     data_recorder_cuts["p_tot_us_alt"] = False
     downstream_cuts = copy.deepcopy(upstream_cuts)
-    downstream_cuts["p_tot_ds"] = False
+    downstream_cuts["p_tot_ds"] = True
     downstream_cuts["tof2_sp"] = False
     downstream_cuts["pvalue_ds"] = False
     downstream_cuts["chi2_ds"] = True
@@ -234,27 +234,31 @@ class Config(object):
     mc_true_ds_cuts["mc_scifi_fiducial_ds"] = True
     mc_true_ds_cuts["mc_p_ds"] = True
 
-    cut_report  = [[], [], []]
+    cut_report  = [[], []]
     cut_report[0] = ["hline", "all events", "hline",]
-    cut_report[0] += ["tof_1_sp", "tof_0_sp", "scifi_tracks_us", "chi2_us", "scifi_fiducial_us", "hline",]
-    cut_report[0] += ["tof01", "p_tot_us", "tof01_tramlines", "hline",]
-    cut_report[0] += ["global_through_us_apertures"]
-    cut_report[0] += ["upstream_aperture_cut", "hline",]
+    cut_report[0] += ["scifi_tracks_us", "chi2_us", "scifi_fiducial_us", "hline",]
+    cut_report[0] += ["p_tot_us", "hline",]
     cut_report[0] += ["upstream_cut", "hline",]
+
     cut_report[1] += ["hline", "upstream_cut", "hline",]
     cut_report[1] += ["scifi_tracks_ds", "chi2_ds", "scifi_fiducial_ds", "hline",]
     cut_report[1] += ["downstream_cut", "hline",]
-    cut_report[2] =  ["hline", "downstream_cut", "hline",]
-    cut_report[2] += ["downstream_aperture_cut", "tof_2_sp", "global_through_tkd_tp", "global_through_tof2", "hline",]
-    cut_report[2] += ["extrapolation_cut", "hline"]
 
     src_dir = "not used but retained for compatibility with reco"
-    data_dir = "output/c3/VERSION/"
+    data_dir = "output/c7/VERSION/"
     analyses = []
-    reduced_dict_path = None
 
 
-    analyses.append(get_analysis(["template"],  "Simulated CC 4-140 ABS",  [1.5, 6.0], src_dir, data_dir, 4, [[135, 145]], [90, 170], 32)) 
+    analyses.append(get_analysis([template],  "CC 6-140 ABS SYSTEMATIC",  [1.5, 5.5], src_dir, data_dir, 6, [[135, 145]], [90, 170], 35)) 
+    if analyses[0]["name"].find("tku_base") >= 0 :
+        print "also running --- "
+        print " tku_base_tkd_fiducial_radius"
+        analyses.append(get_analysis([template],  "CC 6-140 ABS tku_base_tkd_fiducial_radius",  [1.5, 5.5], src_dir, data_dir, 6, [[135, 145]], [90, 170], 35))
+        analyses[1]["tkd_fiducial_radius"] = 148. # r2 ~ pt/bz/c_light ~ pt [mm]
+
+        print " tkd_chi2_threshold"
+        analyses.append(get_analysis([template],  "CC 6-140 ABS tku_base_tkd_chi2_threshold",  [1.5, 5.5], src_dir, data_dir, 6, [[135, 145]], [90, 170], 35))
+        analyses[2]["tkd_chi2_threshold"] = 8.3
 
     required_trackers = [0, 1] # for space points
     required_number_of_track_points = 12 # doesnt do anything
@@ -263,8 +267,8 @@ class Config(object):
     will_load_tk_space_points = True # determines whether data loader will attempt to load tracker space points
     will_load_tk_track_points = True # determines whether data loader will attempt to load tracker track points
     number_of_spills = None # if set to an integer, limits the number of spills loaded for each sub-analysis
-    preanalysis_number_of_spills = 5 # 20 # number of spills to analyse during "pre-analysis"
-    analysis_number_of_spills = 10 # 20 # number of spills to analyse during each "analysis" step
+    preanalysis_number_of_spills = 500 # 20 # number of spills to analyse during "pre-analysis"
+    analysis_number_of_spills = 500 # 20 # number of spills to analyse during each "analysis" step
     momentum_from_tracker = True # i.e. not from TOFs
     time_from = "tof1"
     tof0_offset = 25.4
@@ -386,12 +390,12 @@ class Config(object):
             #"tkd":"virtual_tkd_tp",#
             "tku_tp":["mc_virtual_tku_tp", "mc_virtual_tku_2", "mc_virtual_tku_3", "mc_virtual_tku_4", "mc_virtual_tku_5",],
             "tkd_tp":["mc_virtual_tkd_tp", "mc_virtual_tkd_2", "mc_virtual_tkd_3", "mc_virtual_tkd_4", "mc_virtual_tkd_5",],
-            "tof0":["mc_virtual_tof0"],
-            "tof1":["mc_virtual_tof1"],
-            "tof01":["mc_virtual_tof0", "mc_virtual_tof1"],
-            "tof12":["mc_virtual_tof1", "mc_virtual_tof2"],
-            "global_through_virtual_diffuser_us":["mc_virtual_diffuser_us"],
-            "global_through_virtual_diffuser_ds":["mc_virtual_diffuser_ds"],
+            #"tof0":["mc_virtual_tof0"],
+            #"tof1":["mc_virtual_tof1"],
+            #"tof01":["mc_virtual_tof0", "mc_virtual_tof1"],
+            #"tof12":["mc_virtual_tof1", "mc_virtual_tof2"],
+            #"global_through_virtual_diffuser_us":["mc_virtual_diffuser_us"],
+            #"global_through_virtual_diffuser_ds":["mc_virtual_diffuser_ds"],
         }
     }
     bz_tku = 3e-3

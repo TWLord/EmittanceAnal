@@ -16,7 +16,7 @@ def get_systematics_dir(emittance, suffix, absorber, analysis):
         "density_rogers":"v105",
         "fractional_emittance":"v105"
     }[analysis]
-    a_dir = "output/c7/VERSION/plots_CC_"+str(emittance)+\
+    a_dir = "output/c7/SYSVERS/plots_CC_"+str(emittance)+\
             "-200_"+absorber+"_"+suffix+"/"+analysis+"/"+analysis+".json"
     return a_dir
 
@@ -77,8 +77,8 @@ def get_analysis(run_list, name, tof01_min_max, maus_version, data_dir, emittanc
             "delta_tof01_upper":+1.5, # Delta TOF01 cut upper bound 
             "delta_tof12_lower":-5., # Delta TOF01 cut lower bound 
             "delta_tof12_upper":5., # Delta TOF01 cut upper bound 
-            "tof01_tramline_lower":-15.+tramlines_dp, # p_tof01 - p_tku
-            "tof01_tramline_upper":+15.+tramlines_dp, # p_tof01 - p_tku
+            "tof01_tramline_lower":-20.+tramlines_dp, # p_tof01 - p_tku
+            "tof01_tramline_upper":+20.+tramlines_dp, # p_tof01 - p_tku
             "tof01_cut_low":tof01_min_max[0], # TOF01 cut lower bound
             "tof01_cut_high":tof01_min_max[1], # TOF01 cut upper bound
             "p_bins":p_bins, # set of momentum bins; for now really it is just a lower and upper bound
@@ -235,7 +235,7 @@ class Config(object):
     cut_report[2] += ["extrapolation_cut", "hline"]
 
 
-    data_dir = "output/c8/VERSION/"
+    data_dir = "output/c8/SYSVERS/"
     src_dir = "Production-v3"
     analyses = []
 

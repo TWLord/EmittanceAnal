@@ -1,10 +1,10 @@
 import copy
 
-def mc_file_names(run_number_list):
+def mc_file_names(datasets):
     file_list = []
-    for run in run_number_list:
+    for run in datasets: 
         run = str(run).rjust(5, '0')
-        a_file = "/data/mice/phumhf/MC/MAUSv3.3.2/"+run+"VERSION/*_sim.root" 
+        a_file = "/data/mice/phumhf/analMC/"+run+"_VERSION/*/maus_output.root" 
         file_list.append(a_file)
     print file_list
     return file_list
@@ -83,8 +83,8 @@ def get_analysis(run_list, name, tof01_min_max, maus_version, data_dir, emittanc
             "delta_tof01_upper":+1.5, # Delta TOF01 cut upper bound 
             "delta_tof12_lower":-5., # Delta TOF01 cut lower bound 
             "delta_tof12_upper":5., # Delta TOF01 cut upper bound 
-            "tof01_tramline_lower":-15.+tramlines_dp, # p_tof01 - p_tku
-            "tof01_tramline_upper":+15.+tramlines_dp, # p_tof01 - p_tku
+            "tof01_tramline_lower":-25.+tramlines_dp, # p_tof01 - p_tku
+            "tof01_tramline_upper":+25.+tramlines_dp, # p_tof01 - p_tku
             "tof01_cut_low":tof01_min_max[0], # TOF01 cut lower bound
             "tof01_cut_high":tof01_min_max[1], # TOF01 cut upper bound
             "p_bins":p_bins, # set of momentum bins; for now really it is just a lower and upper bound
@@ -249,12 +249,11 @@ class Config(object):
     cut_report[2] += ["extrapolation_cut", "hline"]
 
     src_dir = "not used but retained for compatibility with reco"
-    data_dir = "output/c3/VERSION/"
+    data_dir = "output/c4/VERSION/"
     analyses = []
-    reduced_dict_path = None
 
 
-    analyses.append(get_analysis(["template"],  "Simulated CC 4-140 ABS",  [1.5, 6.0], src_dir, data_dir, 4, [[135, 145]], [90, 170], 32)) 
+    analyses.append(get_analysis([template],  "Simulated CC 10-240 ABS",  [1.5, 2.75], src_dir, data_dir, 10, [[235, 245]], [190, 270], 24)) 
 
     required_trackers = [0, 1] # for space points
     required_number_of_track_points = 12 # doesnt do anything
@@ -263,8 +262,8 @@ class Config(object):
     will_load_tk_space_points = True # determines whether data loader will attempt to load tracker space points
     will_load_tk_track_points = True # determines whether data loader will attempt to load tracker track points
     number_of_spills = None # if set to an integer, limits the number of spills loaded for each sub-analysis
-    preanalysis_number_of_spills = 5 # 20 # number of spills to analyse during "pre-analysis"
-    analysis_number_of_spills = 10 # 20 # number of spills to analyse during each "analysis" step
+    preanalysis_number_of_spills = 100 # 20 # number of spills to analyse during "pre-analysis"
+    analysis_number_of_spills = 100 # 20 # number of spills to analyse during each "analysis" step
     momentum_from_tracker = True # i.e. not from TOFs
     time_from = "tof1"
     tof0_offset = 25.4

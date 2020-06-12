@@ -4,7 +4,7 @@ def mc_file_names(datasets):
     file_list = []
     for run in datasets: 
         run = str(run)
-        a_file = "/data/mice/phumhf/analMC/"+run+"_systematics_VERSION/SYSTEMATIC/*/maus_reconstruction.root" 
+        a_file = "/data/mice/phumhf/analMC/"+run+"_systematics_VERSION/SYSFILE/*/maus_reconstruction.root" 
         file_list.append(a_file)
     print file_list
     return file_list
@@ -137,7 +137,7 @@ def get_analysis(run_list, name, tof01_min_max, maus_version, data_dir, emittanc
             "density_rogers_corrections":None, #get_systematics_dir(emittance, "tku_base", "lH2_empty", "density_rogers"),
             "density_rogers_systematics":None, #get_systematics(emittance, "density_rogers"),
 
-            "do_mc":True, #False,
+            "do_mc":False, #False,
             "do_magnet_alignment":False,
             "do_fractional_emittance":False,
             "do_efficiency":True, ##False,
@@ -250,15 +250,13 @@ class Config(object):
 
 
     analyses.append(get_analysis([template],  "CC 10-140 ABS SYSTEMATIC",  [1.5, 4.5], src_dir, data_dir, 10, [[135, 145]], [90, 170], 70)) 
-    if analyses[0]["name"].find("tku_base") >= 0 :
-        print "also running --- "
-        print " tku_base_tkd_fiducial_radius"
-        analyses.append(get_analysis([template],  "CC 10-140 ABS tku_base_tkd_fiducial_radius",  [1.5, 4.5], src_dir, data_dir, 10, [[135, 145]], [90, 170], 70))
-        analyses[1]["tkd_fiducial_radius"] = 148. # r2 ~ pt/bz/c_light ~ pt [mm]
+    if analyses[0]["name"].find("tku_base_tkd_fiducial_radius") >= 0 :
+        print " === Editing settings for tku_base_tkd_fiducial_radius === "
+        analyses[0]["tkd_fiducial_radius"] = 148. # r2 ~ pt/bz/c_light ~ pt [mm]
 
-        print " tkd_chi2_threshold"
-        analyses.append(get_analysis([template],  "CC 10-140 ABS tku_base_tkd_chi2_threshold",  [1.5, 4.5], src_dir, data_dir, 10, [[135, 145]], [90, 170], 70))
-        analyses[2]["tkd_chi2_threshold"] = 8.3
+    if analyses[0]["name"].find("tku_base_tkd_chi2_threshold") >= 0 :
+        print " === Editing settings for tkd_chi2_threshold === "
+        analyses[0]["tkd_chi2_threshold"] = 8.3
 
     required_trackers = [0, 1] # for space points
     required_number_of_track_points = 12 # doesnt do anything

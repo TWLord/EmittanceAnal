@@ -253,7 +253,7 @@ class Config(object):
     analyses = []
 
 
-    analyses.append(get_analysis([template],  "template CC 3-200 ABS",  [1.5, 4.5], src_dir, data_dir, 3, [[195, 205]], [150, 230], 24)) 
+    analyses.append(get_analysis([template],  "Simulated CC 3-200 ABS",  [1.5, 4.5], src_dir, data_dir, 3, [[195, 205]], [150, 230], 24)) 
 
     required_trackers = [0, 1] # for space points
     required_number_of_track_points = 12 # doesnt do anything
