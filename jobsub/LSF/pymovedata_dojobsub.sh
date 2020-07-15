@@ -28,7 +28,9 @@ echo $Optics
 #fi
 #rn=$rn
 
-if [ $config == "2" ] ; then
+if [ $config == "1" ] ; then
+datadir=/data/mice/phumhf/MC/MAUSv3.3.2/$runnumber$VERSION
+elif [ $config == "2" ] ; then
 datadir=/data/mice/phumhf/ReconData/MAUSv3.3.2/$runnumber
 elif [ $config == "3" ] ; then
 datadir=/data/mice/phumhf/MC/MAUSv3.3.2/$runnumber$VERSION
@@ -55,13 +57,14 @@ echo "NO CONFIG SET UP FOR $config in pymovedata_jobsub script ---- EXITING"
 fi
 
 
-configdir=config/c$config/movedata
+configdir=config/c$config/movedata/$VERSION
 
 if [ ! -d $here/config/c$config ] ; then
 
 echo "Making new parent directory $here/config/c$config/ "
 mkdir -p $here/config/c$config
 cp -f $here/$templatedir/__init__.py $here/config/c$config/
+cp -f $here/$templatedir/__init__.py $here/config/c$config/movedata/
 fi
 
 if [ ! -e $here/$configdir/config_${config}_${rn}_full.py  ] ; then
@@ -88,7 +91,7 @@ sed -i "s?reduced_dict_path = .*?reduced_dict_path = \"reduced_files/MC$VERSION/
 #sed -i "254s?.*?    reduced_dict_path = \"reduced_files/MC$VERSION/${rn}/\"?" $here/$configdir/config_${config}_${rn}_full.py 
 else
 echo "Not using preanal dicts"
-sed -i "s?reduced_dict_path = *?reduced_dict_path = None?" $here/$configdir/config_${config}_${rn}_full.py 
+sed -i "s?reduced_dict_path = .*?reduced_dict_path = None?" $here/$configdir/config_${config}_${rn}_full.py 
 #sed -i "254s?.*? ?" $here/$configdir/config_${config}_${rn}_full.py 
 fi
 

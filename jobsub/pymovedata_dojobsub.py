@@ -65,9 +65,9 @@ def run_systematics(scriptname, queue, version, config, templatedir, jobsuffix, 
 
     #sys_list = ["tku_base_tkd_fiducial_radius", "tku_base_tkd_chi2_threshold",]
 
-    #sys_list = ["tku_base", "tku_base_tkd_fiducial_radius", "tku_base_tkd_chi2_threshold", "tku_pos_plus", "tku_rot_plus", "tku_scale_C_plus", "tku_scale_E1_plus", "tku_scale_E2_plus", "tku_density_plus", "tkd_rot_plus", "tkd_pos_plus", "tkd_scale_C_plus", "tkd_scale_E1_plus", "tkd_scale_E2_plus", "tkd_density_plus"]
+    sys_list = ["tku_base", "tku_base_tkd_fiducial_radius", "tku_base_tkd_chi2_threshold", "tku_pos_plus", "tku_rot_plus", "tku_scale_C_plus", "tku_scale_E1_plus", "tku_scale_E2_plus", "tku_density_plus", "tkd_rot_plus", "tkd_pos_plus", "tkd_scale_C_plus", "tkd_scale_E1_plus", "tkd_scale_E2_plus", "tkd_density_plus"]
 
-    sys_list = ["tku_density_plus"]
+    #sys_list = ["tku_density_plus"]
 
     run_settings = settings["runs"]
 
@@ -165,9 +165,9 @@ def get_sys_settings(CC):
                 "3-140":["9883",],
                 "6-140":["9885",],
                 "10-140":["9886",],
-                #"3-170":["9911",],
-                #"3-200":["9910",],
-                #"3-240":["9909",],
+                "3-170":["9911",],
+                "3-200":["9910",],
+                "3-240":["9909",],
             },
             "ABS-SOLID-EMPTY":{
                 "4-140":["10317",],
@@ -196,31 +196,31 @@ def get_mc_settings(CC):
         "2017-02-6":{
             "ABS-LH2":{
                 "3-140":["9883",],
-            #    "6-140":["9885",],
-            #    "10-140":["9886",],
+                "6-140":["9885",],
+                "10-140":["9886",],
             #    "3-170":["9911",],
-            #    #"3-200":["9910",],
+            #    "3-200":["9910",],
             #    "3-240":["9909",],
             },
             "ABS-LH2-EMPTY":{
                 "3-140":["10243",],
-            #    "6-140":["10245",],
-            #    "10-140":["10246",],
+                "6-140":["10245",],
+                "10-140":["10246",],
             #    "3-170":["10268",],
             #    "3-200":["10267",],
             #    "3-240":["10265",],
             },
-            #"ABS-SOLID-EMPTY":{
-            #    "3-140":["10314",],
-            #    "4-140":["10317",],
-            #    "6-140":["10318",],
-            #    "10-140":["10319",],
-            #},
-            #"ABS-SOLID-LiH":{
-            #    "3-140":["10508",],
-            #    "4-140":["10504",],
-            #    "6-140":["10509",],
-            #},
+            "ABS-SOLID-EMPTY":{
+                "3-140":["10314",],
+                "4-140":["10317",],
+                "6-140":["10318",],
+                "10-140":["10319",],
+            },
+            "ABS-SOLID-LiH":{
+                "3-140":["10508",],
+                "4-140":["10504",],
+                "6-140":["10509",],
+            },
         },
         "2017-02-5":{
             "ABS-LH2":{
@@ -228,11 +228,28 @@ def get_mc_settings(CC):
                 "6-140":["9921",],
                 "10-140":["9922",],
             },
-            "ABS-LH2-EMPTY":{
-                "3-140":["10143",],
-                "6-140":["10144",],
-                "10-140":["10145",],
+            #"ABS-LH2-EMPTY":{
+            #    "3-140":["10143",],
+            #    "6-140":["10144",],
+            #    "10-140":["10145",],
+            #},
+        },
+        "2017-02-2":{
+            "ABS-LH2":{
+                ####"3-200":["9756",], # old
+                "3-200":["9760",], # use this
+                "6-200":["9761",], # use this
+                ####"10-200":["9762",], # old + bad diffuser
+                "10-200":["9763",],
             },
+            #"ABS-LH2-EMPTY":{
+            #    #"3-200":["10231",], # single run D1 current different, not used
+            #    "3-200":["10236",], # old - use this
+            #    "6-200":["10235",], # old - use this
+            #    "10-200":["10233",], # old - use this
+            #    #"10-200":["10238",], # maybe cancel this one, not used
+            #    "6-240":["10241",], # old - use this
+            #},
         },
     }[CC]
 
@@ -243,31 +260,31 @@ def get_data_settings(CC):
     run_settings = {
         "2017-02-6":{
             "ABS-LH2":{
-            #    "3-140":["9883", "9888", "9893", "9897", "9903", "9906",],
-            #    "6-140":["9884", "9885", "9889", "9894", "9898", "9904", "9905",],
-            #    "10-140":["9886", "9887", "9890", "9891", "9892", "9895", "9896", "9899", "9900", "9901", "9902",],
+                "3-140":["9883", "9888", "9893", "9897", "9903", "9906",],
+                "6-140":["9884", "9885", "9889", "9894", "9898", "9904", "9905",],
+                "10-140":["9886", "9887", "9890", "9891", "9892", "9895", "9896", "9899", "9900", "9901", "9902",],
             #    "3-170":["9911",],
             #    "3-200":["9910", "9915"],
             #    "3-240":["9907", "9908", "9909", "9912", "9913", "9914",],
             },
             "ABS-LH2-EMPTY":{
-            #    "3-140":["10243", "10248", "10253", "10254", "10255", "10256",],
-            #    "6-140":["10245", "10247", "10249",],
-            #    "10-140":["10246", "10250", "10251", "10252", "10257", "10258", "10259", "10260",],
+                "3-140":["10243", "10248", "10253", "10254", "10255", "10256",],
+                "6-140":["10245", "10247", "10249",],
+                "10-140":["10246", "10250", "10251", "10252", "10257", "10258", "10259", "10260",],
             #    "3-170":["10268", "10269",],
             #    "3-200":["10262", "10266", "10267", "10275",],
             #    "3-240":["10261", "10264", "10265", "10270", "10271", "10272", "10273", "10274",],
             },
             "ABS-SOLID-EMPTY":{
-            #    "3-140":["10313", "10314", "10323", "10327", "10333",],
+                "3-140":["10313", "10314", "10323", "10327", "10333",],
                 "4-140":["10315", "10317", "10322", "10328", "10334",],
-            #    "6-140":["10318", "10324", "10329", "10335",],
-            #    "10-140":["10319", "10321", "10325", "10326", "10330", "10331", "10332",],
+                "6-140":["10318", "10324", "10329", "10335",],
+                "10-140":["10319", "10321", "10325", "10326", "10330", "10331", "10332",],
             },
             "ABS-SOLID-LiH":{
-            #    "3-140":["10508", "10511",],
+                "3-140":["10508", "10511",],
                 "4-140":["10504", "10505", "10506", "10507",],
-            #    "6-140":["10509", "10510"],
+                "6-140":["10509", "10510"],
             },
         },
         "2017-02-5":{
@@ -282,25 +299,40 @@ def get_data_settings(CC):
                 "10-140":["10138", "10139", "10140", "10145", "10146", "10149", "10150",],
             },
         },
+        "2017-02-2":{
+            "ABS-LH2":{
+                "3-200":["9756", "9757", "9758", "9760", "9764", "9766", "9769", "9770", "9771",],
+                "6-200":["9749", "9750", "9751", "9752", "9761", "9765",],
+                "10-200":["9754", "9755", "9759", "9763", "9767", "9768",], # not 9762, bad diffuser
+            },
+            "ABS-LH2-EMPTY":{
+                #"3-200":["10231",], # single run D1 current different - M3-Test1
+                "3-200":["10236", "10237", "10240",], # M3-Test2 - not 10231, M3-Test1
+                "6-200":["10232", "10234", "10235", "10242",], # 
+                "10-200":["10227", "10230", "10233", "10238", "10239",], # 
+                "6-240":["10241",], # only run 
+            },
+        },
+
     }[CC]
 
     return run_settings
 
 def get_jobsuffix(config):
     jobsuffix = {
+        "c1":"mc_cuts",
         "c2":"reco",
         "c3":"mc",
-        "c4":"ownmc",
-        "c5":"recomcstat+corr",
-        "c6":"recoownmcstat+corr",
-        "c7":"systematics",
-        #"c8":"sysstat+corr",
+        "c4":"c4", #"ownmc",
+        "c5":"c5", #"recomcstat+corr",
+        "c6":"c6", #"recoownmcstat+corr",
+        "c7":"c7", #"systematics",
+        "c8":"c8", #"sysstat+corr",
+        "c9":"c9", #"mcsysstat+corr",
+        "c10":"c10", #"sysstat+corr_abs",
+        "c11":"c11", #"mcsysstat+corr_abs",
         "2f":"recopreanal",
         "3f":"mcpreanal",
-        "c8":"c8",
-        "c9":"c9",
-        "c10":"c10",
-        "c11":"c11",
     }[config]
     return jobsuffix
 
@@ -312,29 +344,41 @@ if __name__ == "__main__":
     #version = "v3" # Official MC version
     #config = "3f"
     #config = "c3"
+    #config = "c1"
     #config = "c5"
     #config = "c8"
     #config = "c2"
 
-    #config = "c4"
-    config = "c6"
-    version = "v1"
+    config = "c4"
+    #config = "c6"
+    #version = "v1"
     #version = "v2"
+    #version = "v3"
+    #version = "v4"
+    #version = "v5"
+    #version = "v6"
+    #version = "v7"
+    #version = "v8"
+    #version = "v9"
+    #version = "v10"
+    #version = "v11"
+    #version = "v12"
+    version = "v13"
 
     #config = "c7"
     #version = "v107"
 
     #config = "c10"
     #config = "c11"
-    #version = "v107"
 
     sys_vers = "v107"
 
-    CC = "2017-02-5"
+    CC = "2017-02-2"
+    #CC = "2017-02-5"
     #CC = "2017-02-6"
 
     #use_preanal = "True" # "FALSE" # "True" # Old self-defined version.. user error possible
-    use_preanal = True # False # True 
+    use_preanal = False # True # False # True 
     base_only = False #True # False 
 
     #config = "c2"
@@ -376,7 +420,7 @@ if __name__ == "__main__":
     else:
         use_preanal = "FALSE"
 
-    if config == "c3" or config == "c4" or config == "3f":
+    if config == "c1" or config == "c3" or config == "c4" or config == "3f":
         run_function = run_single
         settings["runs"] = get_mc_settings(CC)
         settings["use_preanal"] = use_preanal
@@ -407,6 +451,7 @@ if __name__ == "__main__":
         settings["runs"] = get_data_settings(CC)
   
     print "Config", config
+    print "version", version
     config = config.strip("c")
     run_function(scriptname, queue, version, config, templatedir, jobsuffix, CC, settings)
     #run_function(scriptname, queue, version, config, templatedir, jobsuffix, CC, settings, extra_opt)
