@@ -64,6 +64,7 @@ def get_systematics(emittance, analysis="amplitude"):
 def get_analysis(run_list, name, tof01_min_max, maus_version, data_dir, emittance, p_bins, tkd_cut, tramlines_dp):
     plot_dir = data_dir+"/plots_"+name+"/"
     plot_dir = plot_dir.replace(" ", "_")
+    plot_dir = plot_dir.replace(",", "")
     min_p = min([min(a_bin) for a_bin in p_bins])
     max_p = max([max(a_bin) for a_bin in p_bins])
 
@@ -77,8 +78,8 @@ def get_analysis(run_list, name, tof01_min_max, maus_version, data_dir, emittanc
             "delta_tof01_upper":+1.5, # Delta TOF01 cut upper bound 
             "delta_tof12_lower":-5., # Delta TOF01 cut lower bound 
             "delta_tof12_upper":5., # Delta TOF01 cut upper bound 
-            "tof01_tramline_lower":-20.+tramlines_dp, # p_tof01 - p_tku
-            "tof01_tramline_upper":+20.+tramlines_dp, # p_tof01 - p_tku
+            "tof01_tramline_lower":-30.+tramlines_dp, # p_tof01 - p_tku
+            "tof01_tramline_upper":+30.+tramlines_dp, # p_tof01 - p_tku
             "tof01_cut_low":tof01_min_max[0], # TOF01 cut lower bound
             "tof01_cut_high":tof01_min_max[1], # TOF01 cut upper bound
             "p_bins":p_bins, # set of momentum bins; for now really it is just a lower and upper bound
@@ -239,7 +240,7 @@ class Config(object):
     src_dir = "Production-v2"
     analyses = []
 
-    analyses.append(get_analysis([template],  "template CC 10-200 ABS",  [1.5, 4.5], src_dir, data_dir, 10, [[195, 205]], [150, 230], 24)) 
+    analyses.append(get_analysis([template],  "template CC 10-200 ABS",  [1.5, 3.0], src_dir, data_dir, 10, [[195, 205]], [150, 230], 64)) 
 
     required_trackers = [0, 1] # for space points
     required_number_of_track_points = 12 # doesnt do anything
@@ -248,7 +249,7 @@ class Config(object):
     will_load_tk_space_points = True # determines whether data loader will attempt to load tracker space points
     will_load_tk_track_points = True # determines whether data loader will attempt to load tracker track points
     number_of_spills = None # if set to an integer, limits the number of spills loaded for each sub-analysis
-    preanalysis_number_of_spills = 50 # number of spills to analyse during "pre-analysis"
+    preanalysis_number_of_spills = 500 # number of spills to analyse during "pre-analysis"
     analysis_number_of_spills = 100 # number of spills to analyse during each "analysis" step
     momentum_from_tracker = True # i.e. not from TOFs
     time_from = "tof1"

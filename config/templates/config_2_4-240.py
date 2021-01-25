@@ -64,6 +64,7 @@ def get_systematics(emittance, analysis="amplitude"):
 def get_analysis(run_list, name, tof01_min_max, maus_version, data_dir, emittance, p_bins, tkd_cut, tramlines_dp):
     plot_dir = data_dir+"/plots_"+name+"/"
     plot_dir = plot_dir.replace(" ", "_")
+    plot_dir = plot_dir.replace(",", "")
     min_p = min([min(a_bin) for a_bin in p_bins])
     max_p = max([max(a_bin) for a_bin in p_bins])
 
@@ -248,7 +249,7 @@ class Config(object):
     will_load_tk_space_points = True # determines whether data loader will attempt to load tracker space points
     will_load_tk_track_points = True # determines whether data loader will attempt to load tracker track points
     number_of_spills = None # if set to an integer, limits the number of spills loaded for each sub-analysis
-    preanalysis_number_of_spills = 50 # number of spills to analyse during "pre-analysis"
+    preanalysis_number_of_spills = 500 # number of spills to analyse during "pre-analysis"
     analysis_number_of_spills = 100 # number of spills to analyse during each "analysis" step
     momentum_from_tracker = True # i.e. not from TOFs
     time_from = "tof1"

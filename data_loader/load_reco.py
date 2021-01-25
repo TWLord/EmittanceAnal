@@ -319,15 +319,15 @@ class LoadReco(object):
 
     def will_cut_on_scifi_fiducial(self, track_point_list):
         max_r2 = [-111., -111.]
-        fiducial_r2 = 0.
+        fiducial_r2 = [0., 0.]
         for tp in track_point_list:
             if "tku" in tp["detector"]:
-                fiducial_r2 = self.config_anal["tku_fiducial_radius"]**2
+                fiducial_r2[0] = self.config_anal["tku_fiducial_radius"]**2
                 max_r2[0] = max(max_r2[0], tp["max_r2"])
             else:
-                fiducial_r2 = self.config_anal["tkd_fiducial_radius"]**2
+                fiducial_r2[1] = self.config_anal["tkd_fiducial_radius"]**2
                 max_r2[1] = max(max_r2[1], tp["max_r2"])
-        return [max_r2[0] > fiducial_r2, max_r2[1] > fiducial_r2]
+        return [max_r2[0] > fiducial_r2[0], max_r2[1] > fiducial_r2[1]]
 
     def load_scifi_event(self, scifi_event):
         will_cut_on_scifi_cluster = self.will_cut_on_scifi_clusters(scifi_event)
@@ -691,6 +691,13 @@ class LoadReco(object):
         event["scifi_n_tracks"] = self.get_n_tracks(scifi_event)
         event["scifi_n_planes_with_clusters"] = self.get_n_planes_with_used_clusters(scifi_event)
         event["particle_number"] = reco_event.GetPartEventNumber()
+        event["tracker_fields"] = {'mean_field_up':scifi_event.get_mean_field_up(),
+                                   'mean_field_down':scifi_event.get_mean_field_down(),
+                                   'var_field_up':scifi_event.get_variance_field_up(),
+                                   'var_field_down':scifi_event.get_variance_field_down(),
+                                   'range_field_up':scifi_event.get_range_field_up(),
+                                   'range_field_down':scifi_event.get_range_field_down(),
+                                  }
         
         cuts_chain = itertools.chain(tof_loaded[1].iteritems(), scifi_loaded[1].iteritems(), global_loaded[1].iteritems())
         cuts = (elem for elem in cuts_chain)

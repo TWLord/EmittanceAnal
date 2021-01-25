@@ -51,7 +51,9 @@ class OpticsPlotter(AnalysisBase):
                             ("beta_4d", None),
                             ("beta_x", None),
                             ("beta_y", None),
+                            ("emit_4d", None),
                             ("l_kin", None),
+                            ("l_centre", None),
                             ("nevents", None),
                             ("sigma", 0),
                             ("sigma", 2),
@@ -112,6 +114,7 @@ class OpticsPlotter(AnalysisBase):
         ellipse["beta_4d"] = 0.
         ellipse["alpha_4d"] = 0.
         ellipse["l_kin"] = 0.
+        ellipse["l_centre"] = 0.
         ellipse["z"] = 0.
         for axis in ["x", "y"]:
             ellipse["emit_"+axis] = 0.
@@ -178,6 +181,8 @@ class OpticsPlotter(AnalysisBase):
             ellipse["beta_4d"] = beta
             ellipse["alpha_4d"] = alpha
         l_kin = matrix[0][3]-matrix[1][2] # XBOA
+        ellipse["l_kin"] = l_kin
+        ellipse["l_centre"] = mean[0]*mean[3] - mean[1]*mean[2]
         ellipse["emit_4d"] = emit
         for axis, index in [("x", 0), ("y", 2)]:
             matrix = numpy.array(rms_ellipse)[index:index+2, index:index+2]

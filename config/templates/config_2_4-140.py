@@ -248,7 +248,7 @@ class Config(object):
     will_load_tk_space_points = True # determines whether data loader will attempt to load tracker space points
     will_load_tk_track_points = True # determines whether data loader will attempt to load tracker track points
     number_of_spills = None # if set to an integer, limits the number of spills loaded for each sub-analysis
-    preanalysis_number_of_spills = 100 # number of spills to analyse during "pre-analysis"
+    preanalysis_number_of_spills = 500 # number of spills to analyse during "pre-analysis"
     analysis_number_of_spills = 100 # number of spills to analyse during each "analysis" step
     momentum_from_tracker = True # i.e. not from TOFs
     time_from = "tof1"

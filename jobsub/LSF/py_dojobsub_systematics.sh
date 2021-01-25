@@ -13,8 +13,9 @@ config="$7"
 queue="$8"
 templatedir="$9"
 jobsuffix="${10}"
-SYSTEMATIC="${11}"
-SYSFILE="${12}"
+GEOPATH="${11}"
+SYSTEMATIC="${12}"
+SYSFILE="${13}"
 #datadir="$12"
 
 echo $rn
@@ -70,7 +71,7 @@ echo "Making config for run $rn from template"
 mkdir -p $here/$configdir
 cp -f $here/$templatedir/__init__.py $here/$configdir/
 
-sed -e "s/template/${rn}/g" -e "s/ABS/$ABS/g" -e "s/CC/$CC/g" -e "s/VERSION/$VERSION/g" -e "s/SYSTEMATIC/$SYSTEMATIC/g" -e "s/SYSFILE/$SYSFILE/g" $here/$templatedir/config_${config}_${Optics}.py > $here/$configdir/config_${config}_${rn}_full_${SYSTEMATIC}.py
+sed -e "s/template/${rn}/g" -e "s/ABS/$ABS/g" -e "s/CC/$CC/g" -e "s/VERSION/$VERSION/g" -e "s/SYSTEMATIC/$SYSTEMATIC/g" -e "s/SYSFILE/$SYSFILE/g" -e "s?GEOPATH?$GEOPATH?g" $here/$templatedir/config_${config}_${Optics}.py > $here/$configdir/config_${config}_${rn}_full_${SYSTEMATIC}.py
 
 else 
 echo "Running config for run $rn"

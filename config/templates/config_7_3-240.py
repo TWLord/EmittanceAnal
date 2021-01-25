@@ -137,6 +137,10 @@ def get_analysis(run_list, name, tof01_min_max, maus_version, data_dir, emittanc
             "density_rogers_corrections":None, #get_systematics_dir(emittance, "tku_base", "lH2_empty", "density_rogers"),
             "density_rogers_systematics":None, #get_systematics(emittance, "density_rogers"),
 
+            "do_ang_mom_mc":True,
+            "ang_mom_corrections":None,
+            "ang_mom_systematics":None,
+
             "do_mc":False, #False,
             "do_magnet_alignment":False,
             "do_fractional_emittance":False,
@@ -151,6 +155,7 @@ def get_analysis(run_list, name, tof01_min_max, maus_version, data_dir, emittanc
             "do_tof01_weighting":False,
             "do_optics":False, #True,
             "do_data_recorder":False, #True,
+            "do_ang_mom_fields":True,
     }
     return analysis_variables
 
@@ -246,6 +251,7 @@ class Config(object):
 
     src_dir = "not used but retained for compatibility with reco"
     data_dir = "output/c7/VERSION/"
+    geometry_path = "GEOPATH"
     analyses = []
 
 
