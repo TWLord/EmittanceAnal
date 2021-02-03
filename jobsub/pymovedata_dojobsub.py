@@ -8,6 +8,12 @@ def is_csc():
     #uname = "epp-ui01"
     return '.warwick.' in uname
 
+def is_imp():
+    uname = subprocess.check_output(['uname', '-a'])
+    #uname = "blank"
+    #uname = "epp-ui01"
+    return '.ic.ac' in uname
+
 def run_single(scriptname, queue, version, config, templatedir, jobsuffix, CC, geodir, settings):
     print "Running each run individually"
     use_preanal = settings["use_preanal"]
@@ -245,10 +251,10 @@ def get_mc_settings(CC):
         "2017-02-2":{
             "ABS-LH2":{
                 ####"3-200":["9756",], # old
-                "3-200":["9760",], # use this
+                #"3-200":["9760",], # use this
                 #"6-200":["9761",], # use this
                 ####"10-200":["9762",], # old + bad diffuser
-                #"10-200":["9763",],
+                "10-200":["9763",],
             },
             #"ABS-LH2-EMPTY":{
             #    #"3-200":["10231",], # single run D1 current different, not used
@@ -366,24 +372,25 @@ if __name__ == "__main__":
   #for config in ("c14", "c15", "c16", "c17"):
   #for config in ("c13",):
   #for config in ("c15", "c17"):
-    geodir = "/data/mice/phumhf/Geometries/"
+    geodir = "/vols/mice/tlord1/Geometries/"
+    #geodir = "/data/mice/phumhf/Geometries/"
   
     # RUN SETTINGS HERE
     ######################
-    queue = "xxl" #"medium" #"xxl" #### Currently redundant for SLURM jobsub
-    #version = "v3" # Official MC version
+    queue = "xxl" #"medium" #"xxl" #### Currently redundant for SLURM/QSUB jobsub
+    version = "v3" # Official MC version
     #config = "3f"
     #config = "c3"
     #config = "c1"
     #config = "c5"
     #config = "c8"
-    #config = "c2"
+    config = "c2"
     #config = "c12"
     #config = "c13"
     #config = "c18"
     #config = "c19"
 
-    config = "c4"
+    #config = "c4"
     #config = "c6"
     #version = "v1"
     #version = "v2"
@@ -426,7 +433,7 @@ if __name__ == "__main__":
     #version = "v508"
     #version = "v509"
     #version = "v600"
-    version = "v700"
+    #version = "v700"
 
     #version = "v30"
     #version = "v201"
@@ -442,19 +449,22 @@ if __name__ == "__main__":
     sys_vers = "v107"
 
     #CC = "2016-04-2.4a"
-    CC = "2017-02-2"
+    #CC = "2017-02-2"
     #CC = "2017-02-5"
-    #CC = "2017-02-6"
+    CC = "2017-02-6"
 
     #use_preanal = "True" # "FALSE" # "True" # Old self-defined version.. user error possible
     use_preanal = False # True # False # True 
     base_only = False #True # False 
+    split_routines = True
 
     #config = "c2"
 
     #SLURM = False # True
     SLURM = is_csc()
+    QSUB = is_imp()
     print "is csc -", SLURM
+    print "is imp -", QSUB
 
     ###################### 
 
@@ -474,11 +484,17 @@ if __name__ == "__main__":
         templatedir = "config/templates/file_reducer"
     elif config == "c2" or config == "c5" or config == "c6" or config == "c8" or config == "c10" or config == "c12" or config == "c14" or config == "c16" or config == "c18":
         scriptname = "py_dojobsub.sh"
+        if split_routines:
+            scriptname = "py_dojobsub_splitroutines.sh"
     else:
         scriptname = "pymovedata_dojobsub.sh"
+        if split_routines:
+            scriptname = "pymovedata_dojobsub_splitroutines.sh"
 
     if SLURM:
         scriptname = "./SLURM/" + scriptname
+    elif QSUB:
+        scriptname = "./QSUB/" + scriptname
     else:
         scriptname = "./LSF/" + scriptname
 
@@ -519,6 +535,7 @@ if __name__ == "__main__":
     else:
         settings["runs"] = get_data_settings(CC)
   
+    print "Split Routines -", split_routines
     print "Config", config
     print "version", version
     config = config.strip("c")

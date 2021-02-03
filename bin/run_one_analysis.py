@@ -74,16 +74,34 @@ class Analyser(object):
         self.config_anal = None
         self.maus_globals(self.config)
         self.analysis_list = []
+        self.anal_index = None
         # self.analysis_list_strings = []
+
+    #def do_analysis(self, analysis_indices = []):
+    #    """do the analysis, calling init, birth, process, print and finalise"""
+    #    if not len(analysis_indices):
+    #        analysis_indices = range(len(self.config.analyses))
+    #    for i in analysis_indices:
+    #        if i >= len(self.config.analyses):
+    #            continue
+    #        self.config_anal = self.config.analyses[i]
+    #        print "Working in", self.config_anal["plot_dir"]
+    #        try:
+    #            self.init_phase()
+    #            self.birth_phase()
+    #            self.process_phase()
+    #            self.print_phase()
+    #            self.finalise_phase()
+    #        except Exception:
+    #            sys.excepthook(*sys.exc_info())
 
     def do_analysis(self, analysis_indices = []):
         """do the analysis, calling init, birth, process, print and finalise"""
-        if not len(analysis_indices):
-            analysis_indices = range(len(self.config.analyses))
-        for i in analysis_indices:
-            if i >= len(self.config.analyses):
-                continue
+        for i in range(len(self.config.analyses)):
             self.config_anal = self.config.analyses[i]
+            if len(analysis_indices):
+                self.anal_index = analysis_indices[0]
+                self.config_anal["plot_dir"] = self.config_anal["plot_dir"] + str(self.anal_index)+"/"
             print "Working in", self.config_anal["plot_dir"]
             try:
                 self.init_phase()
@@ -93,6 +111,7 @@ class Analyser(object):
                 self.finalise_phase()
             except Exception:
                 sys.excepthook(*sys.exc_info())
+
 
     def maus_globals(self, config):
         """set up the maus globals"""
@@ -148,56 +167,58 @@ class Analyser(object):
         self.data_loader.get_file_list()
         self.analysis_list = [] # force kill any analysis scripts in case death(...) did not happen in previous round
         if self.config_anal["do_mc"]:
-            print "Doing mc"
+            #print "Doing mc"
             # self.analysis_list_strings.append("Doing mc")
             self.analysis_list.append(mice_analysis.mc_plotter.MCPlotter(self.config, self.config_anal, self.data_loader))
         if self.config_anal["do_efficiency"]:
-            print "Doing efficiency"
+            #print "Doing efficiency"
             # self.analysis_list_strings.append("Doing efficiency")
             self.analysis_list.append(mice_analysis.efficiency_plotter.EfficiencyPlotter(self.config, self.config_anal, self.data_loader))
         if self.config_anal["do_plots"]:
-            print "Doing plots"
+            #print "Doing plots"
             # self.analysis_list_strings.append("Doing plots")
             self.analysis_list.append(mice_analysis.data_plotter.DataPlotter(self.config, self.config_anal, self.data_loader))
         if self.config_anal["do_cuts_plots"]:
-            print "Doing cuts plots"
+            #print "Doing cuts plots"
             # self.analysis_list_strings.append("Doing cut plots")
             self.analysis_list.append(mice_analysis.cuts_plotter.CutsPlotter(self.config, self.config_anal, self.data_loader))
         if self.config_anal["do_globals"]:
-            print "Doing globals"
+            #print "Doing globals"
             # self.analysis_list_strings.append("Doing globals")
             self.analysis_list.append(mice_analysis.globals_plotter.GlobalsPlotter(self.config, self.config_anal, self.data_loader))
         if self.config_anal["do_optics"]:
-            print "Doing optics"
+            #print "Doing optics"
             # self.analysis_list_strings.append("Doing optics")
             self.analysis_list.append(mice_analysis.optics_plotter.OpticsPlotter(self.config, self.config_anal, self.data_loader))
         if self.config_anal["do_amplitude"]:
-            print "Doing amplitude"
+            #print "Doing amplitude"
             # self.analysis_list_strings.append("Doing amplitude")
             self.analysis_list.append(mice_analysis.amplitude_analysis.AmplitudeAnalysis(self.config, self.config_anal, self.data_loader))
         if self.config_anal["do_fractional_emittance"]:
-            print "Doing fractional emittance"
+            #print "Doing fractional emittance"
             # self.analysis_list_strings.append("Doing fractional emittance")
             self.analysis_list.append(mice_analysis.fractional_analysis.FractionalAnalysis(self.config, self.config_anal, self.data_loader))
         if self.config_anal["do_density"]:
-            print "Doing Drielsma kNN density estimation"
+            #print "Doing Drielsma kNN density estimation"
             # self.analysis_list_strings.append("Doing Drielsma kNN density estimation")
       	    self.analysis_list.append(mice_analysis.density_analysis.DensityAnalysis(self.config, self.config_anal, self.data_loader))
         if self.config_anal["do_density_rogers"]:
-            print "Doing Rogers kNN density estimation"
+            #print "Doing Rogers kNN density estimation"
             # self.analysis_list_strings.append("Doing Rogers kNN density estimation")
       	    self.analysis_list.append(mice_analysis.density_analysis_rogers.DensityAnalysis(self.config, self.config_anal, self.data_loader))
         if self.config_anal["do_data_recorder"]:
-            print "Doing data recorder"
+            #print "Doing data recorder"
             # self.analysis_list_strings.append("Doing data recorder")
             self.analysis_list.append(mice_analysis.data_recorder.DataRecorder(self.config, self.config_anal, self.data_loader))
         if "do_ang_mom" in self.config_anal and self.config_anal["do_ang_mom"]:
-            print "Doing angular momentum"
+            #print "Doing angular momentum"
             self.analysis_list.append(mice_analysis.ang_mom_plotter.AngMomPlotter(self.config, self.config_anal, self.data_loader))
         if "do_ang_mom_fields" in self.config_anal and self.config_anal["do_ang_mom_fields"]:
-            print "Doing angular momentum with field loader"
+            #print "Doing angular momentum with field loader"
             self.analysis_list.append(mice_analysis.ang_mom_fields.AngMomFields(self.config, self.config_anal, self.data_loader))
 
+        if self.anal_index is not None:
+            self.analysis_list = [self.analysis_list[self.anal_index]]
 
 
     def birth_phase(self):
@@ -249,6 +270,9 @@ if __name__ == "__main__":
         sys.exit(1)
     analyser = Analyser()
     analysis_indices = [int(i) for i in sys.argv[2:]]
+    if len(analysis_indices) > 1 :
+        print "[ERROR]: Received too many analysis indices. Require one or zero options. \n BREAK"
+        sys.exit()
     analyser.do_analysis(analysis_indices)
     print "Done - press <CR> to finish"
 
