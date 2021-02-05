@@ -225,8 +225,8 @@ def get_mc_settings(CC):
         "2017-02-5":{
             "ABS-LH2":{
                 "3-140":["9920",],
-                "6-140":["9921",],
-                "10-140":["9922",],
+                #"6-140":["9921",],
+                #"10-140":["9922",],
             },
             #"ABS-LH2-EMPTY":{
             #    "3-140":["10143",],
@@ -237,8 +237,8 @@ def get_mc_settings(CC):
         "2017-02-2":{
             "ABS-LH2":{
                 ####"3-200":["9756",], # old
-                "3-200":["9760",], # use this
-                "6-200":["9761",], # use this
+                #"3-200":["9760",], # use this
+                #"6-200":["9761",], # use this
                 ####"10-200":["9762",], # old + bad diffuser
                 "10-200":["9763",],
             },
@@ -353,7 +353,7 @@ if __name__ == "__main__":
     #config = "c6"
     #version = "v1"
     #version = "v2"
-    #version = "v3"
+    version = "v3"
     #version = "v4"
     #version = "v5"
     #version = "v6"
@@ -363,7 +363,7 @@ if __name__ == "__main__":
     #version = "v10"
     #version = "v11"
     #version = "v12"
-    version = "v13"
+    #version = "v13"
 
     #config = "c7"
     #version = "v107"

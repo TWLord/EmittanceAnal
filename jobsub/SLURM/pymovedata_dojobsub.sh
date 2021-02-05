@@ -6,21 +6,22 @@ MAUSdir=/storage/epp2/phumhf/MICE/maus--versions/MAUSv3.3.2
 DATApath=/storage/epp2/mice/phumhf
 #DATApath=/data/mice/phumhf
 
-#TIME="96:00:00"
+TIME="96:00:00"
 #TIME="5760"
 #TIME="34"
 #TIME="5:00:00:00"
-TIME="UNLIMITED"
+#TIME="UNLIMITED"
 
 ABS="$1"
 rn="$2"
-Optics="$3"
-CC="$4"
-VERSION="$5"
-config="$6"
-queue="$7"
-templatedir="$8"
-jobsuffix="$9"
+runnumber="$3"
+Optics="$4"
+CC="$5"
+VERSION="$6"
+config="$7"
+queue="$8"
+templatedir="$9"
+jobsuffix="${10}"
 #datadir="$10"
 
 echo $rn
@@ -53,13 +54,15 @@ fi
 
 
 
-configdir=config/c$config/movedata
+#configdir=config/c$config/movedata
+configdir=config/c$config/movedata/$VERSION
 
 if [ ! -d $here/config/c$config ] ; then
 
 echo "Making new parent directory $here/config/c$config/ "
 mkdir -p $here/config/c$config
 cp -f $here/$templatedir/__init__.py $here/config/c$config/
+cp -f $here/$templatedir/__init__.py $here/config/c$config/movedata/
 fi
 
 if [ ! -e $here/$configdir/config_${config}_${rn}_full.py  ] ; then
