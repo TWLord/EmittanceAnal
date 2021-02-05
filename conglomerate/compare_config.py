@@ -66,7 +66,7 @@ class CompareConfig(object):
                 "extra_lines":False,
                 "extra_labels":False,
                 "legend":{
-                    "text":["data", "simulation"],
+                    "text":["Data", "Simulation"],
                     "draw_option":["p e1", "f l"],
                     "pos":None,
                 },
@@ -128,7 +128,8 @@ class CompareConfig(object):
                 "extra_lines":False,
                 "extra_labels":False,
                 "legend":{
-                    "text":["data", "simulation"],
+                    #"text":["Data", "Simulation"],
+                    "text":["Data", "MC"],
                     "draw_option":["p e1", "f l"],
                     "pos":legend_pos,
                 },
@@ -185,7 +186,7 @@ class CompareConfig(object):
                 "extra_lines":False,
                 "extra_labels":False,
                 "legend":{
-                    "text":["data", "simulation"],
+                    "text":["Data", "Simulation"],
                     "draw_option":["p e1", "f l"],
                     "pos":legend_pos,
                 },

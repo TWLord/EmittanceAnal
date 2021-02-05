@@ -231,6 +231,7 @@ class ConglomerateOne(object):
                     continue
                 hist.Scale(1./n_entries)
         elif type(norm) == type([]):
+            print 'normalising between', norm[0],',', norm[1]
             for hist in hist_list:
                 bin_0 = hist.FindBin(norm[0])
                 bin_1 = hist.FindBin(norm[1])
@@ -282,14 +283,17 @@ class ConglomerateOne(object):
         x_min = 0.04 # 0.08 # 
         # min x for y axis label:
         y_min = 0.11 # 0.17 #
+        scale_x = 1.0 # no scaling
         if "wide" in self.options["axis_title"]:
             if self.options["axis_title"]["wide"] != None:
                 y_min = 0.06
         if self.options["axis_title"]["x"] != None:
+            if "large_x" in self.options["axis_title"]:
+                scale_x = self.options["axis_title"]["large_x"]
             x_text_box = ROOT.TPaveText(0.10, x_min, 0.97, x_min+0.06, "NDC")
             x_text_box.SetFillStyle(0)
             x_text_box.SetBorderSize(0)
-            x_text_box.SetTextSize(0.035)
+            x_text_box.SetTextSize(0.035*scale_x)
             x_text_box.SetTextAlign(21)
             x_text_box.AddText(self.options["axis_title"]["x"])
             x_text_box.Draw()
@@ -417,10 +421,13 @@ class ConglomerateOne(object):
             #    print
             #except AttributeError:
             #    pass
+
             if type(graph) == type(ROOT.TMultiGraph()):
                 if redraw["y_range"] != None:
+                    print "Setting y range for TGraph", redraw["y_range"][0], redraw["y_range"][1]
                     graph.SetMinimum(redraw["y_range"][0])
                     graph.SetMaximum(redraw["y_range"][1])
+                    #graph.GetYaxis().SetRange(redraw["y_range"][0],redraw["y_range"][1]) # TomL edit
                 continue
             graph.SetName(graph.GetName()+"_"+self.uid())
             if graph_draw["marker_style"] != None:

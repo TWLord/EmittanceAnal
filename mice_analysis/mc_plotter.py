@@ -95,12 +95,36 @@ class MCPlotter(AnalysisBase):
             self.birth_var_two_d_residual("p_residual_vs_pt_at_"+detector+"_all", detector, virt_station, "pid", "p", "pt", pid_colors, False, False) # TomL
             self.birth_var_two_d_residual("pz_residual_vs_pt_residual_at_"+detector, detector, virt_station, "pid", "pz", "pt", pid_colors, True, True) # TomL
             self.birth_var_two_d_residual("p_residual_vs_pt_residual_at_"+detector, detector, virt_station, "pid", "p", "pt", pid_colors, True, True) # TomL
+
+            # reco px vs py
             self.birth_var_three_d_hist_residual("px_vs_py_vs_pt_residual_at_"+detector+"_all", detector, virt_station, "px", "py", "pt", TruthX = False, TruthY = False, TruthZ = False, doresidualX = False, doresidualY = False, doresidualZ = True) # TomL
             self.birth_var_three_d_hist_residual("px_vs_py_vs_pt_residual_at_"+detector+"_us_cut", detector, virt_station, "px", "py", "pt", TruthX = False, TruthY = False, TruthZ = False, doresidualX = False, doresidualY = False, doresidualZ = True, cuts = "upstream_cut") # TomL
             self.birth_var_three_d_hist_residual("px_vs_py_vs_pt_residual_at_"+detector+"_ds_cut", detector, virt_station, "px", "py", "pt", TruthX = False, TruthY = False, TruthZ = False, doresidualX = False, doresidualY = False, doresidualZ = True, cuts = "downstream_cut") # TomL
+
+            # truth px vs py
             self.birth_var_three_d_hist_residual("px_truth_vs_py_truth_vs_pt_residual_at_"+detector+"_all", detector, virt_station, "px", "py", "pt", TruthX = True, TruthY = True, TruthZ = False, doresidualX = False, doresidualY = False, doresidualZ = True) # TomL
             self.birth_var_three_d_hist_residual("px_truth_vs_py_truth_vs_pt_residual_at_"+detector+"_us_cut", detector, virt_station, "px", "py", "pt", TruthX = True, TruthY = True, TruthZ = False, doresidualX = False, doresidualY = False, doresidualZ = True, cuts = "upstream_cut") # TomL
             self.birth_var_three_d_hist_residual("px_truth_vs_py_truth_vs_pt_residual_at_"+detector+"_ds_cut", detector, virt_station, "px", "py", "pt", TruthX = True, TruthY = True, TruthZ = False, doresidualX = False, doresidualY = False, doresidualZ = True, cuts = "downstream_cut") # TomL
+
+            # New requested plots
+            # vs Px residual
+            # reco px vs py
+            self.birth_var_three_d_hist_residual("px_vs_py_vs_px_residual_at_"+detector+"_us_cut", detector, virt_station, "px", "py", "px", TruthX = False, TruthY = False, TruthZ = False, doresidualX = False, doresidualY = False, doresidualZ = True, cuts = "upstream_cut") # TomL
+            self.birth_var_three_d_hist_residual("px_vs_py_vs_px_residual_at_"+detector+"_ds_cut", detector, virt_station, "px", "py", "px", TruthX = False, TruthY = False, TruthZ = False, doresidualX = False, doresidualY = False, doresidualZ = True, cuts = "downstream_cut") # TomL
+
+            # truth px vs py
+            self.birth_var_three_d_hist_residual("px_truth_vs_py_truth_vs_px_residual_at_"+detector+"_us_cut", detector, virt_station, "px", "py", "px", TruthX = True, TruthY = True, TruthZ = False, doresidualX = False, doresidualY = False, doresidualZ = True, cuts = "upstream_cut") # TomL
+            self.birth_var_three_d_hist_residual("px_truth_vs_py_truth_vs_px_residual_at_"+detector+"_ds_cut", detector, virt_station, "px", "py", "px", TruthX = True, TruthY = True, TruthZ = False, doresidualX = False, doresidualY = False, doresidualZ = True, cuts = "downstream_cut") # TomL
+
+            # vs Py residual
+            # reco px vs py
+            self.birth_var_three_d_hist_residual("px_vs_py_vs_py_residual_at_"+detector+"_us_cut", detector, virt_station, "px", "py", "py", TruthX = False, TruthY = False, TruthZ = False, doresidualX = False, doresidualY = False, doresidualZ = True, cuts = "upstream_cut") # TomL
+            self.birth_var_three_d_hist_residual("px_vs_py_vs_py_residual_at_"+detector+"_ds_cut", detector, virt_station, "px", "py", "py", TruthX = False, TruthY = False, TruthZ = False, doresidualX = False, doresidualY = False, doresidualZ = True, cuts = "downstream_cut") # TomL
+
+            # truth px vs py
+            self.birth_var_three_d_hist_residual("px_truth_vs_py_truth_vs_py_residual_at_"+detector+"_us_cut", detector, virt_station, "px", "py", "py", TruthX = True, TruthY = True, TruthZ = False, doresidualX = False, doresidualY = False, doresidualZ = True, cuts = "upstream_cut") # TomL
+            self.birth_var_three_d_hist_residual("px_truth_vs_py_truth_vs_py_residual_at_"+detector+"_ds_cut", detector, virt_station, "px", "py", "py", TruthX = True, TruthY = True, TruthZ = False, doresidualX = False, doresidualY = False, doresidualZ = True, cuts = "downstream_cut") # TomL
+
 
         for station in range(1,6):
             station = str(station)
@@ -157,7 +181,8 @@ class MCPlotter(AnalysisBase):
         #self.birth_var_two_d_scatter("z_vs_p_of_track_initial", "mc_track_initial", "pid", "z", "p", pid_colors)
         self.birth_data_detector_residuals()
         #self.birth_pid_comparison(pid_colors)
-        self.birth_compare_bad_tracks()
+        # Turned off for speed / size.. Plots should maybe be produced as TStacks instead
+        #self.birth_compare_bad_tracks()
         #self.birth_spacepoints()
         self.birth_spacepoints(cluster_colors)
 
@@ -168,7 +193,7 @@ class MCPlotter(AnalysisBase):
             process_function(name, *process_args)
         self.process_data_detector_residuals()
         #self.process_pid_comparison()
-        self.process_compare_bad_tracks()
+        #self.process_compare_bad_tracks()
         self.process_spacepoints()
 
     def death(self):
@@ -685,7 +710,8 @@ class MCPlotter(AnalysisBase):
     def get_data_detector_residuals(self, det_name, virt_name):
         if det_name in ["tof01", "tof12"]:
             return self.get_tofij_residual(det_name)
-        if det_name in ["tku_tp", "tkd_tp"]:
+        #if det_name in ["tku_tp", "tkd_tp"]:
+        if "tku_" in det_name or "tkd_" in det_name:
             residual_dict = {"x":[], "y":[], "z":[], "px":[], "py":[], "pz":[], "pt":[], "p":[]} # TomL
             #residual_dict = {"x":[], "y":[], "z":[], "px":[], "py":[], "pz":[]}
         elif det_name in ["tof0", "tof1", "tof2"]:
@@ -767,9 +793,9 @@ class MCPlotter(AnalysisBase):
             "z":(-10., 10.),
             "px":(-10., 10.),
             "py":(-10., 10.),
-            "pz":(-40., 40.),
-            "pt":(-100., 100.),
-            "p":(-100., 100.),
+            "pz":(-30., 30.),
+            "pt":(-15., 15.),#"pt":(-100., 100.),
+            "p":(-30., 30.),#"p":(-100., 100.),
             "t":(-1., 1.),
         }
         return keys[var]

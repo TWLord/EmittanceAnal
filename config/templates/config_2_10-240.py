@@ -64,6 +64,7 @@ def get_systematics(emittance, analysis="amplitude"):
 def get_analysis(run_list, name, tof01_min_max, maus_version, data_dir, emittance, p_bins, tkd_cut, tramlines_dp):
     plot_dir = data_dir+"/plots_"+name+"/"
     plot_dir = plot_dir.replace(" ", "_")
+    plot_dir = plot_dir.replace(",", "")
     min_p = min([min(a_bin) for a_bin in p_bins])
     max_p = max([max(a_bin) for a_bin in p_bins])
 
@@ -239,7 +240,7 @@ class Config(object):
     src_dir = "Production-v2"
     analyses = []
 
-    analyses.append(get_analysis([template],  "template CC 10-240 ABS",  [1.5, 2.75], src_dir, data_dir, 10, [[235, 245]], [190, 270], 24)) 
+    analyses.append(get_analysis([template],  "template CC 10-240 ABS",  [1.5, 2.5], src_dir, data_dir, 10, [[235, 245]], [190, 270], 64 )) # 24 
 
     required_trackers = [0, 1] # for space points
     required_number_of_track_points = 12 # doesnt do anything
@@ -248,7 +249,7 @@ class Config(object):
     will_load_tk_space_points = True # determines whether data loader will attempt to load tracker space points
     will_load_tk_track_points = True # determines whether data loader will attempt to load tracker track points
     number_of_spills = None # if set to an integer, limits the number of spills loaded for each sub-analysis
-    preanalysis_number_of_spills = 50 # number of spills to analyse during "pre-analysis"
+    preanalysis_number_of_spills = 500 # number of spills to analyse during "pre-analysis"
     analysis_number_of_spills = 100 # number of spills to analyse during each "analysis" step
     momentum_from_tracker = True # i.e. not from TOFs
     time_from = "tof1"

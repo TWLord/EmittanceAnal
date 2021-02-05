@@ -13,9 +13,10 @@ config="$7"
 queue="$8"
 templatedir="$9"
 jobsuffix="${10}"
-use_preanal="${11}"
-SYSTEMATIC="${12}"
-SYSVERS="${13}"
+GEOPATH="${11}"
+use_preanal="${12}"
+SYSTEMATIC="${13}"
+SYSVERS="${14}"
 #datadir="$11"
 
 echo $rn
@@ -52,6 +53,22 @@ elif [ $config == "10" ] ; then
 datadir=/data/mice/phumhf/ReconData/MAUSv3.3.2/$runnumber
 elif [ $config == "11" ] ; then
 datadir=/data/mice/phumhf/MC/MAUSv3.3.2/$runnumber$VERSION
+elif [ $config == "12" ] ; then
+datadir=/data/mice/phumhf/ReconData/MAUSv3.3.2/$runnumber
+elif [ $config == "13" ] ; then
+datadir=/data/mice/phumhf/MC/MAUSv3.3.2/$runnumber$VERSION
+elif [ $config == "14" ] ; then
+datadir=/data/mice/phumhf/ReconData/MAUSv3.3.2/$runnumber
+elif [ $config == "15" ] ; then
+datadir=/data/mice/phumhf/MC/MAUSv3.3.2/$runnumber$VERSION
+elif [ $config == "16" ] ; then
+datadir=/data/mice/phumhf/ReconData/MAUSv3.3.2/$runnumber
+elif [ $config == "17" ] ; then
+datadir=/data/mice/phumhf/MC/MAUSv3.3.2/$runnumber$VERSION
+elif [ $config == "18" ] ; then
+datadir=/data/mice/phumhf/ReconData/MAUSv3.3.2/$runnumber
+elif [ $config == "19" ] ; then
+datadir=/data/mice/phumhf/MC/MAUSv3.3.2/$runnumber$VERSION
 else 
 echo "NO CONFIG SET UP FOR $config in pymovedata_jobsub script ---- EXITING"
 fi
@@ -62,7 +79,7 @@ configdir=config/c$config/movedata/$VERSION
 if [ ! -d $here/config/c$config ] ; then
 
 echo "Making new parent directory $here/config/c$config/ "
-mkdir -p $here/config/c$config
+mkdir -p $here/config/c$config/movedata
 cp -f $here/$templatedir/__init__.py $here/config/c$config/
 cp -f $here/$templatedir/__init__.py $here/config/c$config/movedata/
 fi
@@ -75,7 +92,7 @@ echo "Making config for run $rn from template"
 mkdir -p $here/$configdir
 cp -f $here/$templatedir/__init__.py $here/$configdir/
 
-sed -e "s/template/${rn}/g" -e "s/ABS/$ABS/g" -e "s/CC/$CC/g" -e "s/VERSION/$VERSION/g" -e "s/SYSTEMATIC/$SYSTEMATIC/g" -e "s/SYSVERS/$SYSVERS/g" $here/$templatedir/config_${config}_${Optics}.py > $here/$configdir/config_${config}_${rn}_full.py
+sed -e "s/template/${rn}/g" -e "s/ABS/$ABS/g" -e "s/CC/$CC/g" -e "s/VERSION/$VERSION/g" -e "s/SYSTEMATIC/$SYSTEMATIC/g" -e "s/SYSVERS/$SYSVERS/g" -e "s?GEOPATH?$GEOPATH?g" $here/$templatedir/config_${config}_${Optics}.py > $here/$configdir/config_${config}_${rn}_full.py
 
 #sed -e "s/template/${rn}/g" -e "s/ABS/$ABS/g" -e "s/CC/$CC/g" -e "s/VERSION/$VERSION/g" $here/$templatedir/config_${config}_${Optics}.py > $here/$configdir/config_${config}_${rn}_full.py
 

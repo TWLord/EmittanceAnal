@@ -111,6 +111,7 @@ class CompareCutsSystematicConfig(CompareConfig):
                 "draw_order":[1]+range(2, 2+n_sys)+[0],
                 "x_range":self.x_range,
                 "y_range":None,
+                "z_range":None,
                 "graph_draw_option":None,
                 "ignore_more_histograms":False,
             },
@@ -336,7 +337,7 @@ def main():
 
     systematics_source_dir = "output/systematics/2017-02-6-c7_v"+str(version)+"/"
 
-    #HighMom = True
+    HighMom = True
     if HighMom:
       target_dir = "output/systematics/2017-02-6_mom_compare_v"+str(version)+"/"
       #top_labels = ["3-170", "3-200", "3-240"]

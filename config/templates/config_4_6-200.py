@@ -83,8 +83,8 @@ def get_analysis(run_list, name, tof01_min_max, maus_version, data_dir, emittanc
             "delta_tof01_upper":+1.5, # Delta TOF01 cut upper bound 
             "delta_tof12_lower":-5., # Delta TOF01 cut lower bound 
             "delta_tof12_upper":5., # Delta TOF01 cut upper bound 
-            "tof01_tramline_lower":-20.+tramlines_dp, # p_tof01 - p_tku
-            "tof01_tramline_upper":+20.+tramlines_dp, # p_tof01 - p_tku
+            "tof01_tramline_lower":-25.+tramlines_dp, # p_tof01 - p_tku
+            "tof01_tramline_upper":+25.+tramlines_dp, # p_tof01 - p_tku
             "tof01_cut_low":tof01_min_max[0], # TOF01 cut lower bound
             "tof01_cut_high":tof01_min_max[1], # TOF01 cut upper bound
             "p_bins":p_bins, # set of momentum bins; for now really it is just a lower and upper bound
@@ -253,7 +253,7 @@ class Config(object):
     analyses = []
 
 
-    analyses.append(get_analysis([template],  "Simulated CC 6-200 ABS",  [1.5, 4.5], src_dir, data_dir, 6, [[195, 205]], [150, 230], 32)) 
+    analyses.append(get_analysis([template],  "Simulated CC 6-200 ABS",  [1.5, 3.5], src_dir, data_dir, 6, [[195, 205]], [150, 230], 35)) # 32
 
     required_trackers = [0, 1] # for space points
     required_number_of_track_points = 12 # doesnt do anything
