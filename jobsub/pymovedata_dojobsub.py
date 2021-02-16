@@ -337,6 +337,18 @@ def get_data_settings(CC):
                 "6-240":["10241",], # only run 
             },
         },
+        "2016-04-2.4a":{
+            "ABS-SOLID-EMPTY":{
+	        #"6-240":["10404",],
+	        "6-240":["10404", "10406", "10408", "10411", "10413", "10414", "10417", "10420",],
+                #"10-240":["10405",],
+                "10-240":["10402", "10403", "10405", "10407", "10410", "10412", "10415", "10416", "10418", "10419", "10421", "10422",],
+	    },
+            "ABS-SOLID-LiH":{
+                "6-240":["8873", "8874", "8875", "8877", "8878", "8879", "8880", "8881", "8882",],
+                "10-240":["8907", "8908", "8914", "8915", "8916", "8917",],
+            },
+        },
 
     }[CC]
 
@@ -394,7 +406,7 @@ if __name__ == "__main__":
     #config = "c6"
     #version = "v1"
     #version = "v2"
-    version = "v3"
+    #version = "v3"
     #version = "v4"
     #version = "v5"
     #version = "v6"
@@ -433,6 +445,7 @@ if __name__ == "__main__":
     #version = "v508"
     #version = "v509"
     #version = "v600"
+    #version = "v666"
     #version = "v700"
 
     #version = "v30"
@@ -448,15 +461,15 @@ if __name__ == "__main__":
 
     sys_vers = "v107"
 
-    #CC = "2016-04-2.4a"
+    CC = "2016-04-2.4a"
     #CC = "2017-02-2"
     #CC = "2017-02-5"
-    CC = "2017-02-6"
+    #CC = "2017-02-6"
 
     #use_preanal = "True" # "FALSE" # "True" # Old self-defined version.. user error possible
     use_preanal = False # True # False # True 
     base_only = False #True # False 
-    split_routines = True
+    split_routines = False # True
 
     #config = "c2"
 

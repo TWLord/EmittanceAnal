@@ -1762,7 +1762,12 @@ def main_paper(batch_level = 0):
     #target_dir = "output/combinedMC+Data/testingAng4/"
     #target_dir = "output/combinedMC+Data/testingAng5/"
 
-    target_dir_list = ["output/combinedMC+Data/ownMC/2017-02-2_v"+str(x)+"/" for x in range(700, 701)]
+    target_dir_list = ["output/combinedMC+Data/officialMC/2017-02-2/copied_from_epp/"]
+    #target_dir_list = ["output/combinedMC+Data/officialMC/2017-02-2/v3/"]
+    #target_dir_list = ["output/combinedMC+Data/officialMC/2017-02-2_v"+str(x)+"/" for x in range(3, 4)]
+    #target_dir_list = ["output/combinedMC+Data/ownMC/2017-02-2_v"+str(x)+"/" for x in range(26, 28)]
+
+    #target_dir_list = ["output/combinedMC+Data/ownMC/2017-02-2_v"+str(x)+"/" for x in range(700, 701)]
     #target_dir_list = ["output/combinedMC+Data/ownMC/altnorm/2017-02-2_v"+str(x)+"/" for x in range(700,701)]
 
     #target_dir_list = ["output/combinedMC+Data/ownMC/2017-02-6_v"+str(x)+"/" for x in range(508,509)]
@@ -1882,7 +1887,8 @@ def main_paper(batch_level = 0):
         #["2017-02-2_3-200_ABS-LH2-EMPTY",   "2017-02-2_6-200_ABS-LH2-EMPTY",   "2017-02-2_10-200_ABS-LH2-EMPTY",],
         #["2017-02-2_3-200_ABS-LH2",         "2017-02-2_6-200_ABS-LH2",         "2017-02-2_10-200_ABS-LH2",],
         #["2017-02-2_3-200_ABS-LH2",],
-        ["2017-02-2_3-200_ABS-LH2", "2017-02-2_10-200_ABS-LH2",],
+        ["2017-02-2_10-200_ABS-LH2",],
+        #["2017-02-2_3-200_ABS-LH2", "2017-02-2_10-200_ABS-LH2",],
 
         #["2017-02-2_6-200_ABS-LH2",         "2017-02-2_10-200_ABS-LH2",],
 
@@ -1998,7 +2004,7 @@ def main_paper(batch_level = 0):
 
 
 if __name__ == "__main__":
-    do_higher_mom = False # True # False # True # False 
+    do_higher_mom = True # False # True # False # True # False 
     main_paper()
     if not ROOT.gROOT.IsBatch():
         raw_input("Finished - press <CR> to end")
