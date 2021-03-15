@@ -263,8 +263,8 @@ def get_mc_settings(CC):
         "2017-02-2":{
             "ABS-LH2":{
                 ####"3-200":["9756",], # old
-                #"3-200":["9760",], # use this
-                "6-200":["9761",], # use this
+                "3-200":["9760",], # use this
+                #"6-200":["9761",], # use this
                 ####"10-200":["9762",], # old + bad diffuser
                 #"10-200":["9763",],
             },
@@ -553,7 +553,7 @@ if __name__ == "__main__":
     # RUN SETTINGS HERE
     ######################
     queue = "xxl" #"medium" #"xxl" #### Currently redundant for SLURM/QSUB jobsub
-    version = "v3" # Official MC version
+    #version = "v3" # Official MC version
     #config = "3f"
     #config = "c3"
     config = "c1"
@@ -565,7 +565,7 @@ if __name__ == "__main__":
     #config = "c18"
     #config = "c19"
 
-    #config = "c4"
+    config = "c4"
     #config = "c6"
     #version = "v1"
     #version = "v2"
@@ -591,7 +591,7 @@ if __name__ == "__main__":
     #version = "v22"
     #version = "v23"
     #version = "v24"
-    #version = "v25"
+    version = "v25"
     #version = "v26"
     #version = "v27"
     #version = "v28"
@@ -634,9 +634,10 @@ if __name__ == "__main__":
     #CC = "2016-05-1"
     #CC = "2016-05-1-SSUSSD"
     #CC = "2017-02-1"
-    #CC = "2017-02-2"
+    CC = "2017-02-2"
+    #CC = "2016-04-2.4a"
     #CC = "2017-02-5"
-    CC = "M2D-flip-2017-02-5"
+    #CC = "M2D-flip-2017-02-5"
     #CC = "2017-02-6"
     #CC = "2017-02-7"
 
