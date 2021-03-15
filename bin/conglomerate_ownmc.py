@@ -428,7 +428,9 @@ class CompareCutsConfig(CompareConfig):
             self.get_conglomerate_2("tkd_scifi_n_planes_with_clusters_"+nd1+"_0", None, "Number of planes with clusters in TKD", None, True, [0.1, 0.5, 0.5, 0.9], modifiers = mod),
             ###mod["graph_names"] = ["TPaveText",]
             #self.get_conglomerate_2("tku_p_"+nu+"_0", None, "Momentum at TKU Reference Plane [MeV/c]", [100., 300.], True, [0.5, 0.5, 0.9, 0.9], modifiers = mod), # good one
-            self.get_conglomerate_2("tku_p_"+nu+"_0", None, "Momentum at TKU Reference Plane [MeV/c]", [100., 300.], [195, 205], [0.5, 0.5, 0.9, 0.9], modifiers = mod),
+            #self.get_conglomerate_2("tku_p_"+nu+"_0", None, "Momentum at TKU Reference Plane [MeV/c]", [100., 300.], [195, 205], [0.5, 0.5, 0.9, 0.9], modifiers = mod),
+            self.get_conglomerate_2("tku_p_"+nu+"_0", None, "Momentum at TKU Reference Plane [MeV/c]", [100., 300.], [195, 205], [0.5, 0.5, 0.9, 0.9], vertical([195, 205], mod)),
+
 
           ]
         else : 
@@ -691,6 +693,15 @@ class CompareData2DMCConfig(CompareConfig):
             self.get_conglomerate_3("tku_px_tku_py_us_cut", "tku_px_tku_py_us_cut", "tku px [MeV/c]", "tku py [MeV/c]", modifiers = mod),
             self.get_conglomerate_3("tkd_px_tkd_py_ds_cut", "tkd_px_tkd_py_ds_cut", "tkd px [MeV/c]", "tkd py [MeV/c]", modifiers = mod),
         ]
+
+        mod["rescale_x"] = [-175.5, 175.5]
+        mod["rescale_y"] = [-175.5, 175.5]
+
+        self.conglomerate_list += [
+            self.get_conglomerate_3("tku_x_tku_y_us_cut", "tku_x_tku_y_us_cut", "tku x [mm]", "tku y [mm]", modifiers = mod),
+            self.get_conglomerate_3("tkd_x_tkd_y_ds_cut", "tkd_x_tkd_y_ds_cut", "tkd x [mm]", "tkd y [mm]", modifiers = mod),
+        ]
+
         if do_higher_mom :
          mod = {
             "merge_options":{
@@ -1762,16 +1773,24 @@ def main_paper(batch_level = 0):
     #target_dir = "output/combinedMC+Data/testingAng4/"
     #target_dir = "output/combinedMC+Data/testingAng5/"
 
-    target_dir_list = ["output/combinedMC+Data/officialMC/2017-02-2/copied_from_epp/"]
+    #target_dir_list = ["output/combinedMC+Data/testingtramlines/c" +str(x)+"/" for x in range(3, 5)]
+
+    #target_dir_list = ["output/combinedMC+Data/officialMC/2017-02-2/copied_from_epp/"]
     #target_dir_list = ["output/combinedMC+Data/officialMC/2017-02-2/v3/"]
     #target_dir_list = ["output/combinedMC+Data/officialMC/2017-02-2_v"+str(x)+"/" for x in range(3, 4)]
     #target_dir_list = ["output/combinedMC+Data/ownMC/2017-02-2_v"+str(x)+"/" for x in range(26, 28)]
 
-    #target_dir_list = ["output/combinedMC+Data/ownMC/2017-02-2_v"+str(x)+"/" for x in range(700, 701)]
+    #target_dir_list = ["output/combinedMC+Data/ownMC/2017-02-2_v"+str(x)+"/" for x in range(27, 28)]
     #target_dir_list = ["output/combinedMC+Data/ownMC/altnorm/2017-02-2_v"+str(x)+"/" for x in range(700,701)]
 
     #target_dir_list = ["output/combinedMC+Data/ownMC/2017-02-6_v"+str(x)+"/" for x in range(508,509)]
 
+    #target_dir_list = ["output/combinedMC+Data/ownMC/2017-02-2_vd1d2/"]
+    #target_dir_list = ["output/combinedMC+Data/ownMC/2017-02-2_vd1d2/0pt96_d1_0pt96_d2/"]
+    target_dir_list = []
+    for d1 in ["0pt96", "0pt98", "1pt02", "1pt04"]:
+        for d2 in ["0pt96", "0pt98", "1pt0", "1pt02", "1pt04", "1pt06"]:
+            target_dir_list.append("output/combinedMC+Data/ownMC/2017-02-2_vd1d2/"+d1+"_d1_"+d2+"_d2/")
 
     # OFFICIAL MC
     #target_dir_list = ["output/combinedMC+Data/officialMC/2017-02-2/c2+c3/"]
@@ -1886,8 +1905,11 @@ def main_paper(batch_level = 0):
         # 2017-02-2 datasets : 
         #["2017-02-2_3-200_ABS-LH2-EMPTY",   "2017-02-2_6-200_ABS-LH2-EMPTY",   "2017-02-2_10-200_ABS-LH2-EMPTY",],
         #["2017-02-2_3-200_ABS-LH2",         "2017-02-2_6-200_ABS-LH2",         "2017-02-2_10-200_ABS-LH2",],
+	# problems with 3-200 soo...
+        #["2017-02-2_6-200_ABS-LH2",         "2017-02-2_6-200_ABS-LH2",         "2017-02-2_10-200_ABS-LH2",],
         #["2017-02-2_3-200_ABS-LH2",],
-        ["2017-02-2_10-200_ABS-LH2",],
+        ["2017-02-2_6-200_ABS-LH2",],
+        #["2017-02-2_10-200_ABS-LH2",],
         #["2017-02-2_3-200_ABS-LH2", "2017-02-2_10-200_ABS-LH2",],
 
         #["2017-02-2_6-200_ABS-LH2",         "2017-02-2_10-200_ABS-LH2",],
@@ -1931,8 +1953,9 @@ def main_paper(batch_level = 0):
     #top_labels = ["3-200", "6-200", "10-200", "6-240"] # TomL
     #top_labels = [ "6-200", "10-200"] # TomL
     #top_labels = ["3-200", ] # TomL
+    top_labels = ["6-200", ] # TomL
     #top_labels = ["10-200", ] # TomL
-    top_labels = ["3-200", "10-200", ] # TomL
+    #top_labels = ["3-200", "10-200", ] # TomL
     #top_labels = ["3-200", "6-200",] # TomL
     #top_labels = ["3-170", "3-200"] # TomL
     #top_labels = ["3-200", "3-240"] # TomL
