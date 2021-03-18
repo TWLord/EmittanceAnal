@@ -14,12 +14,11 @@ def get_systematics_dir(emittance, suffix, absorber, analysis):
         "amplitude":"v5",
         "density":"v6", 
         "density_rogers":"v6",
-        "fractional_emittance":"v5",
-        "ang_mom":"v5"
+        "fractional_emittance":"v5"
     }[analysis]
     print vers
-    a_dir = "output/c7/SYSVERS/plots_CC_"+str(emittance)+\
-            "-140_"+absorber+"_"+suffix+"/"+analysis+"/"+analysis+".json"
+    a_dir = "output/2017-02-7-Systematics-"+vers+"/plots_Simulated_2017-2.7_"+str(emittance)+\
+           "-140_"+absorber+"_Systematics_"+suffix+"/"+analysis+"/"+analysis+".json"
     return a_dir
 
 def get_systematics(emittance, analysis="amplitude"):
@@ -27,36 +26,35 @@ def get_systematics(emittance, analysis="amplitude"):
         "amplitude":("all_upstream", "all_downstream"),
         "density":("us", "ds"), 
         "density_rogers":("us", "ds"),
-        "fractional_emittance":("us", "ds"),
-        "ang_mom":("us", "ds")
+        "fractional_emittance":("us", "ds")
     }[analysis]
     systematics = {
       "reco":{
-        "detector_reference":get_systematics_dir(emittance, "tku_base", "SYSTEMATIC", analysis),
-        "performance_reference":get_systematics_dir(emittance, "tku_base", "SYSTEMATIC", analysis),
+        "detector_reference":get_systematics_dir(emittance, "tku_base", "lH2_empty", analysis),
+        "performance_reference":get_systematics_dir(emittance, "tku_base", "lH2_empty", analysis),
         us_name:{
           "detector_systematics":{
-            get_systematics_dir(emittance, "tku_pos_plus", "SYSTEMATIC", analysis):1.,
-            get_systematics_dir(emittance, "tku_rot_plus", "SYSTEMATIC", analysis):1.,
-            get_systematics_dir(emittance, "tku_scale_E1_plus", "SYSTEMATIC", analysis):1.,
-            get_systematics_dir(emittance, "tku_scale_C_plus", "SYSTEMATIC", analysis):1.,
-            get_systematics_dir(emittance, "tku_scale_E2_plus", "SYSTEMATIC", analysis):1.,
-            get_systematics_dir(emittance, "tku_density_plus", "SYSTEMATIC", analysis):1.,
+            get_systematics_dir(emittance, "tku_pos_plus", "lH2_empty", analysis):1.,
+            get_systematics_dir(emittance, "tku_rot_plus", "lH2_empty", analysis):1.,
+            get_systematics_dir(emittance, "tku_scale_SSUE1_plus", "lH2_empty", analysis):1.,
+            get_systematics_dir(emittance, "tku_scale_SSUC_neg", "lH2_empty", analysis):1.,
+            get_systematics_dir(emittance, "tku_scale_SSUE2_plus", "lH2_empty", analysis):1.,
+            get_systematics_dir(emittance, "tku_density_plus", "lH2_empty", analysis):1.,
           },
           "performance_systematics":{}
         },
         ds_name:{
           "detector_systematics":{
-            get_systematics_dir(emittance, "tkd_pos_plus", "SYSTEMATIC", analysis):1.,
-            get_systematics_dir(emittance, "tkd_rot_plus", "SYSTEMATIC", analysis):1.,
-            get_systematics_dir(emittance, "tkd_scale_E1_plus", "SYSTEMATIC", analysis):1.,
-            get_systematics_dir(emittance, "tkd_scale_C_plus", "SYSTEMATIC", analysis):0.1,
-            get_systematics_dir(emittance, "tkd_scale_E2_plus", "SYSTEMATIC", analysis):1.,
-            get_systematics_dir(emittance, "tkd_density_plus", "SYSTEMATIC", analysis):1.,
+            get_systematics_dir(emittance, "tkd_pos_plus", "lH2_empty", analysis):1.,
+            get_systematics_dir(emittance, "tkd_rot_plus", "lH2_empty", analysis):1.,
+            get_systematics_dir(emittance, "tkd_scale_SSDE1_plus", "lH2_empty", analysis):1.,
+            get_systematics_dir(emittance, "tkd_scale_SSDC_plus", "lH2_empty", analysis):0.1,
+            get_systematics_dir(emittance, "tkd_scale_SSDE2_plus", "lH2_empty", analysis):1.,
+            get_systematics_dir(emittance, "tkd_density_plus", "lH2_empty", analysis):1.,
           },
           "performance_systematics":{
-            get_systematics_dir(emittance, "tku_base_tkd_fiducial_radius", "SYSTEMATIC", analysis):1.,
-            get_systematics_dir(emittance, "tku_base_tkd_chi2_threshold", "SYSTEMATIC", analysis):1.,
+            get_systematics_dir(emittance, "tku_base_tkd_fiducial_radius", "lH2_empty", analysis):1.,
+            get_systematics_dir(emittance, "tku_base_tkd_chi2_threshold", "lH2_empty", analysis):1.,
           }
         }
       },
@@ -80,8 +78,8 @@ def get_analysis(run_list, name, tof01_min_max, maus_version, data_dir, emittanc
             "delta_tof01_upper":+1.5, # Delta TOF01 cut upper bound 
             "delta_tof12_lower":-5., # Delta TOF01 cut lower bound 
             "delta_tof12_upper":5., # Delta TOF01 cut upper bound 
-            "tof01_tramline_lower":-25.+tramlines_dp, # p_tof01 - p_tku
-            "tof01_tramline_upper":+25.+tramlines_dp, # p_tof01 - p_tku
+            "tof01_tramline_lower":-15.+tramlines_dp, # p_tof01 - p_tku
+            "tof01_tramline_upper":+15.+tramlines_dp, # p_tof01 - p_tku
             "tof01_cut_low":tof01_min_max[0], # TOF01 cut lower bound
             "tof01_cut_high":tof01_min_max[1], # TOF01 cut upper bound
             "p_bins":p_bins, # set of momentum bins; for now really it is just a lower and upper bound
@@ -133,25 +131,20 @@ def get_analysis(run_list, name, tof01_min_max, maus_version, data_dir, emittanc
             "density_rogers_corrections":get_systematics_dir(emittance, "tku_base", "lH2_empty", "density_rogers"),
             "density_rogers_systematics":get_systematics(emittance, "density_rogers"),
 
-            "do_ang_mom_mc":None,
-            "ang_mom_corrections":None,
-            "ang_mom_systematics":get_systematics(emittance, "ang_mom"),
-
             "do_mc":False,
             "do_magnet_alignment":False,
             "do_fractional_emittance":False,
             "do_efficiency":False,
             "do_extrapolation":False,
-            "do_globals":False,
+            "do_globals":True,
             "do_amplitude":False,
-            "do_density":False,
-            "do_density_rogers":False,
+            "do_density":False, #True,
+            "do_density_rogers":False, #True,
             "do_plots":True,
             "do_cuts_plots":True,
             "do_tof01_weighting":False,
-            "do_optics":False,
-            "do_data_recorder":False,
-            "do_ang_mom_fields":True,
+            "do_optics":False,#True,
+            "do_data_recorder":True, #True,
     }
     return analysis_variables
 
@@ -242,12 +235,11 @@ class Config(object):
     cut_report[2] += ["downstream_aperture_cut", "tof_2_sp", "global_through_tkd_tp", "global_through_tof2", "hline",]
     cut_report[2] += ["extrapolation_cut", "hline"]
 
-    data_dir = "output/c18/"
+    data_dir = "output/beams/"
     src_dir = "Production-v2"
-    geometry_path = "GEOPATH"
     analyses = []
 
-    analyses.append(get_analysis([template],  "template CC 10-140 ABS",  [1.5, 4.5], src_dir, data_dir, 10, [[135, 145]], [90, 170], 70)) 
+    analyses.append(get_analysis([template],  "template CC 4-140 ABS",  [1.5, 6.0], src_dir, data_dir, 4, [[135, 145]], [90, 170], 32)) 
 
     required_trackers = [0, 1] # for space points
     required_number_of_track_points = 12 # doesnt do anything

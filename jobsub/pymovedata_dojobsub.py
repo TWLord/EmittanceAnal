@@ -251,8 +251,8 @@ def get_mc_settings(CC):
         "2017-02-5":{
             "ABS-LH2":{
                 "3-140":["9920",],
-                #"6-140":["9921",],
-                #"10-140":["9922",],
+                "6-140":["9921",],
+                "10-140":["9922",],
             },
             #"ABS-LH2-EMPTY":{
             #    "3-140":["10143",],
@@ -299,12 +299,12 @@ def get_mc_settings(CC):
                 #"10-140":["10292",], # M3-Test4
             },
         },
-        "2017-02-1":{
+        "2016-05-1":{
             "ABS-SOLID-LiH":{
 	        "3-200":["9060",],
             },
         },
-        "2017-02-1-SSUSSD":{
+        "2016-05-1-SSUSSD":{
             "ABS-SOLID-LiH":{
 	        "3-140":["9161",],
 	        "3-170":["9160",],
@@ -533,6 +533,7 @@ def get_jobsuffix(config):
         "c19":"c19", #"mcangmomfields_sysstat_abs",
         "2f":"recopreanal",
         "3f":"mcpreanal",
+        "beams":"beams",
     }[config]
     return jobsuffix
 
@@ -547,16 +548,17 @@ if __name__ == "__main__":
 
     ############################################################# 
 
-    geodir = "/vols/mice/tlord1/Geometries/"
+    #geodir = "/vols/mice/tlord1/Geometries/"
+    geodir = "/storage/epp2/phumhf/MICE/Geometries/"
     #geodir = "/data/mice/phumhf/Geometries/"
   
     # RUN SETTINGS HERE
     ######################
     queue = "xxl" #"medium" #"xxl" #### Currently redundant for SLURM/QSUB jobsub
-    #version = "v3" # Official MC version
+    version = "v3" # Official MC version
     #config = "3f"
     #config = "c3"
-    config = "c1"
+    #config = "c1"
     #config = "c5"
     #config = "c8"
     #config = "c2"
@@ -565,7 +567,9 @@ if __name__ == "__main__":
     #config = "c18"
     #config = "c19"
 
-    config = "c4"
+    config = "beams"
+
+    #config = "c4"
     #config = "c6"
     #version = "v1"
     #version = "v2"
@@ -591,7 +595,7 @@ if __name__ == "__main__":
     #version = "v22"
     #version = "v23"
     #version = "v24"
-    version = "v25"
+    #version = "v25"
     #version = "v26"
     #version = "v27"
     #version = "v28"
@@ -634,9 +638,9 @@ if __name__ == "__main__":
     #CC = "2016-05-1"
     #CC = "2016-05-1-SSUSSD"
     #CC = "2017-02-1"
-    CC = "2017-02-2"
+    #CC = "2017-02-2"
     #CC = "2016-04-2.4a"
-    #CC = "2017-02-5"
+    CC = "2017-02-5"
     #CC = "M2D-flip-2017-02-5"
     #CC = "2017-02-6"
     #CC = "2017-02-7"
@@ -693,7 +697,7 @@ if __name__ == "__main__":
     else:
         use_preanal = "FALSE"
 
-    if config == "c1" or config == "c3" or config == "c4" or config == "3f" or config == "c13" or config == "c15" or config == "c17":
+    if config == "c1" or config == "c3" or config == "c4" or config == "3f" or config == "c13" or config == "c15" or config == "c17" or config == "beams":
         run_function = run_single
         settings["runs"] = get_mc_settings(CC)
         settings["use_preanal"] = use_preanal

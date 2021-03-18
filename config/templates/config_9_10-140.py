@@ -76,8 +76,8 @@ def get_analysis(run_list, name, tof01_min_max, maus_version, data_dir, emittanc
             "delta_tof01_upper":+1.5, # Delta TOF01 cut upper bound 
             "delta_tof12_lower":-5., # Delta TOF01 cut lower bound 
             "delta_tof12_upper":5., # Delta TOF01 cut upper bound 
-            "tof01_tramline_lower":-15.+tramlines_dp, # p_tof01 - p_tku
-            "tof01_tramline_upper":+15.+tramlines_dp, # p_tof01 - p_tku
+            "tof01_tramline_lower":-25.+tramlines_dp, # p_tof01 - p_tku
+            "tof01_tramline_upper":+25.+tramlines_dp, # p_tof01 - p_tku
             "tof01_cut_low":tof01_min_max[0], # TOF01 cut lower bound
             "tof01_cut_high":tof01_min_max[1], # TOF01 cut upper bound
             "p_bins":p_bins, # set of momentum bins; for now really it is just a lower and upper bound

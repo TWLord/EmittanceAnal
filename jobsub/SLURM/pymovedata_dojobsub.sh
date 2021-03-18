@@ -36,45 +36,48 @@ rn=$rn
 if [ $config == "1" ] ; then
 datadir=${DATApath}/MC/MAUSv3.3.2/$runnumber$VERSION
 elif [ $config == "2" ] ; then
-datadir=${DATApath}/ReconData/MAUSv3.3.2/$runnumber
+datadir=${DATApath}/ReconData/Mausv3.3.2/$runnumber
 elif [ $config == "3" ] ; then
 datadir=${DATApath}/MC/MAUSv3.3.2/$runnumber$VERSION
 elif [ $config == "4" ] ; then
 datadir=${DATApath}/analMC/${runnumber}_$VERSION
 copydir=*/maus_output
 elif [ $config == "5" ] ; then
-datadir=${DATApath}/ReconData/MAUSv3.3.2/$runnumber
+datadir=${DATApath}/ReconData/Mausv3.3.2/$runnumber
 elif [ $config == "6" ] ; then
-datadir=${DATApath}/ReconData/MAUSv3.3.2/$runnumber
+datadir=${DATApath}/ReconData/Mausv3.3.2/$runnumber
 elif [ $config == "7" ] ; then
 echo "[ERROR]: Shouldn't be running systematics from this script. Exiting.."
 exit 1
 elif [ $config == "8" ] ; then
-datadir=${DATApath}/ReconData/MAUSv3.3.2/$runnumber
+datadir=${DATApath}/ReconData/Mausv3.3.2/$runnumber
 elif [ $config == "9" ] ; then
 datadir=${DATApath}/MC/MAUSv3.3.2/$runnumber$VERSION
 elif [ $config == "10" ] ; then
-datadir=${DATApath}/ReconData/MAUSv3.3.2/$runnumber
+datadir=${DATApath}/ReconData/Mausv3.3.2/$runnumber
 elif [ $config == "11" ] ; then
 datadir=${DATApath}/MC/MAUSv3.3.2/$runnumber$VERSION
 elif [ $config == "12" ] ; then
-datadir=${DATApath}/ReconData/MAUSv3.3.2/$runnumber
+datadir=${DATApath}/ReconData/Mausv3.3.2/$runnumber
 elif [ $config == "13" ] ; then
 datadir=${DATApath}/MC/MAUSv3.3.2/$runnumber$VERSION
 elif [ $config == "14" ] ; then
-datadir=${DATApath}/ReconData/MAUSv3.3.2/$runnumber
+datadir=${DATApath}/ReconData/Mausv3.3.2/$runnumber
 elif [ $config == "15" ] ; then
 datadir=${DATApath}/MC/MAUSv3.3.2/$runnumber$VERSION
 elif [ $config == "16" ] ; then
-datadir=${DATApath}/ReconData/MAUSv3.3.2/$runnumber
+datadir=${DATApath}/ReconData/Mausv3.3.2/$runnumber
 elif [ $config == "17" ] ; then
 datadir=${DATApath}/MC/MAUSv3.3.2/$runnumber$VERSION
 elif [ $config == "18" ] ; then
-datadir=${DATApath}/ReconData/MAUSv3.3.2/$runnumber
+datadir=${DATApath}/ReconData/Mausv3.3.2/$runnumber
 elif [ $config == "19" ] ; then
 datadir=${DATApath}/MC/MAUSv3.3.2/$runnumber$VERSION
+elif [ $config == "beams" ] ; then
+datadir=${DATApath}/ReconData/Mausv3.3.2/$runnumber
 else 
 echo "NO CONFIG SET UP FOR $config in pymovedata_jobsub script ---- EXITING"
+exit
 fi
 
 
@@ -84,6 +87,7 @@ if [ ! -d $here/config/c$config ] ; then
 
 echo "Making new parent directory $here/config/c$config/ "
 mkdir -p $here/config/c$config
+mkdir -p $here/config/c$config/movedata
 cp -f $here/$templatedir/__init__.py $here/config/c$config/
 cp -f $here/$templatedir/__init__.py $here/config/c$config/movedata/
 fi
