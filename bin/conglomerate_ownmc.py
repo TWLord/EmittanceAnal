@@ -1785,12 +1785,18 @@ def main_paper(batch_level = 0):
 
     #target_dir_list = ["output/combinedMC+Data/ownMC/2017-02-6_v"+str(x)+"/" for x in range(508,509)]
 
+    #target_dir_list = ["output/combinedMC+Data/ownMC/2017-02-5_v"+str(x)+"/" for x in range(2,3)]
+
     #target_dir_list = ["output/combinedMC+Data/ownMC/2017-02-2_vd1d2/"]
     #target_dir_list = ["output/combinedMC+Data/ownMC/2017-02-2_vd1d2/0pt96_d1_0pt96_d2/"]
-    target_dir_list = []
-    for d1 in ["0pt96", "0pt98", "1pt02", "1pt04"]:
-        for d2 in ["0pt96", "0pt98", "1pt0", "1pt02", "1pt04", "1pt06"]:
-            target_dir_list.append("output/combinedMC+Data/ownMC/2017-02-2_vd1d2/"+d1+"_d1_"+d2+"_d2/")
+    #target_dir_list = []
+    #for d1 in ["0pt96", "0pt98", "1pt02", "1pt04"]:
+    #    for d2 in ["0pt96", "0pt98", "1pt0", "1pt02", "1pt04", "1pt06"]:
+    #        target_dir_list.append("output/combinedMC+Data/ownMC/2017-02-2_vd1d2/"+d1+"_d1_"+d2+"_d2/")
+
+
+    # 2016-04-2.4a - 6,10-240 LiH + Empty
+    target_dir_list = ["output/combinedMC+Data/ownMC/2016-04-2.4a_v10"+str(x)+"/" for x in [4]]
 
     # OFFICIAL MC
     #target_dir_list = ["output/combinedMC+Data/officialMC/2017-02-2/c2+c3/"]
@@ -1908,7 +1914,7 @@ def main_paper(batch_level = 0):
 	# problems with 3-200 soo...
         #["2017-02-2_6-200_ABS-LH2",         "2017-02-2_6-200_ABS-LH2",         "2017-02-2_10-200_ABS-LH2",],
         #["2017-02-2_3-200_ABS-LH2",],
-        ["2017-02-2_6-200_ABS-LH2",],
+        #["2017-02-2_6-200_ABS-LH2",],
         #["2017-02-2_10-200_ABS-LH2",],
         #["2017-02-2_3-200_ABS-LH2", "2017-02-2_10-200_ABS-LH2",],
 
@@ -1930,6 +1936,12 @@ def main_paper(batch_level = 0):
         #["2017-02-2_3-200_ABS-LH2",         "2017-02-2_6-200_ABS-LH2", ], 
 
 
+
+        # 2016-04-2.4a datasets : 
+        #["2016-04-2.4a_6-240_ABS-SOLID-EMPTY",  "2016-04-2.4a_10-240_ABS-SOLID-EMPTY", ],
+        #["2016-04-2.4a_6-240_ABS-SOLID-LiH",  "2016-04-2.4a_10-240_ABS-SOLID-LiH", ],
+
+        ["2016-04-2.4a_6-240_ABS-SOLID-EMPTY",  ],
 
 
 
@@ -1953,7 +1965,7 @@ def main_paper(batch_level = 0):
     #top_labels = ["3-200", "6-200", "10-200", "6-240"] # TomL
     #top_labels = [ "6-200", "10-200"] # TomL
     #top_labels = ["3-200", ] # TomL
-    top_labels = ["6-200", ] # TomL
+    #top_labels = ["6-200", ] # TomL
     #top_labels = ["10-200", ] # TomL
     #top_labels = ["3-200", "10-200", ] # TomL
     #top_labels = ["3-200", "6-200",] # TomL
@@ -1966,16 +1978,24 @@ def main_paper(batch_level = 0):
     #top_labels = ["3-140"] # TomL
     ##top_labels = ["6-140"] # TomL
 
+
+    # 2016-04-2.4a
+    top_labels = ["6-240", "10-240"] # TomL
+    #top_labels = ["6-240", "10-240"] # TomL
+
+    top_labels = ["6-240", ] # TomL
+
     #right_labels = ["Empty\nLH_{2}", "Full\nLH_{2}", "No\nabsorber", "LiH"]
     #right_labels = ["Empty\nLH_{2}", "Full\nLH_{2}", "LiH", "LiH_10508"]
     #right_labels = ["Empty\nLH_{2}", "Full\nLH_{2}", "No\nabsorber", "LiH", "LiH_10508"]
     #right_labels = ["Empty\nLH_{2}", "Full\nLH_{2}", "No\nabsorber", "LiH"]
     #right_labels = ["Empty\nLH_{2}", "Full\nLH_{2}", "No\nabsorber"]
-    right_labels = ["Full\nLH_{2}"]
+    #right_labels = ["Full\nLH_{2}"]
     #right_labels = ["Mixed Absorbers"]
     #right_labels = ["Full\nLH_{2}", "LiH"]
     #right_labels = ["Empty\nLH_{2}", "Full\nLH_{2}"]
     #right_labels = ["No\nabsorber", "LiH"]
+    right_labels = ["No\nabsorber", ]
     #right_labels = ["Different Abs"]
     #right_labels = ["No\nAbs", "LiH"]
     #right_labels = ["Empty\nLH_{2}"]
@@ -2027,7 +2047,7 @@ def main_paper(batch_level = 0):
 
 
 if __name__ == "__main__":
-    do_higher_mom = True # False # True # False # True # False 
+    do_higher_mom = True # False # True # False 
     main_paper()
     if not ROOT.gROOT.IsBatch():
         raw_input("Finished - press <CR> to end")
