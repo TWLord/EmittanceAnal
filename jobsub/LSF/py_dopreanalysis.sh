@@ -5,13 +5,14 @@ MAUSdir=~/MICE/maus--versions/MAUSv3.3.0
 
 ABS="$1"
 rn="$2"
-Optics="$3"
-CC="$4"
-VERSION="$5"
-config="$6"
-queue="$7"
-templatedir="$8"
-jobsuffix="$9"
+runnumber="$3"
+Optics="$4"
+CC="$5"
+VERSION="$6"
+config="$7"
+queue="$8"
+templatedir="$9"
+jobsuffix="${10}"
 #datadir="$10"
 
 echo $rn
