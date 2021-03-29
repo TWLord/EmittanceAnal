@@ -78,8 +78,8 @@ def get_analysis(run_list, name, tof01_min_max, maus_version, data_dir, emittanc
             "delta_tof01_upper":+1.5, # Delta TOF01 cut upper bound 
             "delta_tof12_lower":-5., # Delta TOF01 cut lower bound 
             "delta_tof12_upper":5., # Delta TOF01 cut upper bound 
-            "tof01_tramline_lower":-25.+tramlines_dp, # p_tof01 - p_tku
-            "tof01_tramline_upper":+25.+tramlines_dp, # p_tof01 - p_tku
+            "tof01_tramline_lower":-40.+tramlines_dp, # p_tof01 - p_tku
+            "tof01_tramline_upper":+40.+tramlines_dp, # p_tof01 - p_tku
             "tof01_cut_low":tof01_min_max[0], # TOF01 cut lower bound
             "tof01_cut_high":tof01_min_max[1], # TOF01 cut upper bound
             "p_bins":p_bins, # set of momentum bins; for now really it is just a lower and upper bound
@@ -140,10 +140,10 @@ def get_analysis(run_list, name, tof01_min_max, maus_version, data_dir, emittanc
             "do_amplitude":False, #True,
             "do_density":False, #True,
             "do_density_rogers":False, #True,
-            "do_plots":True,
-            "do_cuts_plots":True,
+            "do_plots":False,
+            "do_cuts_plots":False,
             "do_tof01_weighting":False,
-            "do_optics":False,#True,
+            "do_optics":True,#True,
             "do_data_recorder":False, #True,
     }
     return analysis_variables
@@ -236,11 +236,11 @@ class Config(object):
     cut_report[2] += ["downstream_aperture_cut", "tof_2_sp", "global_through_tkd_tp", "global_through_tof2", "hline",]
     cut_report[2] += ["extrapolation_cut", "hline"]
 
-    data_dir = "output/c2/"
+    data_dir = "output/c2opt/"
     src_dir = "Production-v2"
     analyses = []
 
-    analyses.append(get_analysis([template],  "template CC 10-170 ABS",  [1.5, 4.5], src_dir, data_dir, 10, [[165, 175]], [120, 200], 70)) 
+    analyses.append(get_analysis([template],  "template CC 10-240 ABS",  [1.0, 2.25], src_dir, data_dir, 10, [[235, 245]], [190, 270], 64 )) # 24 
 
     required_trackers = [0, 1] # for space points
     required_number_of_track_points = 12 # doesnt do anything

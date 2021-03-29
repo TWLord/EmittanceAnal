@@ -137,13 +137,13 @@ def get_analysis(run_list, name, tof01_min_max, maus_version, data_dir, emittanc
             "do_efficiency":False,
             "do_extrapolation":False,
             "do_globals":True,
-            "do_amplitude":False, #True,
+            "do_amplitude":False,
             "do_density":False, #True,
             "do_density_rogers":False, #True,
-            "do_plots":True,
-            "do_cuts_plots":True,
+            "do_plots":False,
+            "do_cuts_plots":False,
             "do_tof01_weighting":False,
-            "do_optics":False,#True,
+            "do_optics":True,#True,
             "do_data_recorder":False, #True,
     }
     return analysis_variables
@@ -224,8 +224,7 @@ class Config(object):
     cut_report  = [[], [], []]
     cut_report[0] = ["hline", "all events", "hline",]
     cut_report[0] += ["tof_1_sp", "tof_0_sp", "scifi_tracks_us", "chi2_us", "scifi_fiducial_us", "hline",]
-    #cut_report[0] += ["tof01", "p_tot_us", "tof01_tramlines", "hline",]
-    cut_report[0] += ["tof01", "p_tot_us", "hline",]
+    cut_report[0] += ["tof01", "p_tot_us", "tof01_tramlines", "hline",]
     cut_report[0] += ["global_through_us_apertures"]
     cut_report[0] += ["upstream_aperture_cut", "hline",]
     cut_report[0] += ["upstream_cut", "hline",]
@@ -236,11 +235,11 @@ class Config(object):
     cut_report[2] += ["downstream_aperture_cut", "tof_2_sp", "global_through_tkd_tp", "global_through_tof2", "hline",]
     cut_report[2] += ["extrapolation_cut", "hline"]
 
-    data_dir = "output/c2/"
+    data_dir = "output/c2opt/"
     src_dir = "Production-v2"
     analyses = []
 
-    analyses.append(get_analysis([template],  "template CC 10-170 ABS",  [1.5, 4.5], src_dir, data_dir, 10, [[165, 175]], [120, 200], 70)) 
+    analyses.append(get_analysis([template],  "template CC 10-140 ABS",  [1.5, 4.5], src_dir, data_dir, 10, [[135, 145]], [90, 170], 70)) 
 
     required_trackers = [0, 1] # for space points
     required_number_of_track_points = 12 # doesnt do anything

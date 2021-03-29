@@ -263,8 +263,8 @@ def get_mc_settings(CC):
         "2017-02-2":{
             "ABS-LH2":{
                 ####"3-200":["9756",], # old
-                "3-200":["9760",], # use this
-                #"6-200":["9761",], # use this
+                #"3-200":["9760",], # use this
+                "6-200":["9761",], # use this
                 ####"10-200":["9762",], # old + bad diffuser
                 #"10-200":["9763",],
             },
@@ -352,6 +352,8 @@ def get_mc_settings(CC):
             },
             "ABS-SOLID-LiH":{
 	        "3-140":["8643",],
+	        "6-140":["8644",],
+	        "10-140":["8645",],
 	        "3-170":["8646",],
 	        "3-200":["8647",],
 	        "3-240":["8649",],
@@ -419,7 +421,7 @@ def get_data_settings(CC):
                 "10-200":["9754", "9755", "9759", "9763", "9767", "9768",], # not 9762, bad diffuser
             },
             "ABS-LH2-EMPTY":{
-                #"3-200":["10231",], # single run D1 current different - M3-Test1
+                ##"3-200":["10231",], # single run D1 current different - M3-Test1
                 "3-200":["10236", "10237", "10240",], # M3-Test2 - not 10231, M3-Test1
                 "6-200":["10232", "10234", "10235", "10242",], # 
                 "10-200":["10227", "10230", "10233", "10238", "10239",], # 
@@ -448,11 +450,13 @@ def get_data_settings(CC):
                 ##"10-140":["10286", "10292", "10295", "10296", "10297", "10298",], # M3-Test4
             },
         },
+	# Looks like this exists only for tracker timing?
         "2016-05-1":{
             "ABS-SOLID-LiH":{
 	        "3-200":["9053", "9059", "9060", "9061", "9062", "9063", "9064", "9065", "9066",],
             },
         },
+	# This data looks pretty bad. Issues with solenoid after quench
         "2016-05-1-SSUSSD":{
             "ABS-SOLID-LiH":{
 	        "3-140":["9161",],
@@ -501,6 +505,8 @@ def get_data_settings(CC):
             },
             "ABS-SOLID-LiH":{
 	        "3-140":["8643", "8650", "8664", "8675", "8678", "8681", "8684", "8686", "8688", "8690", "8694", "8695", "8696", "8697", "8698", "8709",],
+	        "6-140":["8644", "8651", "8652", "8665", "8667", "8676", "8679", "8682", "8699",],
+	        "10-140":["8645", "8653", "8677", "8680", "8683", "8685", "8687", "8689", "8691", "8692", "8693",],
 	        "3-170":["8646", "8655", "8656", "8660", "8666", "8705", "8706", "8710", "8711", "8712", "8713", "8714", "8715", "8717", "8718", "8719", "8720", "8721", "8722", "8723", "8724", "8725", "8726", "8727", "8728", "8729", "8730", "8731",],
 	        "3-200":["8647", "8648", "8657", "8661", "8707",],
 	        "3-240":["8649", "8658", "8662", "8668", "8672", "8673", "8674", "8708",],
@@ -514,8 +520,12 @@ def get_jobsuffix(config):
     jobsuffix = {
         "c1":"mc_cuts",
         "c2":"reco",
+        "c2opt":"reco",
         "c3":"mc",
+        "c3opt":"mc",
         "c4":"c4", #"ownmc",
+        "c4opt":"c4", #"ownmc",
+        "c4ang":"c4ang", #"ownmc, angmomfields",
         "c5":"c5", #"recomcstat+corr",
         "c6":"c6", #"recoownmcstat+corr",
         "c7":"c7", #"systematics",
@@ -541,8 +551,11 @@ if __name__ == "__main__":
   #for config in ("c14", "c15", "c16", "c17"):
   #for config in ("c13",):
   #for config in ("c15", "c17"):
- #for d1 in ["0pt96", "0pt98", "1pt02", "1pt04"]:
+ #for d1 in ["0pt96", "0pt98", "1pt0", "1pt02", "1pt04"]:
   #for d2 in ["0pt96", "0pt98", "1pt0", "1pt02", "1pt04", "1pt06"]:
+ #for d1 in ["1pt0", ]:
+  #for d2 in ["1pt04", ]:
+  #for d2 in ["1pt0", "1pt02", "1pt04", "1pt06"]:
     #version = "v"+d1+"_d1_"+d2+"_d2"
     #print version
 
@@ -555,7 +568,7 @@ if __name__ == "__main__":
     # RUN SETTINGS HERE
     ######################
     queue = "xxl" #"medium" #"xxl" #### Currently redundant for SLURM/QSUB jobsub
-    version = "v3" # Official MC version
+    #version = "v3" # Official MC version
     #config = "3f"
     #config = "c3"
     #config = "c1"
@@ -567,12 +580,13 @@ if __name__ == "__main__":
     #config = "c18"
     #config = "c19"
 
-    config = "beams"
+    #config = "beams"
 
     #config = "c4"
+    config = "c4ang"
     #config = "c6"
     #version = "v1"
-    #version = "v2"
+    version = "v2"
     #version = "v3"
     #version = "v4"
     #version = "v5"
@@ -674,7 +688,7 @@ if __name__ == "__main__":
     elif config == "2f" or config == "3f":
         scriptname = "py_dopreanalysis.sh"
         templatedir = "config/templates/file_reducer"
-    elif config == "c2" or config == "c5" or config == "c6" or config == "c8" or config == "c10" or config == "c12" or config == "c14" or config == "c16" or config == "c18":
+    elif config == "c2" or config == "c2opt" or config == "c5" or config == "c6" or config == "c8" or config == "c10" or config == "c12" or config == "c14" or config == "c16" or config == "c18":
         scriptname = "py_dojobsub.sh"
         if split_routines:
             scriptname = "py_dojobsub_splitroutines.sh"
@@ -697,7 +711,7 @@ if __name__ == "__main__":
     else:
         use_preanal = "FALSE"
 
-    if config == "c1" or config == "c3" or config == "c4" or config == "3f" or config == "c13" or config == "c15" or config == "c17" or config == "beams":
+    if config == "c1" or config == "c3" or config == "c3opt" or config == "c4" or config == "c4opt" or config == "c4ang" or config == "3f" or config == "c13" or config == "c15" or config == "c17" or config == "beams":
         run_function = run_single
         settings["runs"] = get_mc_settings(CC)
         settings["use_preanal"] = use_preanal

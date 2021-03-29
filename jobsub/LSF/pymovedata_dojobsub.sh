@@ -33,9 +33,19 @@ if [ $config == "1" ] ; then
 datadir=/data/mice/phumhf/MC/MAUSv3.3.2/$runnumber$VERSION
 elif [ $config == "2" ] ; then
 datadir=/data/mice/phumhf/ReconData/MAUSv3.3.2/$runnumber
+elif [ $config == "2opt" ] ; then
+datadir=/data/mice/phumhf/ReconData/MAUSv3.3.2/$runnumber
 elif [ $config == "3" ] ; then
 datadir=/data/mice/phumhf/MC/MAUSv3.3.2/$runnumber$VERSION
+elif [ $config == "3opt" ] ; then
+datadir=/data/mice/phumhf/MC/MAUSv3.3.2/$runnumber$VERSION
 elif [ $config == "4" ] ; then
+datadir=/data/mice/phumhf/analMC/${runnumber}_$VERSION
+copydir=*/maus_output
+elif [ $config == "4opt" ] ; then
+datadir=/data/mice/phumhf/analMC/${runnumber}_$VERSION
+copydir=*/maus_output
+elif [ $config == "4ang" ] ; then
 datadir=/data/mice/phumhf/analMC/${runnumber}_$VERSION
 copydir=*/maus_output
 elif [ $config == "5" ] ; then

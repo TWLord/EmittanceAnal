@@ -94,10 +94,10 @@ echo \$PYTHONPATH
 python $here/bin/run_one_analysis.py $configdir/config_${config}_${rn}_full.py
 
 " \
-| tee $here/logs/tmp/${rn}_${jobsuffix}.sh
-chmod +x $here/logs/tmp/${rn}_${jobsuffix}.sh
-#bsub -G micegrp -M 20000 -oo $here/logs/${rn}_${jobsuffix}.log -q ${queue} $here/logs/tmp/${rn}_${jobsuffix}.sh
+| tee $here/logs/tmp/${rn}_${jobsuffix}_${VERSION}.sh
+chmod +x $here/logs/tmp/${rn}_${jobsuffix}_${VERSION}.sh
+#bsub -G micegrp -M 20000 -oo $here/logs/${rn}_${jobsuffix}_${VERSION}.log -q ${queue} $here/logs/tmp/${rn}_${jobsuffix}_${VERSION}.sh
 
-#qsub -l h_rt=$TIME -q hep.q -wd $here/logs/ $here/logs/tmp/${rn}_${jobsuffix}.sh
+#qsub -l h_rt=$TIME -q hep.q -wd $here/logs/ $here/logs/tmp/${rn}_${jobsuffix}_${VERSION}.sh
 
-sbatch --mem 20000 -o $here/logs/${rn}_${jobsuffix}.log -p epp -t ${TIME} $here/logs/tmp/${rn}_${jobsuffix}.sh
+sbatch --mem 20000 -o $here/logs/${rn}_${jobsuffix}_${VERSION}.log -p epp -t ${TIME} $here/logs/tmp/${rn}_${jobsuffix}_${VERSION}.sh

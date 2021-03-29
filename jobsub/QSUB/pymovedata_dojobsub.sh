@@ -37,9 +37,19 @@ if [ $config == "1" ] ; then
 datadir=${DATApath}/MC/MAUSv3.3.2/$runnumber$VERSION
 elif [ $config == "2" ] ; then
 datadir=${DATApath}/ReconData/MAUSv3.3.2/$runnumber
+elif [ $config == "2opt" ] ; then
+datadir=${DATApath}/ReconData/MAUSv3.3.2/$runnumber
 elif [ $config == "3" ] ; then
 datadir=${DATApath}/MC/MAUSv3.3.2/$runnumber$VERSION
+elif [ $config == "3opt" ] ; then
+datadir=${DATApath}/MC/MAUSv3.3.2/$runnumber$VERSION
 elif [ $config == "4" ] ; then
+datadir=${DATApath}/analMC/${runnumber}_$VERSION
+copydir=*/maus_output
+elif [ $config == "4opt" ] ; then
+datadir=${DATApath}/analMC/${runnumber}_$VERSION
+copydir=*/maus_output
+elif [ $config == "4ang" ] ; then
 datadir=${DATApath}/analMC/${runnumber}_$VERSION
 copydir=*/maus_output
 elif [ $config == "5" ] ; then

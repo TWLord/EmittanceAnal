@@ -140,10 +140,10 @@ def get_analysis(run_list, name, tof01_min_max, maus_version, data_dir, emittanc
             "do_amplitude":False, #True,
             "do_density":False, #True,
             "do_density_rogers":False, #True,
-            "do_plots":True,
-            "do_cuts_plots":True,
+            "do_plots":False,
+            "do_cuts_plots":False,
             "do_tof01_weighting":False,
-            "do_optics":False,#True,
+            "do_optics":True,#True,
             "do_data_recorder":False, #True,
     }
     return analysis_variables
@@ -236,7 +236,7 @@ class Config(object):
     cut_report[2] += ["downstream_aperture_cut", "tof_2_sp", "global_through_tkd_tp", "global_through_tof2", "hline",]
     cut_report[2] += ["extrapolation_cut", "hline"]
 
-    data_dir = "output/c2/"
+    data_dir = "output/c2opt/"
     src_dir = "Production-v2"
     analyses = []
 

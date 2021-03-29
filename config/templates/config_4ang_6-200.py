@@ -1,10 +1,10 @@
 import copy
 
-def reco_file_names(run_number_list, maus):
+def mc_file_names(datasets):
     file_list = []
-    for run in run_number_list:
+    for run in datasets: 
         run = str(run).rjust(5, '0')
-        a_file = "/data/mice/phumhf/ReconData/Mausv3.3.2/"+run+"/"+run+"_recon.root" # "+maus+"/"+run+"/"+run+"_recon"
+        a_file = "/data/mice/phumhf/analMC/"+run+"_VERSION/*/maus_output.root" 
         file_list.append(a_file)
     print file_list
     return file_list
@@ -16,8 +16,7 @@ def get_systematics_dir(emittance, suffix, absorber, analysis):
         "density_rogers":"v6",
         "fractional_emittance":"v5"
     }[analysis]
-    print vers
-    a_dir = "output/2017-02-7-Systematics-"+vers+"/plots_Simulated_2017-2.7_"+str(emittance)+\
+    a_dir = "output/CC-Systematics-"+vers+"/plots_Simulated_2017-2.7_"+str(emittance)+\
            "-140_"+absorber+"_Systematics_"+suffix+"/"+analysis+"/"+analysis+".json"
     return a_dir
 
@@ -55,6 +54,13 @@ def get_systematics(emittance, analysis="amplitude"):
           "performance_systematics":{
             get_systematics_dir(emittance, "tku_base_tkd_fiducial_radius", "lH2_empty", analysis):1.,
             get_systematics_dir(emittance, "tku_base_tkd_chi2_threshold", "lH2_empty", analysis):1.,
+            get_systematics_dir(emittance, "mc_ssu_match_plus", "lH2_full", analysis):1.,
+            #get_systematics_dir(emittance, "mc_lh2_plus", "lH2_full", analysis):1.,
+            get_systematics_dir(emittance, "mc_fc_plus", "lH2_full", analysis):1.,
+            get_systematics_dir(emittance, "mc_beam_offset_plus", "lH2_full", analysis):1.,
+            # disabled as this dupes the mc_beam_offset_plus
+            #get_systematics_dir(emittance, "mc_beam_offset_minus", "lH2_full", analysis):1.,
+            get_systematics_dir(emittance, "mc_ssd_match_plus", "lH2_full", analysis):1.,
           }
         }
       },
@@ -64,7 +70,6 @@ def get_systematics(emittance, analysis="amplitude"):
 def get_analysis(run_list, name, tof01_min_max, maus_version, data_dir, emittance, p_bins, tkd_cut, tramlines_dp):
     plot_dir = data_dir+"/plots_"+name+"/"
     plot_dir = plot_dir.replace(" ", "_")
-    plot_dir = plot_dir.replace(",", "")
     min_p = min([min(a_bin) for a_bin in p_bins])
     max_p = max([max(a_bin) for a_bin in p_bins])
 
@@ -86,7 +91,7 @@ def get_analysis(run_list, name, tof01_min_max, maus_version, data_dir, emittanc
             "p_bins_alt":[[100, 180]], # alternative momentum cut
             "p_tot_ds_low":tkd_cut[0], # downstream momentum cut lower bound
             "p_tot_ds_high":tkd_cut[1], # downstream momentum cut upper bound
-            "reco_files":reco_file_names(run_list, maus_version), # list of strings to be handed to glob
+            "reco_files":mc_file_names(run_list), # list of strings to be handed to glob
             "name":name, # appears on plots
             "color":4, # not used
             "pid":-13, # assume pid of tracks following TOF cut
@@ -96,14 +101,15 @@ def get_analysis(run_list, name, tof01_min_max, maus_version, data_dir, emittanc
             "tku_fiducial_radius":150.,
             "tkd_fiducial_radius":150.,
             "amplitude_corrections":None, #get_systematics_dir(emittance, "tku_base", "lH2_empty", "amplitude"),
-            "skip_corrections":True, 
+            "skip_corrections":None, # True
             "amplitude_systematics":None, #get_systematics(emittance, "amplitude"),
+            "amplitude_inefficiency_cutoff":50., # Sums all particles above amplitude cutoff & calculates A
             "field_uncertainty":0.02,
             "csv_output_detectors":["tof1", "diffuser_us", "diffuser_mid", "diffuser_ds"], # write data at listed detector locations
             "csv_output_filename":"test", #"8590_mc_extrapolated_tracks.csv", # write a summary output of data in flat text format to listed filename; set to None to do nothing
             "extrapolation_source":"tku_tp",
             "amplitude_chi2":False,
-            "amplitude_mc":False,
+            "amplitude_mc":True, #False,
             "weight_tof01_source":None,
             "weight_tof01_target":plot_dir+"tof01_weights",
             "weight_tof01_mode":"build_distribution",
@@ -111,40 +117,44 @@ def get_analysis(run_list, name, tof01_min_max, maus_version, data_dir, emittanc
             "cov_fixed_ds":None, #cov_ds,
             "amplitude_algorithm":"binned",
 
-            "fractional_emittance_mc":False,
-            "fractional_emittance_corrections":get_systematics_dir(emittance,
-                                                                   "tku_base", 
-                                                                   "lH2_empty",
-                                                                   "fractional_emittance"),
-            "fractional_emittance_systematics":get_systematics(emittance, "fractional_emittance"),
+            "fractional_emittance_mc":True, #False,
+            "fractional_emittance_corrections":None, #get_systematics_dir(emittance,
+                                                                   #"tku_base", 
+                                                                   #"lH2_empty",
+                                                                   #"fractional_emittance"),
+            "fractional_emittance_systematics":None, #get_systematics(emittance, "fractional_emittance"),
             "fractional_emittance_corrections_draw":True,
             "fractional_emittance_systematics_draw":True,
 
-            "density_mc":False,                 # True if Monte Carlo data
+            "density_mc":True, #False,                 # True if Monte Carlo data
             "density_corrections_cutoff":.5,    # Cutoff above which correction is averaged
-            "density_corrections":get_systematics_dir(emittance, "tku_base", "lH2_empty", "density"),
-            "density_systematics":get_systematics(emittance, "density"),
+            "density_corrections":None, #get_systematics_dir(emittance, "tku_base", "lH2_empty", "density"),
+            "density_systematics":None, #get_systematics(emittance, "density"),
             "density_corrections_draw":True,    # True if density correctoins are to be drawn
             "density_systematics_draw":True,    # True if density systematics are to be drawn
             "density_sections":False,           # True if density sections are to be printed
             "density_use_capped":False,          # True if density sections are to be printed
-            "density_rogers_corrections":get_systematics_dir(emittance, "tku_base", "lH2_empty", "density_rogers"),
-            "density_rogers_systematics":get_systematics(emittance, "density_rogers"),
+            "density_rogers_corrections":None, #get_systematics_dir(emittance, "tku_base", "lH2_empty", "density_rogers"),
+            "density_rogers_systematics":None, #get_systematics(emittance, "density_rogers"),
 
-            "do_mc":False,
+            "do_ang_mom_mc":True,
+            "ang_mom_corrections":None,
+
+            "do_mc":True,
             "do_magnet_alignment":False,
             "do_fractional_emittance":False,
             "do_efficiency":False,
             "do_extrapolation":False,
-            "do_globals":True,
-            "do_amplitude":False, #True,
-            "do_density":False, #True,
-            "do_density_rogers":False, #True,
+            "do_globals":False,
+            "do_amplitude":False,
+            "do_density":False,
+            "do_density_rogers":False,
             "do_plots":True,
             "do_cuts_plots":True,
             "do_tof01_weighting":False,
-            "do_optics":False,#True,
-            "do_data_recorder":False, #True,
+            "do_optics":False,
+            "do_data_recorder":False,
+            "do_ang_mom_fields":True,
     }
     return analysis_variables
 
@@ -219,13 +229,19 @@ class Config(object):
     extrapolation_cuts["tof2_sp"] = True
     extrapolation_cuts["global_through_tkd_tp"] = True
     extrapolation_cuts["global_through_tof2"] = True
+
     mc_true_us_cuts = copy.deepcopy(upstream_cuts)
+    mc_true_us_cuts["mc_stations_us"] = True
+    mc_true_us_cuts["mc_scifi_fiducial_us"] = True
     mc_true_ds_cuts = copy.deepcopy(mc_true_us_cuts)
+    mc_true_ds_cuts["mc_stations_ds"] = True
+    mc_true_ds_cuts["mc_scifi_fiducial_ds"] = True
+    mc_true_ds_cuts["mc_p_ds"] = True
+
     cut_report  = [[], [], []]
     cut_report[0] = ["hline", "all events", "hline",]
     cut_report[0] += ["tof_1_sp", "tof_0_sp", "scifi_tracks_us", "chi2_us", "scifi_fiducial_us", "hline",]
-    #cut_report[0] += ["tof01", "p_tot_us", "tof01_tramlines", "hline",]
-    cut_report[0] += ["tof01", "p_tot_us", "hline",]
+    cut_report[0] += ["tof01", "p_tot_us", "tof01_tramlines", "hline",]
     cut_report[0] += ["global_through_us_apertures"]
     cut_report[0] += ["upstream_aperture_cut", "hline",]
     cut_report[0] += ["upstream_cut", "hline",]
@@ -236,11 +252,13 @@ class Config(object):
     cut_report[2] += ["downstream_aperture_cut", "tof_2_sp", "global_through_tkd_tp", "global_through_tof2", "hline",]
     cut_report[2] += ["extrapolation_cut", "hline"]
 
-    data_dir = "output/c2/"
-    src_dir = "Production-v2"
+    src_dir = "not used but retained for compatibility with reco"
+    data_dir = "output/c4ang/VERSION/"
+    geometry_path = "GEOPATH"
     analyses = []
 
-    analyses.append(get_analysis([template],  "template CC 10-170 ABS",  [1.5, 4.5], src_dir, data_dir, 10, [[165, 175]], [120, 200], 70)) 
+
+    analyses.append(get_analysis([template],  "Simulated CC 6-200 ABS",  [1.5, 3.5], src_dir, data_dir, 6, [[195, 205]], [150, 230], 35)) # 32
 
     required_trackers = [0, 1] # for space points
     required_number_of_track_points = 12 # doesnt do anything
@@ -249,8 +267,8 @@ class Config(object):
     will_load_tk_space_points = True # determines whether data loader will attempt to load tracker space points
     will_load_tk_track_points = True # determines whether data loader will attempt to load tracker track points
     number_of_spills = None # if set to an integer, limits the number of spills loaded for each sub-analysis
-    preanalysis_number_of_spills = 500 # number of spills to analyse during "pre-analysis"
-    analysis_number_of_spills = 100 # number of spills to analyse during each "analysis" step
+    preanalysis_number_of_spills = 100 # 20 # number of spills to analyse during "pre-analysis"
+    analysis_number_of_spills = 100 # 20 # number of spills to analyse during each "analysis" step
     momentum_from_tracker = True # i.e. not from TOFs
     time_from = "tof1"
     tof0_offset = 25.4
@@ -368,8 +386,16 @@ class Config(object):
 
     mc_plots = {
         "mc_stations" : {
-            "tku":"virtual_tku_tp",
-            "tkd":"virtual_tkd_tp",
+            #"tku":"virtual_tku_tp",#
+            #"tkd":"virtual_tkd_tp",#
+            "tku_tp":["mc_virtual_tku_tp", "mc_virtual_tku_2", "mc_virtual_tku_3", "mc_virtual_tku_4", "mc_virtual_tku_5",],
+            "tkd_tp":["mc_virtual_tkd_tp", "mc_virtual_tkd_2", "mc_virtual_tkd_3", "mc_virtual_tkd_4", "mc_virtual_tkd_5",],
+            "tof0":["mc_virtual_tof0"],
+            "tof1":["mc_virtual_tof1"],
+            "tof01":["mc_virtual_tof0", "mc_virtual_tof1"],
+            "tof12":["mc_virtual_tof1", "mc_virtual_tof2"],
+            "global_through_virtual_diffuser_us":["mc_virtual_diffuser_us"],
+            "global_through_virtual_diffuser_ds":["mc_virtual_diffuser_ds"],
         }
     }
     bz_tku = 3e-3
