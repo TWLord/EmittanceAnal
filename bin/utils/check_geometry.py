@@ -243,9 +243,9 @@ def plot_apertures():
 
 def main():
     initialise_maus()
-    #plot_apertures()
+    plot_apertures()
     plot_trackers()
-    #plot_tracker_windows()
+    plot_tracker_windows()
     raw_input()
 
 if __name__ == "__main__":

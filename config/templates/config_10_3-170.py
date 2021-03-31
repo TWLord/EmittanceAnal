@@ -92,7 +92,7 @@ def get_analysis(run_list, name, tof01_min_max, maus_version, data_dir, emittanc
             "pvalue_threshold":0.02, # minimum allowed pvalue for pvalue cut
             "tku_chi2_threshold":8.0, # maximum allowed chi2/dof for chi2 cut
             "tkd_chi2_threshold":8.0, # maximum allowed chi2/dof for chi2 cut
-            "tku_fiducial_radius":150.,
+            "tku_fiducial_radius":50.,
             "tkd_fiducial_radius":150.,
             "amplitude_corrections":get_systematics_dir(emittance, "tku_base", "SYSTEMATIC", "amplitude"), #get_systematics_dir(emittance, "tku_base", "lH2_empty", "amplitude"),
             "skip_corrections":None, 
