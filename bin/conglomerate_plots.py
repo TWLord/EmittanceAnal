@@ -428,6 +428,7 @@ class CompareCutsConfig(CompareConfig):
             self.get_conglomerate_2("tkd_scifi_n_planes_with_clusters_"+nd1+"_0", None, "Number of planes with clusters in TKD", None, True, [0.1, 0.5, 0.5, 0.9], modifiers = mod),
             ###mod["graph_names"] = ["TPaveText",]
             self.get_conglomerate_2("tku_p_"+nu+"_0", None, "Momentum at TKU Reference Plane [MeV/c]", [100., 300.], True, [0.5, 0.5, 0.9, 0.9], modifiers = mod), # good one
+            #self.get_conglomerate_2("tku_p_"+nu+"_0", None, "Momentum at TKU Reference Plane [MeV/c]", [100., 300.], [195, 205], [0.5, 0.5, 0.9, 0.9], vertical([195, 205], mod)), # 200 MeV 
             #self.get_conglomerate_2("tku_p_"+nu+"_0", None, "Momentum at TKU Reference Plane [MeV/c]", [100., 300.], [195, 205], [0.5, 0.5, 0.9, 0.9], modifiers = mod),
 
           ]
@@ -500,8 +501,8 @@ class CompareData1DConfig(CompareConfig):
             self.get_conglomerate_1("tof2_slab_dt", "tof2_slab_dt", "ds_cut", "Slab dt for ToF2 [ns]", [-2, 2], False, [0.55, 0.7, 0.9, 0.9], modifiers = modifiers),
             self.get_conglomerate_1("tku_x",  "tku_x",  "us_cut", "x at TKU Reference Plane [mm]",        [-175, 300], False, [0.55, 0.7, 0.9, 0.9], modifiers = modifiers),
             self.get_conglomerate_1("tku_y",  "tku_y",  "us_cut", "y at TKU Reference Plane [mm]",        [-175, 300], False, [0.55, 0.7, 0.9, 0.9], modifiers = modifiers),
-            self.get_conglomerate_1("tku_px", "tku_px", "us_cut", "p_{x} at TKU Reference Plane [MeV/c]", [-120, 250], False, [0.55, 0.7, 0.9, 0.9], rescale_y = [0., 0.15], modifiers = modifiers),
-            self.get_conglomerate_1("tku_py", "tku_py", "us_cut", "p_{y} at TKU Reference Plane [MeV/c]", [-120, 250], False, [0.55, 0.7, 0.9, 0.9], modifiers = modifiers),
+            self.get_conglomerate_1("tku_px", "tku_px", "us_cut", "p_{x} at TKU Reference Plane [MeV/c]", [-120, 250], False, [0.55, 0.7, 0.9, 0.9], rescale_y = [0., 0.2], modifiers = modifiers),
+            self.get_conglomerate_1("tku_py", "tku_py", "us_cut", "p_{y} at TKU Reference Plane [MeV/c]", [-120, 250], False, [0.55, 0.7, 0.9, 0.9], rescale_y = [0., 0.2], modifiers = modifiers),
             self.get_conglomerate_1("tku_p", "tku_p", "us_cut", "p at TKU Reference Plane [MeV/c]",       [89, 270], False, [0.55, 0.7, 0.9, 0.9], modifiers = modifiers),
             self.get_conglomerate_1("tkd_x",  "tkd_x",  "ds_cut", "x at TKD Reference Plane [mm]",        [-175, 300], False, [0.55, 0.7, 0.9, 0.9], modifiers = modifiers),
             self.get_conglomerate_1("tkd_y",  "tkd_y",  "ds_cut", "y at TKD Reference Plane [mm]",        [-175, 300], False, [0.55, 0.7, 0.9, 0.9], modifiers = modifiers),
@@ -2118,6 +2119,13 @@ def main_paper(batch_level = 0):
 
     #target_dir = "output/combinedMC+Data/officialMC/2017-02-6-c1_v3+c10_highmom/"
 
+    #target_dir = "output/combinedMC+Data/officialMC/2017-02-2/v4/"
+    #target_dir = "output/combinedMC+Data/officialMC/2017-02-6/v4/"
+    target_dir = "output/combinedMC+Data/officialMC/2017-02-6_cuts/v4/"
+
+    #target_dir = "output/combinedMC+Data/officialMC/2017-02-6/v3/"
+    #target_dir = "output/combinedMC+Data/ownMC/2017-02-6_imp_v1/"
+    #target_dir = "output/combinedMC+Data/ownMC/2017-02-6_v1pt0_d1_1pt0_d2/"
     
     #target_dir = "output/combinedMC+Data/ownMC/2017-02-6_v6/"
     #target_dir = "output/combinedMC+Data/ownMC/2017-02-6_mom_v2/"
@@ -2170,7 +2178,7 @@ def main_paper(batch_level = 0):
 
     #target_dir = "output/combinedMC+Data/officialMC/2017-02-6_AngMom/"
     #target_dir = "output/combinedMC+Data/officialMC/2017-02-6_AngMomRescaled/"
-    target_dir = "output/combinedMC+Data/officialMC/2017-02-6_AngMomRecalc/"
+    #target_dir = "output/combinedMC+Data/officialMC/2017-02-6_AngMomRecalc/"
 
     batch_level = 0
     hide_root_errors = True
@@ -2263,12 +2271,12 @@ def main_paper(batch_level = 0):
         #["2017-02-6_3-140_ABS-SOLID-EMPTY", "2017-02-6_3-140_ABS-SOLID-EMPTY", "2017-02-6_3-140_ABS-SOLID-EMPTY", "2017-02-6_3-140_ABS-SOLID-EMPTY", ],
         #["2017-02-6_3-140_ABS-SOLID-LiH", "2017-02-6_3-140_ABS-SOLID-LiH", "2017-02-6_3-140_ABS-SOLID-LiH", "2017-02-6_3-140_ABS-SOLID-LiH", ],
 
-        ["2017-02-6_3-140_ABS-LH2-EMPTY", "2017-02-6_3-140_ABS-LH2-EMPTY", "2017-02-6_6-140_ABS-LH2-EMPTY", "2017-02-6_10-140_ABS-LH2-EMPTY",], # TomL
         #["2017-02-6_3-140_ABS-LH2-EMPTY", "2017-02-6_3-140_ABS-LH2-EMPTY", "2017-02-6_6-140_ABS-LH2-EMPTY", "2017-02-6_10-140_ABS-LH2-EMPTY",], # TomL
-        #["2017-02-6_3-140_ABS-LH2", "2017-02-6_3-140_ABS-LH2", "2017-02-6_6-140_ABS-LH2", "2017-02-6_10-140_ABS-LH2",], # TomL
-        ["2017-02-6_3-140_ABS-LH2", "2017-02-6_3-140_ABS-LH2", "2017-02-6_10-140_ABS-LH2", "2017-02-6_10-140_ABS-LH2",], # TomL
-        ["2017-02-6_3-140_ABS-SOLID-EMPTY", "2017-02-6_4-140_ABS-SOLID-EMPTY", "2017-02-6_6-140_ABS-SOLID-EMPTY", "2017-02-6_10-140_ABS-SOLID-EMPTY",], # TomL
-        ["2017-02-6_3-140_ABS-SOLID-LiH", "2017-02-6_4-140_ABS-SOLID-LiH", "2017-02-6_6-140_ABS-SOLID-LiH", "2017-02-6_6-140_ABS-SOLID-LiH",],
+        ##["2017-02-6_3-140_ABS-LH2-EMPTY", "2017-02-6_3-140_ABS-LH2-EMPTY", "2017-02-6_6-140_ABS-LH2-EMPTY", "2017-02-6_10-140_ABS-LH2-EMPTY",], # TomL
+        ##["2017-02-6_3-140_ABS-LH2", "2017-02-6_3-140_ABS-LH2", "2017-02-6_6-140_ABS-LH2", "2017-02-6_10-140_ABS-LH2",], # TomL
+        #["2017-02-6_3-140_ABS-LH2", "2017-02-6_3-140_ABS-LH2", "2017-02-6_10-140_ABS-LH2", "2017-02-6_10-140_ABS-LH2",], # TomL
+        #["2017-02-6_3-140_ABS-SOLID-EMPTY", "2017-02-6_4-140_ABS-SOLID-EMPTY", "2017-02-6_6-140_ABS-SOLID-EMPTY", "2017-02-6_10-140_ABS-SOLID-EMPTY",], # TomL
+        #["2017-02-6_3-140_ABS-SOLID-LiH", "2017-02-6_4-140_ABS-SOLID-LiH", "2017-02-6_6-140_ABS-SOLID-LiH", "2017-02-6_6-140_ABS-SOLID-LiH",],
 
 
 
@@ -2276,9 +2284,10 @@ def main_paper(batch_level = 0):
 
         # 2017-02-6 High Mom Settings
         ###["2017-02-6_3-170_ABS-LH2-EMPTY", "2017-02-6_3-200_ABS-LH2-EMPTY", "2017-02-6_3-240_ABS-LH2-EMPTY",], # TomL
-        ###["2017-02-6_3-170_ABS-LH2", "2017-02-6_3-200_ABS-LH2", "2017-02-6_3-240_ABS-LH2",], # TomL
+        ["2017-02-6_3-170_ABS-LH2", "2017-02-6_3-200_ABS-LH2", "2017-02-6_3-240_ABS-LH2",], # TomL
         #["2017-02-6_3-200_ABS-LH2", "2017-02-6_3-240_ABS-LH2",], # TomL
         #["2017-02-6_3-170_ABS-LH2", "2017-02-6_3-200_ABS-LH2",], # TomL
+        #["2017-02-6_3-200_ABS-LH2", ], # TomL
         #["2017-02-6_3-170_ABS-LH2",], # TomL
         #["2017-02-6_3-170_lH2_full",], # TomL
         #["2017-02-6_3-240_ABS-LH2-EMPTY",], # TomL
@@ -2304,6 +2313,7 @@ def main_paper(batch_level = 0):
         # 3+6 only
         #["2017-02-2_3-200_ABS-LH2-EMPTY",   "2017-02-2_6-200_ABS-LH2-EMPTY", ],
         #["2017-02-2_3-200_ABS-LH2",         "2017-02-2_6-200_ABS-LH2", ], 
+        #["2017-02-2_3-200_ABS-LH2",          ], 
 
 
 
@@ -2314,12 +2324,12 @@ def main_paper(batch_level = 0):
     #top_labels = ["4-140", "6-140",]
     #top_labels = ["6-140", "10-140"]
     #top_labels = ["6-140",]
-    top_labels = ["3-140", "4-140", "6-140", "10-140"] # TomL
+    #top_labels = ["3-140", "4-140", "6-140", "10-140"] # TomL
     #top_labels = ["10-140",] # TomL
-    ##top_labels = ["3-140", "6-140", "10-140"] # TomL
+    #top_labels = ["3-140", "6-140", "10-140"] # TomL
     #top_labels = ["4-140", "6-140"] # TomL
     #top_labels = ["3-140", "4-140", "6-140"] # TomL
-    #top_labels = ["3-170", "3-200", "3-240"] # TomL
+    top_labels = ["3-170", "3-200", "3-240"] # TomL
 
     #top_labels = ["3-140"] # TomL
     #top_labels = ["4-140"] # TomL
@@ -2331,6 +2341,7 @@ def main_paper(batch_level = 0):
     #top_labels = ["3-200", "6-200",] # TomL
     #top_labels = ["3-170", "3-200"] # TomL
     #top_labels = ["3-200", "3-240"] # TomL
+    #top_labels = ["3-200",] # TomL
     #top_labels = ["3-240"] # TomL
     #top_labels = ["3-170",] # TomL
     #top_labels = ["3-140"] # TomL
@@ -2338,10 +2349,10 @@ def main_paper(batch_level = 0):
     #right_labels = ["Empty\nLH_{2}", "Full\nLH_{2}", "No\nabsorber", "LiH"]
     #right_labels = ["Empty\nLH_{2}", "Full\nLH_{2}", "LiH", "LiH_10508"]
     #right_labels = ["Empty\nLH_{2}", "Full\nLH_{2}", "No\nabsorber", "LiH", "LiH_10508"]
-    right_labels = ["Empty\nLH_{2}", "Full\nLH_{2}", "No\nabsorber", "LiH"]
+    #right_labels = ["Empty\nLH_{2}", "Full\nLH_{2}", "No\nabsorber", "LiH"]
     #right_labels = ["Empty\nLH_{2}", "No\nabsorber", "LiH"]
     #right_labels = ["Empty\nLH_{2}", "Full\nLH_{2}", "No\nabsorber"]
-    #right_labels = ["Full\nLH_{2}"]
+    right_labels = ["Full\nLH_{2}"]
     #right_labels = ["Full\nLH_{2}", "LiH"]
     #right_labels = ["Empty\nLH_{2}", "Full\nLH_{2}"]
     #right_labels = ["No\nabsorber", "LiH"]
@@ -2388,18 +2399,18 @@ def main_paper(batch_level = 0):
                    #CompareAngMomField2DConfig,
                    #CompareAngMomMCConfig,
     ]
-    fd_5 = run_conglomerate(batch_level, config_list, my_dir_list, False, target_dir, top_labels, right_labels)
+    #fd_5 = run_conglomerate(batch_level, config_list, my_dir_list, False, target_dir, top_labels, right_labels)
 
     print_fail_dict(fd_0) # Data + cuts etc
     #print_fail_dict(fd_1) # Amp
     #print_fail_dict(fd_2) # Density
     #print_fail_dict(fd_3) # PressPlotsData
     #print_fail_dict(fd_4) # PressPlotsAmp
-    print_fail_dict(fd_5) # AngMom
+    #print_fail_dict(fd_5) # AngMom
 
 
 if __name__ == "__main__":
-    do_higher_mom = False # True # False # True # False 
+    do_higher_mom = True # False 
     main_paper()
     if not ROOT.gROOT.IsBatch():
         raw_input("Finished - press <CR> to end")

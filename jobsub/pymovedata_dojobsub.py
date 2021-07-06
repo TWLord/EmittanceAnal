@@ -215,8 +215,8 @@ def get_mc_settings(CC):
         "2017-02-6":{
             "ABS-LH2":{
                 "3-140":["9883",],
-           #     "6-140":["9885",],
-           #     "10-140":["9886",],
+                "6-140":["9885",],
+                "10-140":["9886",],
            #     "3-170":["9911",],
            #     "3-200":["9910",],
            #     "3-240":["9909",],
@@ -264,9 +264,9 @@ def get_mc_settings(CC):
             "ABS-LH2":{
                 ####"3-200":["9756",], # old
                 #"3-200":["9760",], # use this
-                "6-200":["9761",], # use this
+                #"6-200":["9761",], # use this
                 ####"10-200":["9762",], # old + bad diffuser
-                #"10-200":["9763",],
+                "10-200":["9763",],
             },
             #"ABS-LH2-EMPTY":{
             #    ##"3-200":["10231",], # single run D1 current different, not used
@@ -569,9 +569,10 @@ if __name__ == "__main__":
     ######################
     queue = "xxl" #"medium" #"xxl" #### Currently redundant for SLURM/QSUB jobsub
     #version = "v3" # Official MC version
+    version = "v4" # Official MC version
     #config = "3f"
     #config = "c3"
-    #config = "c1"
+    config = "c1"
     #config = "c5"
     #config = "c8"
     #config = "c2"
@@ -583,10 +584,10 @@ if __name__ == "__main__":
     #config = "beams"
 
     #config = "c4"
-    config = "c4ang"
+    #config = "c4ang"
     #config = "c6"
     #version = "v1"
-    version = "v2"
+    #version = "v2"
     #version = "v3"
     #version = "v4"
     #version = "v5"
@@ -637,6 +638,15 @@ if __name__ == "__main__":
 
     #version = "v111"
 
+    #version = "v1pt0_d1_1pt0_d2"
+
+    #version = "v1pt0_d1_0pt97_d2"
+    #version = "v1pt0_d1_0pt98_d2"
+    #version = "v1pt0_d1_0pt99_d2"
+    #version = "v1pt0_d1_0pt995_d2"
+    #version = "v1pt0_d1_1pt005_d2"
+    #version = "v1pt0_d1_1pt01_d2"
+
     #config = "c7"
     #version = "v107"
 
@@ -652,9 +662,9 @@ if __name__ == "__main__":
     #CC = "2016-05-1"
     #CC = "2016-05-1-SSUSSD"
     #CC = "2017-02-1"
-    #CC = "2017-02-2"
+    CC = "2017-02-2"
     #CC = "2016-04-2.4a"
-    CC = "2017-02-5"
+    #CC = "2017-02-5"
     #CC = "M2D-flip-2017-02-5"
     #CC = "2017-02-6"
     #CC = "2017-02-7"
