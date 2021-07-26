@@ -80,4 +80,4 @@ chmod +x $here/logs/tmp/${runnumber}_${jobsuffix}.sh
 #bsub -G micegrp -M 20000 -oo $here/logs/${runnumber}_${jobsuffix}.log -q ${queue} $here/logs/tmp/${runnumber}_${jobsuffix}.sh
 
 #sbatch -o $here/logs/${runnumber}_${jobsuffix}.log -t ${time} $here/logs/tmp/${runnumber}_${jobsuffix}.sh
-sbatch --mem 20000 -o $here/logs/${runnumber}_${jobsuffix}.log -t ${time} $here/logs/tmp/${runnumber}_${jobsuffix}.sh
+sbatch --mem 20000 -o $here/logs/${runnumber}_${jobsuffix}.log -p epp -t ${time} $here/logs/tmp/${runnumber}_${jobsuffix}.sh
