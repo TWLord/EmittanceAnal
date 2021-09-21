@@ -37,8 +37,19 @@ class ConglomerateMerge(object):
         options = self.cong_options.options["merge_options"]["outer_box"]
         hist_x = [0.1422, 0.3813, 0.6223, 0.8637]
         if self.cols == 4 :  
-            hist_x = [0.1325, 0.31875, 0.501, 0.68685, 0.8727]
-        hist_y = [0.1345, 0.319, 0.5064, 0.6938, 0.8811]
+            hist_x = [0.1325, 0.31575, 0.5015, 0.687195, 0.8727]
+        elif self.cols == 2 :  
+            #hist_x = [0.1619, 0.5025, 0.84351]
+            hist_x = [0.16008, 0.5020, 0.84423]
+            #hist_x = [0.1325, 0.5015, 0.687195, 0.8727]
+        elif self.cols == 1:
+            hist_x = [0.2015, 0.78]
+
+        if self.rows == 2 : 
+            hist_y = [0.1651, 0.5120, 0.8607]
+            #hist_y = [0.1652, 0.5119, 0.8607]
+        else : 
+            hist_y = [0.1345, 0.319, 0.5064, 0.6938, 0.8811]
         #hist_y = [0.1345, 0.319, 0.5064, 0.6938, 0.8811, 0.95]
         canvas_xmax = hist_x[-1]+0.115
         canvas_ymax = hist_y[-1]+0.05
@@ -142,6 +153,9 @@ class ConglomerateMerge(object):
         options = self.cong_options.options["merge_options"]["legend"]
         xmin = 0.75
         ymax = 0.89
+        if self.rows == 2 : # and self.cols == 2 : 
+            xmin = 0.73 # 0.735
+            ymax = 0.87 # 0.875
         print "LEGEND", options
         for i, item in enumerate(options):
             yc = ymax-(i+1)*0.026
@@ -164,17 +178,76 @@ class ConglomerateMerge(object):
             text_box.Draw()
             self.root_objects.append(text_box)
 
+    def do_legend_4(self):
+        if "legend" not in self.cong_options.options["merge_options"]:
+            return
+        options = self.cong_options.options["merge_options"]["legend"]
+        #shift_x = 0.
+        #shift_y = 0.
+        #scale = 1.0
+        #if "large" in item:
+            #scale = item["large"]
+            #shift_x = (0.05*scale)-0.05
+            #shift_y = (0.03*scale)
+
+        #scale = options.pop("large")
+        #shift_x = (0.05*scale)-0.05
+        #shift_y = (0.03*scale)
+
+        xmin = 0.72 # 0.75
+        ymax = 0.89
+        if self.rows == 2 and self.cols == 2 : # and self.cols == 2 : 
+            xmin = 0.70 # 0.73 # 0.735
+            ymax = 0.87 # 0.8758
+        elif self.rows == 2:
+            xmin = 0.72 # 0.73 # 0.735
+            ymax = 0.87 # 0.8758
+        print "LEGEND", options
+        for i, item in enumerate(options):
+            scale = item["large"]
+            shift_x = (0.05*scale)-0.05
+            shift_y = (0.03*scale)
+
+            yc = ymax-(i+1)*0.026*scale
+            box = ROOT.TBox(xmin-shift_x*1.5, yc-(0.003*scale), xmin+0.025-shift_x, yc+(0.003*scale))
+            box.SetLineWidth(0)
+            box.SetFillColorAlpha(item["fill_color"], item["transparency"])
+            box.Draw()
+            self.root_objects.append(box)
+            if item["marker_style"]:
+                marker = ROOT.TMarker(xmin+(0.0125*scale)-shift_x*1.5, yc, item["marker_style"])
+                marker.SetMarkerColor(item["marker_color"])
+                marker.Draw()
+                self.root_objects.append(marker)
+            text_box = ROOT.TPaveText(xmin+0.03-shift_x, yc-0.02-shift_y/2, xmin+0.1, yc+0.02+shift_y/2, "NDC")
+            text_box.SetTextSize(0.02*scale)
+            text_box.SetFillStyle(0)
+            text_box.SetBorderSize(0)
+            text_box.SetTextAlign(12)
+            text_box.AddText(item["text"])
+            text_box.Draw()
+            self.root_objects.append(text_box)
+
+
+
 
     def do_fit_tables(self):
         pass
 
     def do_mice_logo(self, do_isis, row, col):
+        options = self.cong_options.options
+        micetext = options["mice_logo"]
+        preliminary = False
+        if "preliminary" in options:
+            preliminary = options['preliminary']
         y_min=0.87
         x_min=0.02 #0.7
         if col == 0:
-            x_min = 0.16
+            x_min = 0.175 # 0.16
         if do_isis:
             y_min = 0.65
+        if preliminary:
+            y_min -= 0.07
         text_box = ROOT.TPaveText(x_min, y_min, x_min+0.17, 0.97, "NDC")
         text_box.SetTextSize(0.08)
         text_box.SetFillColor(0)
@@ -182,10 +255,16 @@ class ConglomerateMerge(object):
         text_box.SetBorderSize(0)
         text_box.SetTextAlign(11)
         text_box.AddText("MICE")
+        if preliminary: 
+            text_box.AddText("Preliminary")
         if do_isis:
-            text_box.AddText("ISIS User Runs")
-            text_box.AddText("2017/02 and 2017/03")
-            text_box.AddText("MAUS-v3.3.2")
+            #text_box.AddText("ISIS User Runs")
+            #text_box.AddText("2017/02 and 2017/03")
+            #text_box.AddText("MAUS-v3.3.2")
+            text_box.SetTextSize(0.06)
+            text_box.AddText("ISIS Cycle")
+            text_box.AddText("2017/02, 2017/03")
+            text_box.AddText("2017-2.6")
         text_box.Draw()
         self.root_objects.append(text_box)
         
@@ -213,8 +292,10 @@ class ConglomerateMerge(object):
                 #hist.GetYaxis().SetRangeUser(0, 100000)
 
         cong.label_size = 0.1
-        cong.murgle_many(pad, cong.hist_list, cong.graph_list)
-        if False: #i == 1 and j == 3:
+        #cong.murgle_many(pad, cong.hist_list, cong.graph_list)
+        cong.murgle_many(pad, cong.hist_list, cong.graph_list, i,j)
+        #if False: #i == 1 and j == 3:
+        if i == 0 and j == (self.cols-1):
             self.do_legend(i, j, cong.legend, legend_size, pad)
 
     def extra_labels(self, cong_list):
@@ -227,13 +308,40 @@ class ConglomerateMerge(object):
         bottom_m = 0.12
         text_height = 0.04
         x_step = (1.0-left_m-right_m)/self.cols
+
+        right_shift = 0.0
+        text_size = 0.03
+        height_shift = 0.0
+        if "large" in extra_labels:
+            if type(extra_labels["large"]) == bool:
+                if extra_labels["large"]:
+                    print "Using generic large labels"
+                    text_height = 0.08
+                    text_size = 0.05
+            else:
+                print "Using size-specified large labels"
+                #text_height = 0.08
+                text_size = extra_labels["large"]
+                if self.cols == 2 :
+                    right_shift = 0.025 # good for 2 column plots
+                elif self.cols == 1:
+                    right_shift = 0.095
+                elif self.cols == 3 :
+                    right_shift = 0.0 # good for 3 cols
+                elif self.cols == 4 :
+                    right_shift = -0.01 #  good for 4 cols
+                height_shift = 0.02
+        if self.rows == 2 :
+            #print "self.cols:", self.cols
+            #print "self.rows:", self.rows
+            top_m = 0.135
         for i, item in enumerate(extra_labels["top_labels"]):
             lines = item.split("\n")
             row_btm = 1.0-top_m
             row_top = row_btm+text_height*len(lines)
             text_box = ROOT.TPaveText(left_m+x_step*i, row_btm,
                                       left_m+x_step*(i+1), row_top, "NDC")
-            text_box.SetTextSize(0.03)
+            text_box.SetTextSize(text_size)
             text_box.SetFillStyle(0)
             text_box.SetBorderSize(0)
             print "Setting text", item
@@ -246,9 +354,9 @@ class ConglomerateMerge(object):
             lines = item.split("\n")
             row_btm = 1.0-top_m-y_step*(i+0.5)-len(lines)/2.*text_height
             row_top = row_btm + len(lines)*text_height
-            text_box = ROOT.TPaveText(1.0-right_m, row_top,
-                                      0.99, row_btm, "NDC")
-            text_box.SetTextSize(0.03)
+            text_box = ROOT.TPaveText(1.0-right_m-right_shift, row_top+height_shift,
+                                      0.99, row_btm-height_shift, "NDC")
+            text_box.SetTextSize(text_size)
             text_box.SetTextAlign(12)
             text_box.SetFillStyle(0)
             text_box.SetBorderSize(0)
@@ -308,13 +416,17 @@ class ConglomerateMerge(object):
                 self.draw_cong(pad.GetPad(hist_index+1), cong, i, j)
                 hist_index += 1
                 if cong.options["mice_logo"]:
-                    self.do_mice_logo(False, i, j) #i == 0 and j == self.cols-1)
+                    if i == 0 and j == 0:
+                    #if True:
+                        self.do_mice_logo(False, i, j) #i == 0 and j == self.cols-1)
+                        #self.do_mice_logo(True, i, j) #i == 0 and j == self.cols-1)
         merge_canvas.cd()
         if source_x_axis:
             source_x_axis.Draw()
         if source_y_axis:
             source_y_axis.Draw()
-        self.do_legend_3()
+        #self.do_legend_4() # big
+        #self.do_legend_3() # small
         self.do_outer_box()
         self.extra_labels(self.conglomerate_list)
         self.merge_list.append(merge_dict)

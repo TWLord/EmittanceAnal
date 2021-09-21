@@ -53,21 +53,28 @@ class MCPlotter(AnalysisBase):
             #print " virt_station_list[0] : " + virt_station_list[0]
 
             # Tracker plots using all stations
-            if "tku_tp" in detector or "tkd_tp" in detector:
-                for virt_station in virt_station_list: 
-                    self.birth_var_two_d_scatter("x_vs_y_at_"+virt_station, virt_station, "pid", "x", "y", pid_colors, True)
-                    self.birth_var_two_d_scatter("px_vs_py_at_"+virt_station, virt_station, "pid", "px", "py", pid_colors, True)
-                    self.birth_var_two_d_hist("x_vs_y_at_"+virt_station+"_us_cut_hist", virt_station, "x", "y", "upstream_cut", xmin = -150, xmax = 150, ymin = -150, ymax = 150)
-                    self.birth_var_two_d_hist("x_vs_y_at_"+virt_station+"_ds_cut_hist", virt_station, "x", "y", "downstream_cut", -150, 150, -150, 150)
-                    self.birth_var_two_d_hist("px_vs_py_at_"+virt_station+"_us_cut_hist", virt_station, "px", "py", "upstream_cut", -150, 150, -150, 150)
+            #if "tku_tp" in detector or "tkd_tp" in detector:
+            for virt_station in virt_station_list: 
+                #self.birth_var_two_d_scatter("x_vs_y_at_"+virt_station, virt_station, "pid", "x", "y", pid_colors, True) # TomL
+                #self.birth_var_two_d_scatter("px_vs_py_at_"+virt_station, virt_station, "pid", "px", "py", pid_colors, True) # TomL
+                self.birth_var_two_d_hist("x_vs_y_at_"+virt_station+"_us_cut_hist", virt_station, "x", "y", "upstream_cut", xmin = -150, xmax = 150, ymin = -150, ymax = 150) # TomL
+                self.birth_var_two_d_hist("x_vs_y_at_"+virt_station+"_ds_cut_hist", virt_station, "x", "y", "downstream_cut", -150, 150, -150, 150) # TomL
+                self.birth_var_two_d_hist("px_vs_py_at_"+virt_station+"_us_cut_hist", virt_station, "px", "py", "upstream_cut", -150, 150, -150, 150) # TomL
+                self.birth_var_two_d_hist("px_vs_py_at_"+virt_station+"_ds_cut_hist", virt_station, "px", "py", "downstream_cut", -150, 150, -150, 150) # TomL
+                self.birth_var_two_d_hist("x_vs_y_at_"+virt_station+"_us_cut_hist_large", virt_station, "x", "y", "upstream_cut", xmin = -250, xmax = 250, ymin = -250, ymax = 250) # TomL
+                self.birth_var_two_d_hist("x_vs_y_at_"+virt_station+"_ds_cut_hist_large", virt_station, "x", "y", "downstream_cut", -250, 250, -250, 250) # TomL
+                self.birth_var_two_d_hist("px_vs_py_at_"+virt_station+"_us_cut_hist_large", virt_station, "px", "py", "upstream_cut", -250, 250, -250, 250) # TomL
+                self.birth_var_two_d_hist("px_vs_py_at_"+virt_station+"_ds_cut_hist_large", virt_station, "px", "py", "downstream_cut", -250, 250, -250, 250) # TomL
+
 
             # Tracker plots only using tk*_tp
             virt_station = virt_station_list[0]
-            # but first doing x and y for all mc stations
-            self.birth_var_two_d_hist("x_vs_y_at_"+virt_station+"_us_cut_hist_large", virt_station, "x", "y", "upstream_cut", xmin = -250, xmax = 250, ymin = -250, ymax = 250)
-            self.birth_var_two_d_hist("x_vs_y_at_"+virt_station+"_ds_cut_hist_large", virt_station, "x", "y", "downstream_cut", -250, 250, -250, 250)
-            self.birth_var_two_d_hist("px_vs_py_at_"+virt_station+"_us_cut_hist_large", virt_station, "px", "py", "upstream_cut", -250, 250, -250, 250)
-            self.birth_var_two_d_hist("px_vs_py_at_"+virt_station+"_ds_cut_hist_large", virt_station, "px", "py", "downstream_cut", -250, 250, -250, 250)
+            # but first doing xy & pxpy for all mc stations
+            # moved these to loop above
+            #self.birth_var_two_d_hist("x_vs_y_at_"+virt_station+"_us_cut_hist_large", virt_station, "x", "y", "upstream_cut", xmin = -250, xmax = 250, ymin = -250, ymax = 250) # TomL
+            #self.birth_var_two_d_hist("x_vs_y_at_"+virt_station+"_ds_cut_hist_large", virt_station, "x", "y", "downstream_cut", -250, 250, -250, 250) # TomL
+            #self.birth_var_two_d_hist("px_vs_py_at_"+virt_station+"_us_cut_hist_large", virt_station, "px", "py", "upstream_cut", -250, 250, -250, 250) # TomL
+            #self.birth_var_two_d_hist("px_vs_py_at_"+virt_station+"_ds_cut_hist_large", virt_station, "px", "py", "downstream_cut", -250, 250, -250, 250) # TomL
 
             self.birth_var_one_d("p_at_"+virt_station, virt_station, "pid", "p", pid_colors, "us cut", 0., 300.)
             self.birth_var_one_d("pt_at_"+virt_station, virt_station, "pid", "pt", pid_colors, "us cut", 0., 100.)
@@ -88,12 +95,36 @@ class MCPlotter(AnalysisBase):
             self.birth_var_two_d_residual("p_residual_vs_pt_at_"+detector+"_all", detector, virt_station, "pid", "p", "pt", pid_colors, False, False) # TomL
             self.birth_var_two_d_residual("pz_residual_vs_pt_residual_at_"+detector, detector, virt_station, "pid", "pz", "pt", pid_colors, True, True) # TomL
             self.birth_var_two_d_residual("p_residual_vs_pt_residual_at_"+detector, detector, virt_station, "pid", "p", "pt", pid_colors, True, True) # TomL
+
+            # reco px vs py
             self.birth_var_three_d_hist_residual("px_vs_py_vs_pt_residual_at_"+detector+"_all", detector, virt_station, "px", "py", "pt", TruthX = False, TruthY = False, TruthZ = False, doresidualX = False, doresidualY = False, doresidualZ = True) # TomL
             self.birth_var_three_d_hist_residual("px_vs_py_vs_pt_residual_at_"+detector+"_us_cut", detector, virt_station, "px", "py", "pt", TruthX = False, TruthY = False, TruthZ = False, doresidualX = False, doresidualY = False, doresidualZ = True, cuts = "upstream_cut") # TomL
             self.birth_var_three_d_hist_residual("px_vs_py_vs_pt_residual_at_"+detector+"_ds_cut", detector, virt_station, "px", "py", "pt", TruthX = False, TruthY = False, TruthZ = False, doresidualX = False, doresidualY = False, doresidualZ = True, cuts = "downstream_cut") # TomL
+
+            # truth px vs py
             self.birth_var_three_d_hist_residual("px_truth_vs_py_truth_vs_pt_residual_at_"+detector+"_all", detector, virt_station, "px", "py", "pt", TruthX = True, TruthY = True, TruthZ = False, doresidualX = False, doresidualY = False, doresidualZ = True) # TomL
             self.birth_var_three_d_hist_residual("px_truth_vs_py_truth_vs_pt_residual_at_"+detector+"_us_cut", detector, virt_station, "px", "py", "pt", TruthX = True, TruthY = True, TruthZ = False, doresidualX = False, doresidualY = False, doresidualZ = True, cuts = "upstream_cut") # TomL
             self.birth_var_three_d_hist_residual("px_truth_vs_py_truth_vs_pt_residual_at_"+detector+"_ds_cut", detector, virt_station, "px", "py", "pt", TruthX = True, TruthY = True, TruthZ = False, doresidualX = False, doresidualY = False, doresidualZ = True, cuts = "downstream_cut") # TomL
+
+            # New requested plots
+            # vs Px residual
+            # reco px vs py
+            self.birth_var_three_d_hist_residual("px_vs_py_vs_px_residual_at_"+detector+"_us_cut", detector, virt_station, "px", "py", "px", TruthX = False, TruthY = False, TruthZ = False, doresidualX = False, doresidualY = False, doresidualZ = True, cuts = "upstream_cut") # TomL
+            self.birth_var_three_d_hist_residual("px_vs_py_vs_px_residual_at_"+detector+"_ds_cut", detector, virt_station, "px", "py", "px", TruthX = False, TruthY = False, TruthZ = False, doresidualX = False, doresidualY = False, doresidualZ = True, cuts = "downstream_cut") # TomL
+
+            # truth px vs py
+            self.birth_var_three_d_hist_residual("px_truth_vs_py_truth_vs_px_residual_at_"+detector+"_us_cut", detector, virt_station, "px", "py", "px", TruthX = True, TruthY = True, TruthZ = False, doresidualX = False, doresidualY = False, doresidualZ = True, cuts = "upstream_cut") # TomL
+            self.birth_var_three_d_hist_residual("px_truth_vs_py_truth_vs_px_residual_at_"+detector+"_ds_cut", detector, virt_station, "px", "py", "px", TruthX = True, TruthY = True, TruthZ = False, doresidualX = False, doresidualY = False, doresidualZ = True, cuts = "downstream_cut") # TomL
+
+            # vs Py residual
+            # reco px vs py
+            self.birth_var_three_d_hist_residual("px_vs_py_vs_py_residual_at_"+detector+"_us_cut", detector, virt_station, "px", "py", "py", TruthX = False, TruthY = False, TruthZ = False, doresidualX = False, doresidualY = False, doresidualZ = True, cuts = "upstream_cut") # TomL
+            self.birth_var_three_d_hist_residual("px_vs_py_vs_py_residual_at_"+detector+"_ds_cut", detector, virt_station, "px", "py", "py", TruthX = False, TruthY = False, TruthZ = False, doresidualX = False, doresidualY = False, doresidualZ = True, cuts = "downstream_cut") # TomL
+
+            # truth px vs py
+            self.birth_var_three_d_hist_residual("px_truth_vs_py_truth_vs_py_residual_at_"+detector+"_us_cut", detector, virt_station, "px", "py", "py", TruthX = True, TruthY = True, TruthZ = False, doresidualX = False, doresidualY = False, doresidualZ = True, cuts = "upstream_cut") # TomL
+            self.birth_var_three_d_hist_residual("px_truth_vs_py_truth_vs_py_residual_at_"+detector+"_ds_cut", detector, virt_station, "px", "py", "py", TruthX = True, TruthY = True, TruthZ = False, doresidualX = False, doresidualY = False, doresidualZ = True, cuts = "downstream_cut") # TomL
+
 
         for station in range(1,6):
             station = str(station)
@@ -150,7 +181,8 @@ class MCPlotter(AnalysisBase):
         #self.birth_var_two_d_scatter("z_vs_p_of_track_initial", "mc_track_initial", "pid", "z", "p", pid_colors)
         self.birth_data_detector_residuals()
         #self.birth_pid_comparison(pid_colors)
-        self.birth_compare_bad_tracks()
+        # Turned off for speed / size.. Plots should maybe be produced as TStacks instead
+        #self.birth_compare_bad_tracks()
         #self.birth_spacepoints()
         self.birth_spacepoints(cluster_colors)
 
@@ -161,7 +193,7 @@ class MCPlotter(AnalysisBase):
             process_function(name, *process_args)
         self.process_data_detector_residuals()
         #self.process_pid_comparison()
-        self.process_compare_bad_tracks()
+        #self.process_compare_bad_tracks()
         self.process_spacepoints()
 
     def death(self):
@@ -678,7 +710,8 @@ class MCPlotter(AnalysisBase):
     def get_data_detector_residuals(self, det_name, virt_name):
         if det_name in ["tof01", "tof12"]:
             return self.get_tofij_residual(det_name)
-        if det_name in ["tku_tp", "tkd_tp"]:
+        #if det_name in ["tku_tp", "tkd_tp"]:
+        if "tku_" in det_name or "tkd_" in det_name:
             residual_dict = {"x":[], "y":[], "z":[], "px":[], "py":[], "pz":[], "pt":[], "p":[]} # TomL
             #residual_dict = {"x":[], "y":[], "z":[], "px":[], "py":[], "pz":[]}
         elif det_name in ["tof0", "tof1", "tof2"]:
@@ -760,9 +793,9 @@ class MCPlotter(AnalysisBase):
             "z":(-10., 10.),
             "px":(-10., 10.),
             "py":(-10., 10.),
-            "pz":(-40., 40.),
-            "pt":(-100., 100.),
-            "p":(-100., 100.),
+            "pz":(-30., 30.),
+            "pt":(-15., 15.),#"pt":(-100., 100.),
+            "p":(-30., 30.),#"p":(-100., 100.),
             "t":(-1., 1.),
         }
         return keys[var]
@@ -775,9 +808,9 @@ class MCPlotter(AnalysisBase):
             "z":(-10., 10.),
             "px":(-100., 100.),
             "py":(-100., 100.),
-            "pz":(100., 260.),
-            "pt":(0., 100.),
-            "p":(0., 260.),
+            "pz":(60., 200.),#"pz":(100., 260.),
+            "pt":(0., 80.),#"pt":(0., 100.),
+            "p":(60., 200.),#"p":(0., 260.),
             "t":(-10., 10.),
         }
         return keys[var]
@@ -1537,9 +1570,9 @@ class MCPlotter(AnalysisBase):
         for a_dict in dict_list:
             data = a_dict[var]  
             if len(data) == 0:
-                print "found empty data dict"
+                #print "found empty data dict"
                 #print data
-                print "Filling.."
+                #print "Filling.."
                 #data = [xmax+(xmax-xmin)*100.]
                 data.append(xmax+(xmax-xmin)*100.)
                 #print data

@@ -3,7 +3,11 @@ import os
 import copy
 import json
 import ROOT
+import math
 
+def sigfig(val, n):
+    val = round(val, -int(math.floor(math.log10(abs(val))))+n-1 )
+    return val
 
 class ConglomerateContainer(object):
     def __init__(self, config):
@@ -155,6 +159,11 @@ class ConglomerateOne(object):
             ]
         }
 
+    def blank_hist(self):
+        hist = ROOT.TH1F("blank", "blank", 10, -999, -998)
+        hist.SetStats(False)
+        return hist
+
     def defit(self, canvas, hist_list, graph_list):
         if not self.options["defit"]:
             return
@@ -221,7 +230,19 @@ class ConglomerateOne(object):
         norm = self.options["normalise_hist"]
         if not norm:
             return
-        if norm == True:
+        if norm == "peak":
+            for hist in hist_list:
+                try:
+                    n_entries = hist.GetEntries()
+                    max_entries = hist.GetMaximum()
+                    print 'n_entries', n_entries
+                    print 'max_entries', max_entries
+                except AttributeError: # not a histogram (maybe a graph?)
+                    continue
+                if max_entries == 0:
+                    continue
+                hist.Scale(1./max_entries)
+        elif norm == True:
             for hist in hist_list:
                 try:
                     n_entries = hist.GetEntries()
@@ -231,6 +252,7 @@ class ConglomerateOne(object):
                     continue
                 hist.Scale(1./n_entries)
         elif type(norm) == type([]):
+            print 'normalising between', norm[0],',', norm[1]
             for hist in hist_list:
                 bin_0 = hist.FindBin(norm[0])
                 bin_1 = hist.FindBin(norm[1])
@@ -265,6 +287,17 @@ class ConglomerateOne(object):
                 graph.SetPointEYhigh(i, ey_high[i]/max_y)
                 graph.SetPointEYlow(i, ey_low[i]/max_y)
 
+    def rescale_norm(self, canvas, hist_list, graph_list, i, j):
+        norm = self.options["normalise_hist"]
+        if not norm:
+            return
+        if not 'scaled_norm' in self.options:
+            return
+        scaled_norm = self.options['scaled_norm'][i][j]
+        print 'scaled_norm:', scaled_norm
+        for hist in hist_list:
+            hist.Scale(scaled_norm)
+
     def rebin(self, canvas, hist_list, graph_list):
         if not self.options["rebin"]:
             return
@@ -282,14 +315,21 @@ class ConglomerateOne(object):
         x_min = 0.04 # 0.08 # 
         # min x for y axis label:
         y_min = 0.11 # 0.17 #
+        scale_x = 1.0 # no scaling
         if "wide" in self.options["axis_title"]:
             if self.options["axis_title"]["wide"] != None:
-                y_min = 0.06
+                widevar = self.options["axis_title"]["wide"]
+                if type(widevar) == float:
+                    y_min = widevar
+                else:
+                    y_min = 0.06
         if self.options["axis_title"]["x"] != None:
+            if "large_x" in self.options["axis_title"]:
+                scale_x = self.options["axis_title"]["large_x"]
             x_text_box = ROOT.TPaveText(0.10, x_min, 0.97, x_min+0.06, "NDC")
             x_text_box.SetFillStyle(0)
             x_text_box.SetBorderSize(0)
-            x_text_box.SetTextSize(0.035)
+            x_text_box.SetTextSize(0.035*scale_x)
             x_text_box.SetTextAlign(21)
             x_text_box.AddText(self.options["axis_title"]["x"])
             x_text_box.Draw()
@@ -372,6 +412,7 @@ class ConglomerateOne(object):
             for axis in hist.GetXaxis(), hist.GetYaxis():
                 axis.SetNdivisions(5, 5, 0)
                 axis.SetLabelSize(self.label_size)
+                #axis.SetLabelOffset(0.008) # Buggy, adds y axis to all pngs..
             hist.SetName(hist.GetName()+"_"+self.uid())
         draw_option = redraw["draw_option"]
         draw_order = redraw["draw_order"]
@@ -386,6 +427,8 @@ class ConglomerateOne(object):
         for i in draw_order:
             hist_list[i].Draw(same+draw_option[i])
             same = "SAME "
+
+        #self.do_fake_stats_box2(hist_list)
 
         #### graph
 
@@ -417,10 +460,13 @@ class ConglomerateOne(object):
             #    print
             #except AttributeError:
             #    pass
+
             if type(graph) == type(ROOT.TMultiGraph()):
                 if redraw["y_range"] != None:
+                    print "Setting y range for TGraph", redraw["y_range"][0], redraw["y_range"][1]
                     graph.SetMinimum(redraw["y_range"][0])
                     graph.SetMaximum(redraw["y_range"][1])
+                    #graph.GetYaxis().SetRange(redraw["y_range"][0],redraw["y_range"][1]) # TomL edit
                 continue
             graph.SetName(graph.GetName()+"_"+self.uid())
             if graph_draw["marker_style"] != None:
@@ -462,13 +508,158 @@ class ConglomerateOne(object):
         legend.Draw()
         self.legend = legend
 
+    def do_fake_stats_box(self, canvas, hist_list, graph_list):
+        if "stats_boxes" not in self.options:# or not self.options["stats_boxes"]:
+            return
+        stats_boxes = self.options["stats_boxes"]
+        labels = self.options["stats_boxes"]["labels"]
+        ydelta = 0.4/len(hist_list)
+        stats_list = []
+        print "Doing individual stats boxes"
+        for i, h in enumerate(hist_list):
+            mean = h.GetMean()
+            rms = h.GetRMS()
+            mean = sigfig(mean, 3)
+            rms = sigfig(rms, 3)
+            print "mean:", mean, "rms:", rms
+            y_l = 0.275 + ydelta*i
+            stats = ROOT.TPaveText(0.65, y_l, 0.9, y_l+ydelta, "blNDC")
+            stats.SetBorderSize(1)
+            stats.SetTextSize(0.045)
+            stats.SetFillColor(0)
+            #stats.SetFillStyle(0)
+            stats.SetTextAlign(12)
+            stats.AddText(labels[i])
+            stats.AddText("Mean:    "+str(mean))
+            stats.AddText("RMS:     "+str(rms))
+            self.root_objects.append(stats)
+            stats.Draw()
+
+    def do_fake_stats_box2(self, canvas, hist_list, graph_list):
+        if "stats_boxes" not in self.options:# or not self.options["stats_boxes"]:
+            return
+        stats_boxes = self.options["stats_boxes"]
+        labels = self.options["stats_boxes"]["labels"]
+        ydelta = 0.6/len(hist_list)
+        stats_list = []
+        print "Doing shared stats boxes"
+        for i, h in enumerate(hist_list):
+            mean = h.GetMean()
+            rms = h.GetRMS()
+            mean = sigfig(mean, 3)
+            rms = sigfig(rms, 3)
+            print "mean:", mean, "rms:", rms
+            y_l = 0.185 + ydelta*i
+            #stats.SetY1NDC(y_l)
+            #stats.SetY2NDC(y_l+ydelta/2)
+            stats = ROOT.TPaveText(0.675, y_l, 1.0, y_l+ydelta, "blNDC")
+            stats.SetBorderSize(1)
+            stats.SetFillColor(0)
+            #stats.SetFillStyle(0)
+            stats.SetTextAlign(12)
+            stats.AddText(labels[i])
+            if mean < 0:
+                stats.AddText("Mean:  "+str(mean))
+            else:
+                stats.AddText("Mean:   "+str(mean))
+            if rms < 0:
+                stats.AddText("RMS:   "+str(rms))
+            else:
+                stats.AddText("RMS:    "+str(rms))
+            #stats.AddText("Mean:   "+str(mean))
+            #stats.AddText("RMS:    "+str(rms))
+
+            #stats.SetTextFont(42)
+            stats.SetTextFont(43)
+            if "TextSize" in stats_boxes:
+                stats.SetTextSize(stats_boxes["TextSize"])
+            else:
+                stats.SetTextSize(15)
+            self.root_objects.append(stats)
+            stats.Draw()
+
+    def do_fake_stats_ij(self, canvas, hist_list, graph_list, ni, nj):
+        if "stats_boxes" not in self.options:# or not self.options["stats_boxes"]:
+            return
+        stats_boxes = self.options["stats_boxes"]
+        labels = stats_boxes["labels"]
+        ydelta = 0.6/len(hist_list)
+        stats_list = []
+        print "Doing shared stats boxes"
+        for i, h in enumerate(hist_list):
+            if "sys_errors" in stats_boxes: 
+                sys_errors = self.options["stats_boxes"]["sys_errors"]
+                sys_error = sys_errors[nj]
+            else:
+                sys_error = 0.
+
+            mean = h.GetMean()
+            rms = h.GetRMS()
+            entries = h.GetEntries()
+            SE = h.GetMean() / h.GetEntries()**0.5
+            error = (sys_error**2 + SE**2)**0.5
+            #print "sys E", sys_error
+            #print "SE", SE
+            #print "total error", error
+
+            # rounding
+            mean = sigfig(mean, 3)
+            rms = sigfig(rms, 3)
+            error = sigfig(error, 3)
+            SE = sigfig(SE, 3)
+            if sys_error:
+                sys_error = sigfig(sys_error, 3)
+                #error_string = "#pm"+str(SE)+" #pm"+str(sys_error)
+                error_string = "#pm "+str(error)
+            else:
+                error_string = "#pm "+str(SE)
+
+            print "mean:", mean, "error:", error, "rms:", rms
+            y_l = 0.185 + ydelta*i
+            #stats.SetY1NDC(y_l)
+            #stats.SetY2NDC(y_l+ydelta/2)
+            stats = ROOT.TPaveText(0.675, y_l, 1.0, y_l+ydelta, "blNDC")
+            stats.SetBorderSize(1)
+            stats.SetFillColor(0)
+            #stats.SetFillStyle(0)
+            stats.SetTextAlign(12)
+            stats.AddText(labels[i])
+            stats.AddText("Entries: "+str(int(h.GetEntries())) )
+            if mean < 0:
+                #stats.AddText("Mean:  "+str(mean)+" "+error_string)
+                stats.AddText("Mean:  "+str(mean))
+                stats.AddText("          "+error_string)
+            else:
+                #stats.AddText("Mean:   "+str(mean)+" "+error_string)
+                stats.AddText("Mean:   "+str(mean))
+                stats.AddText("          "+error_string)
+            if rms < 0:
+                stats.AddText("RMS:   "+str(rms))
+            else:
+                stats.AddText("RMS:    "+str(rms))
+            #stats.AddText("Mean:   "+str(mean))
+            #stats.AddText("RMS:    "+str(rms))
+
+            #stats.SetTextFont(42)
+            stats.SetTextFont(43)
+            if "TextSize" in stats_boxes:
+                stats.SetTextSize(stats_boxes["TextSize"])
+            else:
+                #stats.SetTextSize(23)
+                #stats.SetTextSize(15)
+                stats.SetTextSize(12)
+            self.root_objects.append(stats)
+            stats.Draw()
+
+
     def mice_logo(self, canvas, hist_list, graph_list):
         if not self.options["mice_logo"]:
             return
         # goes around the outside for black
         text_size = 0.08
         text_size = 0.04
-        text_box = ROOT.TPaveText(0.64, 0.8, 0.84, 0.89, "NDC")
+        #text_box = ROOT.TPaveText(0.64, 0.8, 0.84, 0.89, "NDC")
+        text_box = ROOT.TPaveText(0.24, 0.8, 0.44, 0.89, "NDC")
         text_box.SetFillColor(0)
         text_box.SetBorderSize(0)
         text_box.SetTextSize(text_size)
@@ -476,7 +667,8 @@ class ConglomerateOne(object):
         text_box.AddText("MICE")
         text_box.Draw()
         self.root_objects.append(text_box)
-        text_box = ROOT.TPaveText(0.64, 0.74, 0.84, 0.8, "NDC")
+        #text_box = ROOT.TPaveText(0.64, 0.74, 0.84, 0.8, "NDC")
+        text_box = ROOT.TPaveText(0.24, 0.74, 0.44, 0.8, "NDC")
         text_box.SetFillColor(0)
         text_box.SetBorderSize(0)
         text_box.SetTextSize(text_size*3/4)
@@ -485,7 +677,8 @@ class ConglomerateOne(object):
         text_box.AddText("and 2017/03")
         text_box.Draw()
         self.root_objects.append(text_box)
-        text_box = ROOT.TPaveText(0.64, 0.65, 0.84, 0.72, "NDC")
+        #text_box = ROOT.TPaveText(0.64, 0.65, 0.84, 0.72, "NDC")
+        text_box = ROOT.TPaveText(0.24, 0.65, 0.44, 0.72, "NDC")
         text_box.SetFillColor(0)
         text_box.SetBorderSize(0)
         text_box.SetTextSize(text_size*3/4)
@@ -533,17 +726,20 @@ class ConglomerateOne(object):
         for fmt in formats:
             canvas.Print(name+"."+fmt)
 
-    def murgle_many(self, canvas, hist_list, graph_list):
-        self.label_size = 0.12
+    def murgle_many(self, canvas, hist_list, graph_list, i,j):
+        self.label_size = 0.1 # 0.12
         #self.rebin(canvas, hist_list, graph_list)
         #self.normalise(canvas, hist_list, graph_list)
         #self.defit(canvas, hist_list, graph_list)
         #self.rescale_x(canvas, hist_list, graph_list)
         self.rescale_y(canvas, hist_list, graph_list)
+        self.rescale_norm(canvas, hist_list, graph_list, i,j)
         #self.calculate_errors(canvas, hist_list, graph_list)
         #self.hist_title(canvas, hist_list, graph_list)
         #self.log_y(canvas, hist_list, graph_list)
         self.redraw(canvas, hist_list, graph_list)
+        #self.do_fake_stats_box2(canvas, hist_list, graph_list)
+        self.do_fake_stats_ij(canvas, hist_list, graph_list, i,j)
         self.extra_lines(canvas, hist_list, graph_list)
         #self.mice_logo(canvas, hist_list, graph_list)
         #self.do_legend(canvas, hist_list, graph_list)
@@ -562,6 +758,7 @@ class ConglomerateOne(object):
         self.hist_title(canvas, hist_list, graph_list)
         self.log_y(canvas, hist_list, graph_list)
         self.redraw(canvas, hist_list, graph_list)
+        self.do_fake_stats_box(canvas, hist_list, graph_list)
         self.rebin(canvas, hist_list, graph_list)
         self.rescale_y(canvas, hist_list, graph_list)
         self.extra_lines(canvas, hist_list, graph_list)
@@ -574,9 +771,16 @@ class ConglomerateOne(object):
         for a_path in self.dir_path:
             path = a_path+"/"+self.options["file_name"]+".root"
             file_list += sorted(glob.glob(path))
+            if 'blank' in a_path:
+                file_list += ['blank']
         print "Searching", a_path, "for", self.options["file_name"], "found", len(file_list), "files"
 
         for file_name in file_list:
+            if "blank" in file_name:
+                self.hist_list += [self.blank_hist()]
+                self.graph_list += [ROOT.TGraph()]
+                self.graph_list[-1].SetName("blank")
+                continue
             old_canvas = self.get_canvas(file_name)
             self.hist_list += self.get_hist_list(old_canvas)
             self.graph_list += self.get_graph_list(old_canvas)

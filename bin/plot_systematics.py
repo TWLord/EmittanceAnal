@@ -12,14 +12,16 @@ class Hacking(object):
     def __init__(self, output_dir):
         self.list_of_lists = None
         self.names = []
-        self.max_bin = 21
+        self.max_bin = 16 # 21
         self.canvas_split = (3, 4)
         self.output_dir = output_dir+"/"
         self.run_configuration = ""
         self.stats_errors = {} # fractional stats error
     root_objects = []
 
-    def clean_output_dir(self):
+    def clean_output_dir(self, output_dir=None):
+        if output_dir != None:
+            self.output_dir = output_dir
         try:
             shutil.rmtree(self.output_dir)
         except OSError:
@@ -96,7 +98,8 @@ class Hacking(object):
         self.names = []
         for a_file in a_file_list:
             name = a_file.split("/amplitude")[0]
-            name = name.split("_Systematics_")[1]
+            name = "_".join(name.split("_")[4:])
+            #name = name.split("0_")[1]
             self.names.append(name)
             print name.ljust(12), a_file
 
@@ -129,6 +132,8 @@ class Hacking(object):
         return name, lists
 
     def calculate_uncertainty(self, test_keys, test_targets):
+        # Calculates standard error from all the different systematic universes for each bin ---> Performance universes give std error?
+        #print "Calculating stats errors with", test_keys, 'test keys and', test_targets, 'as test targets'
         for target in test_targets:
             for key_1, key_2 in test_keys:
                 name, lists = self.get_lists(key_1, target, key_2)
@@ -138,7 +143,7 @@ class Hacking(object):
                     lists = [lists[i][i] for i, a_list in enumerate(lists)]
                 for i, a_list in enumerate(lists):
                     if i <= self.max_bin:
-                        self.stats_errors[name][i] = numpy.std(a_list)/(len(a_list)-1.)**0.5
+                        self.stats_errors[name][i] = numpy.std(a_list)/(len(a_list)-1.)**0.5 
                 print "Uncertainties:", name, self.stats_errors[name]
 
     def plot_corrections_hist(self, lists, name, axis, zero):
@@ -238,6 +243,7 @@ class Hacking(object):
         canvas = xboa.common.make_root_canvas(name)
         graph = ROOT.TGraphErrors(self.max_bin)
         print name, axis, "graph"
+        print '    bin, mean, std'
         for i, a_list in enumerate(lists):
             if i > self.max_bin:
                 continue
@@ -279,6 +285,7 @@ class Hacking(object):
                 plot_routine(lists, name, axis, zero)
 
     name_map = {
+        # old
         "tku_density_plus":"TKU Density",
         "tku_pos_plus":"TKU Position",
         "tku_rot_plus":"TKU Rotation",
@@ -294,6 +301,21 @@ class Hacking(object):
         "tkd_scale_SSDC_neg":"TKD Centre Coil neg",
         "tkd_scale_SSDE1_plus":"TKD End1 Coil",
         "tkd_scale_SSDE2_plus":"TKD End2 Coil",
+        # new
+        "tku_density_plus":"TKU Density",
+        "tku_pos_plus":"TKU Position",
+        "tku_rot_plus":"TKU Rotation",
+        "tku_scale_C_plus":"TKU Centre Coil pos",
+        "tku_scale_C_neg":"TKU Centre Coil neg",
+        "tku_scale_E1_plus":"TKU End1 Coil",
+        "tku_scale_E2_plus":"TKU End2 Coil",
+        "tkd_density_plus":"TKD Density",
+        "tkd_pos_plus":"TKD Position",
+        "tkd_rot_plus":"TKD Rotation",
+        "tkd_scale_C_plus":"TKD Centre Coil pos",
+        "tkd_scale_C_neg":"TKD Centre Coil neg",
+        "tkd_scale_E1_plus":"TKD End1 Coil",
+        "tkd_scale_E2_plus":"TKD End2 Coil",
 
         "mc_base":"Base", 
         "mc_beam_offset_minus":"Negative beam offset",
@@ -305,54 +327,82 @@ class Hacking(object):
     }
 
     graph_axis_range = {
-        "crossing_probability all_downstream migration_matrix":[0.6, 1.0],
-        "crossing_probability all_upstream migration_matrix":[0.6, 1.0],
+        "crossing_probability all_downstream migration_matrix":[0.5, 1.0],
+        "crossing_probability all_upstream migration_matrix":[0.5, 1.0],
         "inefficiency all_downstream pdf_ratio":[1.0, 1.4],
     }
 
 
     multigraph_axis_range = {
-        "crossing_probability all_downstream migration_matrix":[-0.5, 0.5],
-        "crossing_probability all_upstream migration_matrix":[-0.5, 0.5],
+        "crossing_probability all_downstream migration_matrix":[-0.25, 0.25],#[-0.5, 0.5],
+        "crossing_probability all_upstream migration_matrix":[-0.25, 0.25],#[-0.5, 0.5],
         "inefficiency all_downstream pdf_ratio":[-0.12, 0.12],
+        "inefficiency all_downstream pdf_ratio_averaged":[-0.12, 0.12],
     }
 
+def catch(func, handle=lambda e : e, *args, **kwargs):
+    try:
+        return func(*args, **kwargs)
+    except Exception as e:
+        return handle(e)
 
 def file_list(src_dir, emittance, absorber, suffix):
-    name = "output/"+src_dir+"/plots_Simulated_2017-2.7_"
-    name += str(emittance)+"-140_"+absorber+"_Systematics_"+suffix
-    name += "/amplitude/amplitude.json"
+    #name = "output/"+src_dir+"/plots_Simulated_2017-02-6_"
+    #name += str(emittance)+"-140_"+absorber+"_Systematics_"+suffix
+    #name += "/amplitude/amplitude.json"
+    if suffix == None:
+        name = "output/"+src_dir+"/plots_Simulated_2017-02-6_"
+        name += str(emittance)+"-140_"+absorber
+        name += "/amplitude/amplitude.json"
+    else:
+        name = "output/"+src_dir+"/plots_2017-02-6_"
+        name += str(emittance)+"-140_"+absorber+"_"+suffix
+        name += "/amplitude/amplitude.json"
     name_list = sorted(glob.glob(name))
     if len(name_list) == 0:
         print name
         raise KeyError("Failed to find names for "+str(name))
     return name_list
 
-def do_upstream(input_dir, emittance_list, output_dir):
-    for emittance in emittance_list:
-        a_file_list = file_list(input_dir, emittance, "lH2_empty", "tku_base_?")
+def do_upstream(input_dir, emittance_list, absorber_list, output_dir):
+    for i, emittance in enumerate(emittance_list):
+        absorber = absorber_list[i] 
+        a_file_list = file_list(input_dir, emittance, absorber, "tku_base*")#"tku_base*") # _? # It is unclear what input systematic universes should be used for the stats error here..
         a_file_list = sorted(a_file_list)
+        print "Performance graph of", len(a_file_list), 'files'
         my_hacking = Hacking(output_dir+emittance+"-upstream")
         my_hacking.clean_output_dir()
         my_hacking.accumulate_corrections([('crossing_probability', 'migration_matrix')],
                           ['all_upstream'],
                           a_file_list)
+        my_hacking.print_corrections([('crossing_probability', 'migration_matrix')],
+                          ['all_upstream'],
+                          a_file_list)
+        #raw_input("Done accumulate corrs")
         my_hacking.calculate_uncertainty([('crossing_probability', 'migration_matrix')],
                           ['all_upstream'])
         my_hacking.plot_corrections([('crossing_probability', 'migration_matrix')],
                           ['all_upstream'], "graph")
 
-        a_file_list = file_list(input_dir, emittance, "lH2_empty", "tku_base")+\
-                      file_list(input_dir, emittance, "lH2_empty", "tku_*")
+        #raw_input("next set")
+        a_file_list = file_list(input_dir, emittance, absorber, "tku_base")+\
+                      file_list(input_dir, emittance, absorber, "tku_*")+\
+                      file_list(input_dir, emittance, absorber, "tkd_*")
+        print "Multigraph of", len(a_file_list), 'files'
         my_hacking.accumulate_corrections([('crossing_probability', 'migration_matrix')],
                           ['all_upstream'],
                           a_file_list)
         my_hacking.plot_corrections([('crossing_probability', 'migration_matrix')],
                           ['all_upstream'], "multigraph")
 
-def do_correction_comparison(input_dir, emittance_list, output_dir):
-    for emittance in emittance_list:
-        files = file_list(input_dir, emittance, "lH2_empty", "tku_base")
+def do_correction_comparison(input_dir, emittance_list, absorber_list, output_dir, suffix="tku_base"):
+    my_hacking = Hacking(output_dir)
+    my_hacking.clean_output_dir()
+    for i, emittance in enumerate(emittance_list):
+        absorber = absorber_list[i] 
+        #files = file_list(input_dir, emittance, absorber, "tku_base")
+        #files = file_list(input_dir, emittance, absorber, None)
+        files = file_list(input_dir, emittance, absorber, suffix)
         fin = json.loads(open(files[0]).read())
         for us_ds in ["all_downstream", "all_upstream",]:
             name = emittance+"_"+us_ds
@@ -366,29 +416,69 @@ def do_correction_comparison(input_dir, emittance_list, output_dir):
             print "   Cor: ", [format(i, "10.3g") for i in corr_reco_pdf]
             print "   MC:  ", [format(i, "10.3g") for i in mc_truth_pdf]
             bin_centre = [(edges[i]+edge)/2. for i, edge in enumerate(edges[1:])]
-            raw_ratio = [raw-mc_truth_pdf[i] for i, raw in enumerate(raw_reco_pdf)]
-            corr_ratio = [corr-mc_truth_pdf[i] for i, corr in enumerate(corr_reco_pdf)]
+            raw_corr = [raw-mc_truth_pdf[i] for i, raw in enumerate(raw_reco_pdf)]
+            corr_corr = [corr-mc_truth_pdf[i] for i, corr in enumerate(corr_reco_pdf)]
             hist, raw_graph = xboa.common.make_root_graph("Raw", bin_centre, "A [mm]",
-                                                raw_ratio[:20], "Reco PDF - MC PDF", ymin=-10000, ymax=5000)
+                                                raw_corr[:20], "Reco PDF - MC PDF", ymin=-10000, ymax=5000)
             raw_graph.SetMarkerStyle(26)
             hist, corr_graph = xboa.common.make_root_graph("Corrected", bin_centre, "A [mm]",
-                                                corr_ratio[:20], "Reco PDF - MC PDF", ymin=-10000, ymax=5000)
+                                                corr_corr[:20], "Reco PDF - MC PDF", ymin=-10000, ymax=5000)
             corr_graph.SetMarkerStyle(22)
             hist.SetTitle(name)
             hist.Draw()
             raw_graph.Draw("SAME P")
             corr_graph.Draw("SAME P")
-            legend = xboa.common.make_root_legend(canvas, [raw_graph, corr_graph])
+            #legend = xboa.common.make_root_legend(canvas, [raw_graph, corr_graph])
+            legend = ROOT.TLegend(0.65, 0.5, 0.85, 0.9)
+            for lgraph, lname in [(raw_graph, "Raw"), (corr_graph, "Corrected")]:
+                legend.AddEntry(lgraph, lname)
             legend.SetX1(0.6)
             legend.SetX2(0.8)
             legend.SetY1(0.2)
             legend.SetY2(0.4)
+            legend.Draw()
+            canvas.Update()
             canvas.Print(output_dir+"/"+name+".png")
 
+            raw_ratio = [catch(lambda : (raw-mc_truth_pdf[i])/mc_truth_pdf[i], lambda e : 0) for i, raw in enumerate(raw_reco_pdf)]
+            corr_ratio = [catch(lambda : (corr-mc_truth_pdf[i])/mc_truth_pdf[i], lambda e : 0) for i, corr in enumerate(corr_reco_pdf)]
+            hist, raw_graph_2 = xboa.common.make_root_graph("Raw", bin_centre, "A [mm]",
+                                                raw_ratio[:20], "(Reco PDF - MC PDF) / MC PDF", ymin=-1, ymax=1)
+            raw_graph_2.SetMarkerStyle(26)
+            hist, corr_graph_2 = xboa.common.make_root_graph("Corrected", bin_centre, "A [mm]",
+                                                corr_ratio[:20], "(Reco PDF - MC PDF) / MC PDF", ymin=-1, ymax=1)
+            corr_graph_2.SetMarkerStyle(22)
+            raw_graph_2.SetMarkerColor(ROOT.kRed+1)
+            corr_graph_2.SetMarkerColor(ROOT.kRed+1)
+            hist.SetTitle(name)
+            hist.Draw()
+            raw_graph_2.Draw("SAME P")
+            corr_graph_2.Draw("SAME P")
+            legend = ROOT.TLegend(0.65, 0.5, 0.85, 0.9)
+            for lgraph, lname in [(raw_graph, "Raw"), (corr_graph, "Corrected")]:
+                legend.AddEntry(lgraph, lname)
+            legend.SetX1(0.6)
+            legend.SetX2(0.8)
+            legend.SetY1(0.2)
+            legend.SetY2(0.4)
+            legend.Draw()
+            canvas.Update()
+            canvas.Print(output_dir+"/"+name+"_ratio.png")
 
-def do_downstream(input_dir, emittance_list, output_dir):
-    for emittance in emittance_list:
-        a_file_list = file_list(input_dir, emittance, "lH2_empty", "tku_base_?")
+            #gmin = 1.1*raw_graph_2.GetMinimum()
+            #gmax = 1.1*raw_graph_2.GetMaximum()
+            #scale = ROOT.gPad.GetUymax()/(1.1*raw_graph_2.GetMaximum())
+            #raw_graph_2.Scale(scale)
+            #axis2 = ROOT.TGaxis(107, -10000, 107, 5000, -10, 10, 510, "L+")
+            #axis2.SetLineColor(ROOT.kRed+1)
+            #axis2.SetLabelColor(ROOT.kRed+1)
+            #axis2.Draw()
+
+
+def do_downstream(input_dir, emittance_list, absorber_list, output_dir):
+    for i, emittance in enumerate(emittance_list):
+        absorber = absorber_list[i] 
+        a_file_list = file_list(input_dir, emittance, absorber, "tku_base*")#"tku_base*") # _?
         a_file_list = sorted(a_file_list)
         my_hacking = Hacking(output_dir+emittance+"-downstream")
         my_hacking.clean_output_dir()
@@ -406,8 +496,9 @@ def do_downstream(input_dir, emittance_list, output_dir):
                           ('inefficiency','pdf_ratio_averaged')],
                           ['all_downstream'], "graph")
 
-        a_file_list = file_list(input_dir, emittance, "lH2_empty", "tku_base")+\
-                      file_list(input_dir, emittance, "lH2_empty", "tkd_*")
+        a_file_list = file_list(input_dir, emittance, absorber, "tku_base")+\
+                      file_list(input_dir, emittance, absorber, "tku_*")+\
+                      file_list(input_dir, emittance, absorber, "tkd_*")
         print "A FILE LIST:"
         print a_file_list
         my_hacking.accumulate_corrections(
@@ -421,10 +512,10 @@ def do_downstream(input_dir, emittance_list, output_dir):
                           ['all_downstream'], "multigraph")
 
 def do_performance_comparison(input_dir, emittance_list, output_dir):
+    my_hacking.clean_output_dir()
     for emittance in emittance_list:
         a_file_list = file_list(input_dir, emittance, "lH2_full", "mc_*")
         my_hacking = Hacking(output_dir+emittance+"-performance")
-        my_hacking.clean_output_dir()
         my_hacking.accumulate_corrections(
                          [('all_mc', None)],
                            ['migration_matrix'],
@@ -434,9 +525,10 @@ def do_performance_comparison(input_dir, emittance_list, output_dir):
                            ['migration_matrix'], "multigraph", False)
 
 
-def do_copy(input_dir, emittance_list, output_dir):
-    for emittance in emittance_list:
-        a_file_list = file_list(input_dir, emittance, "lH2_empty", "tku_base")
+def do_copy(input_dir, emittance_list, absorber_list, output_dir):
+    for i, emittance in enumerate(emittance_list):
+        absorber = absorber_list[i] 
+        a_file_list = file_list(input_dir, emittance, absorber, "tku_base")
         plot_root = os.path.split(a_file_list[0])[0]
         for stream in "upstream", "downstream":
             plot_files = glob.glob(plot_root+"/crossing_probability_"+stream+".*")
@@ -454,8 +546,9 @@ def copy_more(input_dir, output_dir):
     a_dir_list = glob.glob("output/"+input_dir+"/*tku_base/amplitude/weighting")
     for a_dir in a_dir_list:
         print a_dir
-        my_bl = a_dir.split("2017-2.7_")[1]
-        my_bl = my_bl.split("_lH2_empty")[0]
+        my_bl = a_dir.split("2017-02-6_")[1]
+        #my_bl = my_bl.split("_ABS-LH2")[0]
+        my_bl = my_bl.split("_ABS")[0]
         print my_bl
         target_dir = output_dir+"/"+my_bl+"_efficiency"
         try:
@@ -466,15 +559,33 @@ def copy_more(input_dir, output_dir):
 
 def main():
     utilities.root_style.setup_gstyle()
-    sys_dir = "2017-02-7-Systematics-v5/"
+
+    #v107
+    sys_dir = "c7/v107/"
     output_dir = "output/"+sys_dir+"recon_systematics_summary/"
-    do_copy(sys_dir, ["4", "6", "10"], output_dir)# "4", "6", "10"
+    do_copy(sys_dir, ["3", "4", "6", "10"], ['ABS-LH2', 'ABS-SOLID-EMPTY', 'ABS-LH2', 'ABS-LH2'], output_dir)
     copy_more(sys_dir, output_dir)
-    do_upstream(sys_dir, ["4", "6", "10"], output_dir) # 
-    do_downstream(sys_dir, ["4",  "6", "10"], output_dir) # ,
-    do_correction_comparison(sys_dir, ["4", "6", "10"], output_dir) #
-    output_dir = "output/"+sys_dir+"performance_systematics_summary/"
-    do_performance_comparison(sys_dir, ["4", "6", "10"], output_dir) #
+    do_upstream(sys_dir, ["3", "4", "6", "10"], ['ABS-LH2', 'ABS-SOLID-EMPTY', 'ABS-LH2', 'ABS-LH2'], output_dir) # 
+    do_downstream(sys_dir, ["3",  "4", "6", "10"], ['ABS-LH2', 'ABS-SOLID-EMPTY', 'ABS-LH2', 'ABS-LH2'], output_dir) # ,
+    do_correction_comparison(sys_dir, ["3", "4", "6", "10"], ['ABS-LH2', 'ABS-SOLID-EMPTY', 'ABS-LH2', 'ABS-LH2'], output_dir+"sys_corrections") #
+    mc_dir = "c11/v3/v107/"
+    do_correction_comparison(mc_dir, ["3", "4", "6", "10"], ['ABS-LH2', 'ABS-SOLID-EMPTY', 'ABS-LH2', 'ABS-LH2'], output_dir+"officialMC_corrections", None) #
+
+    #v109
+    #sys_dir = "c7/v109/run1/"
+    #output_dir = "output/"+sys_dir+"recon_systematics_summary/"
+    #do_copy(sys_dir, ["3", "4", "6", "10"], ['ABS-LH2-EMPTY', 'ABS-SOLID-EMPTY', 'ABS-LH2-EMPTY', 'ABS-LH2-EMPTY'], output_dir)
+    #copy_more(sys_dir, output_dir)
+    #do_upstream(sys_dir, ["3", "4", "6", "10"], ['ABS-LH2-EMPTY', 'ABS-SOLID-EMPTY', 'ABS-LH2-EMPTY', 'ABS-LH2-EMPTY'], output_dir) # 
+    #do_downstream(sys_dir, ["3",  "4", "6", "10"], ['ABS-LH2-EMPTY', 'ABS-SOLID-EMPTY', 'ABS-LH2-EMPTY', 'ABS-LH2-EMPTY'], output_dir) # ,
+    #do_correction_comparison(sys_dir, ["3", "4", "6", "10"], ['ABS-LH2-EMPTY', 'ABS-SOLID-EMPTY', 'ABS-LH2-EMPTY', 'ABS-LH2-EMPTY'], output_dir+"sys_corrections") #
+    ##mc_dir = "c11/v3/v107/"
+    #mc_dir = "c11/v4/v109/hold/"
+    #do_correction_comparison(mc_dir, ["3", "4", "6", "10"], ['ABS-LH2-EMPTY', 'ABS-SOLID-EMPTY', 'ABS-LH2-EMPTY', 'ABS-LH2-EMPTY'], output_dir+"officialMC_corrections", None) #
+
+    # Not yet used..
+    #output_dir = "output/"+sys_dir+"performance_systematics_summary/"
+    #do_performance_comparison(sys_dir, ["3", "6", "10"], output_dir) #
 
     return
 

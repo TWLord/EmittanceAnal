@@ -28,6 +28,11 @@ class AnalysisBase(object):
     def death(self):
         raise NotImplementedError("should be implemented by derived class")
 
+    def check_memory(self):
+        #print ''.join(os.popen('free -t -m').readlines())
+        #print ''.join(os.popen('ps -m -o %cpu,%mem,command').readlines())
+        print ''.join(os.popen('ps aux | grep phumhf | grep python').readlines())
+
     def get_plot(self, name):
         if name not in self.plots:
             new_plot = {}
@@ -113,7 +118,7 @@ class AnalysisBase(object):
         hist.SetStats(stats)
         ###### xboa ends here
 
-        my_plot["histograms"][args[0]] = hist
+        my_plot["histograms"][name_string] = hist
         return hist
 
     def make_root_graph(self, name, *args):
@@ -141,6 +146,48 @@ class AnalysisBase(object):
             for format in ["png", "root", "eps"]:
                 my_plot["canvas"].Print(plot_dir+"/"+plot_title+"."+format)
 
+    def del_plots(self):
+        print 'Clearing', len(self.plots.keys()), 'plots'
+        self.check_memory()
+        for name, my_plot in self.plots.items():
+            print my_plot.keys()
+            for histname in self.plots[name]['histograms'].keys():
+                self.plots[name]['histograms'][histname].GetListOfFunctions().Delete()
+                self.plots[name]['histograms'][histname].Delete()
+                del self.plots[name]['histograms'][histname]
+            self.plots[name]['pad'].Close()
+            self.plots[name]['pad'].Delete()
+            obj = self.plots[name]["canvas"]
+            obj.IsA().Destructor( obj )
+            for key, item in my_plot.items():
+                if key == 'config':
+                    continue
+                if type(item) == dict:
+                    for key2, item2 in item.items():
+                        if type(item2) == dict:
+                            print key, item, key2, item2
+                            continue
+                        print key, item, key2, item2
+                        obj = self.plots[name][key][key2]
+                        obj.IsA().Destructor( obj )
+                        del self.plots[name][key][key2]
+                del self.plots[name][key]
+            del self.plots[name]
+
+            ###my_canvas = my_plot["canvas"]
+            ####print my_plot["histograms"]
+            ###for hist in my_plot["histograms"].keys():
+            ###    #my_plot["histograms"][hist].Close()
+            ###    my_plot["histograms"][hist].Delete()
+            ###    del my_plot["histograms"][hist]
+            ###my_canvas.Close()
+            ###my_canvas.Delete()
+            ###del my_canvas
+            ###del my_plot
+            ###del self.plots[name]
+        print "After clearing plots:"
+        self.check_memory()
+
     def get_default_config(self):
         return {
             "rescale":False,
@@ -161,6 +208,7 @@ class AnalysisBase(object):
         }
 
     def base_death(self):
+        #print " --- [Calling Base Death] ---"
         for plot_name in sorted(self.plots.keys()):
             self.plots[plot_name]["canvas"].cd()
             plot_config = self.plots[plot_name]["config"]

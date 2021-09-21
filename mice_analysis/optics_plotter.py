@@ -15,6 +15,9 @@ class OpticsPlotter(AnalysisBase):
             "tku_tp":{"ds":[],},
             "tkd_tp":{"ds":[],},
         }
+        for station in range(2,6):
+            self.var_out["tku_"+str(station)] = {"ds":[],}
+            self.var_out["tkd_"+str(station)] = {"ds":[],}
         self.min_z_us = 12900. # BUG should come from config
         self.min_z_ds = 18800. # BUG should come from config
         for z_pos, dummy, detector in self.config.virtual_detectors:
@@ -41,9 +44,14 @@ class OpticsPlotter(AnalysisBase):
                 self.process_ellipse(detector, cut)
 
     def death(self):
-        us_lambda = lambda detector_name: detector_name == "tku_tp" or "global_through" in detector_name
-        ds_lambda = lambda detector_name: detector_name == "tkd_tp" or "global_ds" in detector_name
-        for prefix, detector_lambda, color in ("source_tku", us_lambda, ROOT.kBlue), ("source_tkd", ds_lambda, ROOT.kRed):
+        #us_lambda = lambda detector_name: detector_name == "tku_tp" or "global_through" in detector_name
+        #ds_lambda = lambda detector_name: detector_name == "tkd_tp" or "global_ds" in detector_name
+        us_lambda = lambda detector_name: "global_through" in detector_name
+        ds_lambda = lambda detector_name: "global_ds" in detector_name
+        true_us_lambda = lambda detector_name: detector_name in ["tkd_tp", "tkd_2", "tkd_3", "tkd_4", "tkd_5", "tku_tp", "tku_2", "tku_3", "tku_4", "tku_5"]
+        true_ds_lambda = lambda detector_name: detector_name in ["tkd_tp", "tkd_2", "tkd_3", "tkd_4", "tkd_5", "tku_tp", "tku_2", "tku_3", "tku_4", "tku_5"]
+        #for prefix, detector_lambda, color in ("source_tku", us_lambda, ROOT.kBlue), ("source_tkd", ds_lambda, ROOT.kRed):
+        for prefix, detector_lambda, color in ("source_tku", us_lambda, ROOT.kBlue), ("source_tkd", ds_lambda, ROOT.kRed), ("us_sample", true_us_lambda, ROOT.kGreen), ("ds_sample", true_ds_lambda, ROOT.kViolet):
             self.refaff_ellipse_dict(detector_lambda) # rotate the data structure view
             for var, sub_var in [
                             ("mean", 5),
@@ -51,7 +59,9 @@ class OpticsPlotter(AnalysisBase):
                             ("beta_4d", None),
                             ("beta_x", None),
                             ("beta_y", None),
+                            ("emit_4d", None),
                             ("l_kin", None),
+                            ("l_centre", None),
                             ("nevents", None),
                             ("sigma", 0),
                             ("sigma", 2),
@@ -112,6 +122,7 @@ class OpticsPlotter(AnalysisBase):
         ellipse["beta_4d"] = 0.
         ellipse["alpha_4d"] = 0.
         ellipse["l_kin"] = 0.
+        ellipse["l_centre"] = 0.
         ellipse["z"] = 0.
         for axis in ["x", "y"]:
             ellipse["emit_"+axis] = 0.
@@ -178,6 +189,8 @@ class OpticsPlotter(AnalysisBase):
             ellipse["beta_4d"] = beta
             ellipse["alpha_4d"] = alpha
         l_kin = matrix[0][3]-matrix[1][2] # XBOA
+        ellipse["l_kin"] = l_kin
+        ellipse["l_centre"] = mean[0]*mean[3] - mean[1]*mean[2]
         ellipse["emit_4d"] = emit
         for axis, index in [("x", 0), ("y", 2)]:
             matrix = numpy.array(rms_ellipse)[index:index+2, index:index+2]

@@ -48,12 +48,12 @@ def plot_hps(z_list, different_markers, flip_z = None):
     ssu_offset = 6 # mm, compare MICE Note 518 with MICE Note 501
     ssd_offset = 10 # mm, compare MICE Note 518 with MICE Note 501
     # vals from hall probe files
-    hp_z_positions = {
+    """hp_z_positions = {
         "hp_77":14104.+ssu_offset,
         "hp_79":14429.+ssu_offset,
         "hp_65":14429.+ssu_offset,
-        "hp_67":15286.+ssu_offset,
-        "hp_66":18625.+ssd_offset,
+        #"hp_67":15286.+ssu_offset,
+        #"hp_66":18625.+ssd_offset,
         "hp_72":19482.+ssd_offset,
         "hp_73":19807.+ssd_offset,
         "hp_80":19482.+ssd_offset,
@@ -61,15 +61,15 @@ def plot_hps(z_list, different_markers, flip_z = None):
     hp_btot = {
         "hp_77":3.073,
         "hp_79":3.038,
-        "hp_67":3.2296,
+        #"hp_67":3.2296,
         "hp_65":3.0398,
-        "hp_66":2.3371,
+        #"hp_66":2.3371,
         "hp_72":2.1226,
         "hp_73":-1e9, #3.0571025,
         "hp_80":-1e9, #3.012287,
-    }
+    }"""
     # oldvals
-    """hp_z_positions = {
+    hp_z_positions = {
         "hp_77":14104.+ssu_offset,
         "hp_79":14429.+ssu_offset,
         "hp_65":14429.+ssu_offset,
@@ -88,7 +88,7 @@ def plot_hps(z_list, different_markers, flip_z = None):
         "hp_72":2.1196,
         "hp_73":-1e9, #3.0571025,
         "hp_80":-1e9, #3.012287,
-    }"""
+    }
     graph_list = []
     hp_color_list = [1, 2, 4, 6, 8]
     i = 0
@@ -164,6 +164,7 @@ def plot_tracker_stations(z_list, btot_list):
 
 TEXT_BOXES = []
 def text_box(graph_list):
+    text_scale = 1.5
     legend = ROOT.TLegend(0.83, 0.41, 0.99, 0.99)
     for graph in graph_list:
         legend.AddEntry(graph, graph.GetName(), "lp")
@@ -173,7 +174,7 @@ def text_box(graph_list):
     text_box = ROOT.TPaveText(0.83, 0.22, 0.99, 0.41, "NDC")
     text_box.SetFillColor(0)
     text_box.SetBorderSize(0)
-    text_box.SetTextSize(0.08)
+    text_box.SetTextSize(0.08*text_scale)
     text_box.SetTextAlign(12)
     text_box.AddText("MICE")
     text_box.Draw()
@@ -181,9 +182,10 @@ def text_box(graph_list):
     text_box = ROOT.TPaveText(0.83, 0.12, 0.99, 0.22, "NDC")
     text_box.SetFillColor(0)
     text_box.SetBorderSize(0)
-    text_box.SetTextSize(0.06)
+    text_box.SetTextSize(0.06*text_scale)
     text_box.SetTextAlign(12)
-    text_box.AddText("2017/02-7")
+    #text_box.AddText("2017/02-6, 2017/02-7")
+    text_box.AddText("2017/02-6")
     text_box.Draw()
     TEXT_BOXES.append(text_box)
 
@@ -215,11 +217,12 @@ def plot_z_range(z_list, b_min_max, name, canvas):
         for z_pos in z_list:
             (bx_field, by_field, bz_field, ex_field, ey_field, ez_field) = \
                                      field.get_field_value(r_pos, 0., z_pos, 0.)
-            #btot = bz_field#(bx_field**2+by_field**2+bz_field**2)**0.5
-            btot = (bx_field**2+by_field**2+bz_field**2)**0.5
+            btot = bz_field#(bx_field**2+by_field**2+bz_field**2)**0.5
+            #btot = (bx_field**2+by_field**2+bz_field**2)**0.5
             if (btot - bz_field) > 1E-4 :
               print "difference in Bt - Bz = " + str(btot - bz_field)
             if bz_field < 0:
+                #btot *= -1
                 btot *= +1
             btot_list.append(btot*1e3)  # btot in T
             #print 'z:', z_pos, ' ** b:', bx_field, by_field, bz_field, \
@@ -231,17 +234,18 @@ def plot_z_range(z_list, b_min_max, name, canvas):
         xmax += (xmax-xmin)*LEGEND_SPACE
         # now make a ROOT graph of bz against z
         hist, graph = xboa.common.make_root_graph("x="+str(r_pos/LENGTH)+" m", gz_list, "",
-                                                   btot_list, "B_{z} [T]",
+                                                  btot_list, "B_{z} [T]",
                                                   xmin=xmin, xmax=xmax,
                                                   ymin=ymin, ymax=ymax)
         graph.SetLineColor(line_color)
+        graph.SetLineStyle(2)
         if (abs(r_pos-160.) < 1e-9):
             prep_narrow_plot(hist, name)
         graph_list.append(graph)
         graph.Draw('l same')
         canvas.Update()
-    #graph_list += plot_hps(z_list, False, flip_z=17000)
-    graph_list += plot_hps(z_list, False, flip_z=None)
+    graph_list += plot_hps(z_list, False, flip_z=17000)
+    #graph_list += plot_hps(z_list, False, flip_z=None)
     plot_tracker_stations(z_list, btot_list)
     text_box(graph_list)
     canvas.Update()
@@ -277,7 +281,8 @@ def plot_sigma_x(xmin, xmax, my_dir, canvas):
     graph_list = []
     for emittance, color, style in [(10, ROOT.kRed+1, 1),
                                     (6, ROOT.kBlue+1, 1),
-                                    (4, ROOT.kGreen+2, 1)]:
+                                    (4, ROOT.kGreen+2, 1), # ]:
+                                    (3, ROOT.kMagenta+1, 1)]:
         sigma_x_list = [(beta*emittance*mass/p_start)**0.5 for beta in beta_list]
         plot_name = "#varepsilon_{rms} = "+str(emittance)+" mm"
         hist, graph = xboa.common.make_root_graph(plot_name,
@@ -298,7 +303,9 @@ def plot_sigma_x(xmin, xmax, my_dir, canvas):
     return canvas
 
 def schematics_plot(my_dir):
-    canvas = ROOT.TCanvas("canvas", "canvas", 1200, 500)
+    #canvas = ROOT.TCanvas("canvas", "canvas", 1200, 500) # Original width
+    #canvas = ROOT.TCanvas("canvas", "canvas", 1800, 500) # 3/2 * width
+    canvas = ROOT.TCanvas("canvas", "canvas", 1500, 500) # half n half
     canvas.Divide(1, 1, 0.01, 0.1)
     canvas_plot = canvas.cd(1)
     canvas_plot.Divide(1, 2, 0.01, 0.0)

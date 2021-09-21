@@ -29,6 +29,9 @@ import mice_analysis.data_recorder
 import mice_analysis.fractional_analysis
 import mice_analysis.density_analysis
 import mice_analysis.density_analysis_rogers
+import mice_analysis.ang_mom_plotter
+import mice_analysis.ang_mom_fields
+import mice_analysis.momentum_correction
 import utilities.root_style
 
 config_file = None
@@ -98,13 +101,22 @@ class Analyser(object):
         except OSError:
             pass # probably the directory existed already
 
+        print "Setting up maus globals"
         str_conf = Configuration.Configuration().\
                                           getConfigJSON(command_line_args=False)
         json_conf = json.loads(str_conf)
         json_conf["verbose_level"] = config.maus_verbose_level
+        if hasattr(config, "geometry_path"):
+            json_conf["simulation_geometry_filename"] = config.geometry_path
+            print 'loading geom from', config.geometry_path
         maus_conf = json.dumps(json_conf)
         maus_cpp.globals.birth(maus_conf)
-        print maus_cpp.field.str(True)
+        #print maus_cpp.field.str(True)
+        if hasattr(config, "geometry_path"):
+            print 'Example field values', maus_cpp.field.get_field_value(0.0, 0.0, 15000., 0.)
+            if sum([abs(val) for val in maus_cpp.field.get_field_value(0.0, 0.0, 15000., 0.)]) < 1e-9:
+                print 'Failed to find any field vals. Exiting'
+                sys.exit()
 
     def file_mangle(self, config_file_name):
         """
@@ -120,6 +132,13 @@ class Analyser(object):
             sys.excepthook(*sys.exc_info())
         os.makedirs(self.config_anal["plot_dir"])
         shutil.copy(config_file_name, self.config_anal["plot_dir"])
+
+    def do_correction(self):
+        if "momentum_correction" in self.config_anal and self.config_anal["momentum_correction"] == True:
+            t1 = time.time()
+            mice_analysis.momentum_correction.MomentumCorrection(self.config, self.config_anal, self.data_loader)
+            t2 = time.time()
+            print (t2-t1), 'seconds to run correction on', self.config.preanalysis_number_of_spills, 'spills'
 
     def init_phase(self):
         """
@@ -172,6 +191,14 @@ class Analyser(object):
             print "Doing data recorder"
             # self.analysis_list_strings.append("Doing data recorder")
             self.analysis_list.append(mice_analysis.data_recorder.DataRecorder(self.config, self.config_anal, self.data_loader))
+        if "do_ang_mom" in self.config_anal and self.config_anal["do_ang_mom"]:
+            print "Doing angular momentum"
+            self.analysis_list.append(mice_analysis.ang_mom_plotter.AngMomPlotter(self.config, self.config_anal, self.data_loader))
+        if "do_ang_mom_fields" in self.config_anal and self.config_anal["do_ang_mom_fields"]:
+            print "Doing angular momentum with field loader"
+            self.analysis_list.append(mice_analysis.ang_mom_fields.AngMomFields(self.config, self.config_anal, self.data_loader))
+
+
 
     def birth_phase(self):
         """
@@ -182,7 +209,7 @@ class Analyser(object):
         self.config.maus_version = self.data_loader.maus_version
 
         self.file_mangle(sys.argv[1])
-
+        self.do_correction()
         for analysis in self.analysis_list:
             analysis.birth()
         self.data_loader.clear_data()
@@ -194,6 +221,7 @@ class Analyser(object):
         now = time.time()
         while self.data_loader.load_spills(self.config.analysis_number_of_spills) and \
               self.data_loader.check_spill_count():
+            self.do_correction()
             for analysis in self.analysis_list:
             #for counter, analysis in enumerate(self.analysis_list):
                 #print "\n\n\n -------- Running " + str(self.analysis_list_strings[counter]) + " -------- \n\n\n"

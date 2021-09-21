@@ -4,7 +4,7 @@ def reco_file_names(run_number_list, maus):
     file_list = []
     for run in run_number_list:
         run = str(run).rjust(5, '0')
-        a_file = "/data/mice/phumhf/ReconData/Mausv3.3.2/"+run+"/"+run+"_recon.root" # "+maus+"/"+run+"/"+run+"_recon"
+        a_file = "/data/mice/phumhf/MC/MAUSv3.3.2/"+run+"VERSION/*_sim.root" # "+maus+"/"+run+"/"+run+"_recon"
         file_list.append(a_file)
     print file_list
     return file_list

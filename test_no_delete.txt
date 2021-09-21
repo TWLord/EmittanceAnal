@@ -1,0 +1,20 @@
+[?1034hBefore doing much of anything..
+phumhf    4788  298  0.0 1127984 46472 pts/38  S+   15:11   0:02 python test_deleting.py
+phumhf    4926  0.0  0.0 106120  1224 pts/38   S+   15:11   0:00 sh -c ps aux | grep phumhf | grep python
+phumhf    4929  0.0  0.0 103272   844 pts/38   S+   15:11   0:00 grep python
+
+After 10k
+phumhf    4788  105  0.1 1195108 113480 pts/38 S+   15:11   0:16 python test_deleting.py
+phumhf    5510  0.0  0.0 106120  1224 pts/38   S+   15:12   0:00 sh -c ps aux | grep phumhf | grep python
+phumhf    5513  0.0  0.0 103272   848 pts/38   S+   15:12   0:00 grep python
+
+After 20k
+phumhf    4788  104  0.2 1254272 172920 pts/38 S+   15:11   0:33 python test_deleting.py
+phumhf    5568  0.0  0.0 106120  1224 pts/38   S+   15:12   0:00 sh -c ps aux | grep phumhf | grep python
+phumhf    5571  0.0  0.0 103272   844 pts/38   S+   15:12   0:00 grep python
+
+After 30k
+phumhf    4788  103  0.3 1317364 235908 pts/38 S+   15:11   0:53 python test_deleting.py
+phumhf    6289  0.0  0.0 106120  1224 pts/38   S+   15:12   0:00 sh -c ps aux | grep phumhf | grep python
+phumhf    6294  0.0  0.0 103272   852 pts/38   S+   15:12   0:00 grep python
+

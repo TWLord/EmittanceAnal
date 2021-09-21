@@ -21,6 +21,14 @@ class CompareConfig(object):
         #    self.conglomerate_dir.append(run_dir+"plots_Simulated_"+beam+"/")
         for a_dir in self.conglomerate_dir:
             if not os.path.exists(a_dir):
+                if "blank" in a_dir:
+                    self.src_plot_dir = src_plot_dir
+                    self.target_plot_dir = run_dir+target_plot_dir
+                    plot_dir = self.target_plot_dir+beam+"/"
+                    if os.path.exists(plot_dir):
+                        shutil.rmtree(plot_dir)
+                    self.beam_plot_dir = plot_dir
+                    return
                 raise RuntimeError("Could not find "+str(a_dir))
         self.src_plot_dir = src_plot_dir
         self.target_plot_dir = run_dir+target_plot_dir
@@ -66,7 +74,7 @@ class CompareConfig(object):
                 "extra_lines":False,
                 "extra_labels":False,
                 "legend":{
-                    "text":["data", "simulation"],
+                    "text":["Data", "Simulation"],
                     "draw_option":["p e1", "f l"],
                     "pos":None,
                 },
@@ -128,7 +136,8 @@ class CompareConfig(object):
                 "extra_lines":False,
                 "extra_labels":False,
                 "legend":{
-                    "text":["data", "simulation"],
+                    #"text":["Data", "Simulation"],
+                    "text":["Data", "MC"],
                     "draw_option":["p e1", "f l"],
                     "pos":legend_pos,
                 },
@@ -185,7 +194,7 @@ class CompareConfig(object):
                 "extra_lines":False,
                 "extra_labels":False,
                 "legend":{
-                    "text":["data", "simulation"],
+                    "text":["Data", "Simulation"],
                     "draw_option":["p e1", "f l"],
                     "pos":legend_pos,
                 },

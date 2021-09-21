@@ -111,6 +111,7 @@ class CompareCutsSystematicConfig(CompareConfig):
                 "draw_order":[1]+range(2, 2+n_sys)+[0],
                 "x_range":self.x_range,
                 "y_range":None,
+                "z_range":None,
                 "graph_draw_option":None,
                 "ignore_more_histograms":False,
             },
@@ -152,18 +153,26 @@ def systematics_cut_summary(target_dir):
     #    "2017-02-6_6-140_ABS-LH2-EMPTY_Systematics_tku_base",
     #    "2017-02-6_10-140_ABS-LH2-EMPTY_Systematics_tku_base", 
     #]
+
+    #dir_list = [
+    #    "2017-02-6_4-140_ABS-LH2-EMPTY_tku_base",
+    #    "2017-02-6_6-140_ABS-LH2-EMPTY_tku_base",
+    #    "2017-02-6_10-140_ABS-LH2-EMPTY_tku_base", 
+    #]
+
     dir_list = [
-        "2017-02-6_4-140_ABS-LH2-EMPTY_tku_base",
-        "2017-02-6_6-140_ABS-LH2-EMPTY_tku_base",
-        "2017-02-6_10-140_ABS-LH2-EMPTY_tku_base", 
+        "2017-02-6_3-140_ABS-LH2_tku_base",
+        "2017-02-6_4-140_ABS-SOLID-EMPTY_tku_base",
+        "2017-02-6_6-140_ABS-LH2_tku_base",
+        "2017-02-6_10-140_ABS-LH2_tku_base", 
     ]
     mc_cuts_summary = MergeCutsSummaryTex()
     mc_cuts_summary.table_ref_pre = "systematics_"
     for beam in dir_list:
         config = CompareConfig()
         dir_list = [
-            #target_dir+"plots_"+beam+"/",
-            target_dir+"plots_Simulated_"+beam
+            target_dir+"plots_"+beam+"/",
+            #target_dir+"plots_Simulated_"+beam
         ]
         config.setup(beam, target_dir, "cut_plots/", "compare_cuts/", dir_list)
         config.mc_caption = [["" for i in range(5)] for i in range(5)]
@@ -285,13 +294,16 @@ class SystematicsConglomerate(object):
                   #print beam.split("0_")
                   [beam, absorber] = beam.split("0_")
                   beam += "0"
-                  #print " ---- beam ---- "
-                  #print beam
-                  #print " ---- absorber ---- "
-                  #print absorber
                 else:
                   [beam, absorber] = beam.split("140_")
                   beam += "140"
+                print 'fname', fname
+                print 'hist', hist 
+                print " ---- beam ---- "
+                print beam
+                print " ---- absorber ---- "
+                print absorber
+                sys_abs = absorber
                 try:
                     config = CompareCutsSystematicConfig(beam, absorber, sys_abs, systematic, ref)
                     #config.set_dirs(self.target_dir, self.target_dir, self.sys_run,  # TomL
@@ -332,11 +344,13 @@ def main():
     #target_dir = "output/systematics/2017-02-6_compare_v105/"
     #systematics_source_dir = "output/systematics/2017-02-6-c7_v105/"
     #version=105
-    version=106
+    version=107
 
-    systematics_source_dir = "output/systematics/2017-02-6-c7_v"+str(version)+"/"
+    #systematics_source_dir = "output/systematics/2017-02-6-c7_v"+str(version)+"/"
+    #systematics_source_dir = "output/combinedMC+Data/systematics/2017-02-6-c7_v"+str(version)+"/"
+    systematics_source_dir = "output/c7/v"+str(version)+"/"
 
-    #HighMom = True
+    HighMom = False #True
     if HighMom:
       target_dir = "output/systematics/2017-02-6_mom_compare_v"+str(version)+"/"
       #top_labels = ["3-170", "3-200", "3-240"]
@@ -348,14 +362,15 @@ def main():
       right_labels = ["Empty\nLH2",]
 
     else:
-      target_dir = "output/systematics/2017-02-6_compare_v"+version+"/"
-      top_labels = ["3-140", "6-140", "10-140"]
-      #top_labels = ["3-140", "4-140", "6-140", "10-140"]
-      lh2_empty_dir_list = [["2017-02-6_3-140_ABS-LH2-EMPTY", "2017-02-6_6-140_ABS-LH2-EMPTY", "2017-02-6_10-140_ABS-LH2-EMPTY",],]
-      right_labels = ["Empty\nLH2",]
+      #target_dir = "output/combinedMC+Data/systematics/2017-02-6_compare_v"+str(version)+"/"
+      target_dir = "output/combinedMC+Data/systematics/2017-02-6-c7_v"+str(version)+"/"
+      #top_labels = ["3-140", "6-140", "10-140"]
+      top_labels = ["3-140", "4-140", "6-140", "10-140"]
+      lh2_empty_dir_list = [["2017-02-6_3-140_ABS-LH2", "2017-02-6_4-140_ABS-SOLID-EMPTY", "2017-02-6_6-140_ABS-LH2", "2017-02-6_10-140_ABS-LH2",],]
+      right_labels = ["LH2 \nNo Abs \nLH2 \nLH2 ",]
 
 
-    #systematics_cut_summary(systematics_source_dir)
+    systematics_cut_summary(systematics_source_dir)
     root_style.setup_gstyle()
     ROOT.gROOT.SetBatch(True)
 
