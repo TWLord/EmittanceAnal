@@ -165,7 +165,7 @@ class Hacking(object):
         for fmt in ['.png', '.root', '.pdf']:
             canvas.Print(self.output_dir+plot_name+"_hist"+fmt)
 
-    def plot_corrections_multigraph(self, lists, name, axis, zero = True):
+    def plot_corrections_multigraph(self, lists, name, axis, zero = True, suffix = ""):
         canvas = xboa.common.make_root_canvas(name)
         graph_list = [ROOT.TGraphErrors(self.max_bin) for i in range(len(lists[0]))]
         x_min, x_max, y_min, y_max = 0., None, None, None
@@ -179,12 +179,21 @@ class Hacking(object):
             for j, value in enumerate(a_list):
                 if zero:
                     value = (value - a_list[0])
+                #if not self.get_bin_centre(i) > 60.: # dont plot amplitude up to 80mm
+                #    graph_list[j].SetPoint(i, self.get_bin_centre(i), value)
+                #    graph_list[j].SetPointError(i, 0., err)
                 graph_list[j].SetPoint(i, self.get_bin_centre(i), value)
                 graph_list[j].SetPointError(i, 0., err)
                 print str(round(value, 1)).ljust(6),
                 #y_min = max(abs(value)+err, y_min) # use max(-y) to handle initial None
                 y_max = max(abs(value)+abs(err), y_max)
                 x_max = max(self.get_bin_centre(i), x_max)
+        # Remove points above some limit
+        for i in reversed(range(len(lists))):
+            if self.get_bin_centre(i) > 60.:
+                for j, graph in enumerate(graph_list):
+                    graph_list[j].RemovePoint(i)
+        # # # # 
         y_max += y_max*0.1
         print "Y MAX", y_max
         y_min = -y_max
@@ -220,11 +229,18 @@ class Hacking(object):
             style = 26+index
             print "    marker style", style
             graph.SetMarkerStyle()
-            color = index/(len(graph_list)-1.)*ROOT.gStyle.GetNumberOfColors()
+            #color = index/(len(graph_list)-1.)*ROOT.gStyle.GetNumberOfColors()
+            print 'self.names:', self.names
+            color = index/(len([n for n in self.names if "tku_base" not in n])-1.)*ROOT.gStyle.GetNumberOfColors()
             color = ROOT.gStyle.GetColorPalette(int(color))
             graph.SetMarkerColor(color)
             graph.SetLineColor(color)
+            #graph.SetLineColorAlpha(color, 0.5) # alpha = rubbish
             graph.SetFillColor(10)
+            #linestyle = 1 + index/2 # alternating linestyle.. rubbish
+            #if index % 2:
+            #    linestyle = 11
+            #graph.SetLineStyle(linestyle)
             graph.SetLineStyle(index)
             graph.Draw(draw_option)
             legend.AddEntry(graph, self.name_map[self.names[i]], "P L")
@@ -235,9 +251,9 @@ class Hacking(object):
         plot_name = name.replace(" ", "_")
         canvas.Update()
         for fmt in ['.png', '.root', '.pdf']:
-            canvas.Print(self.output_dir+plot_name+"_multigraph"+fmt)
+            canvas.Print(self.output_dir+plot_name+suffix+"_multigraph"+fmt)
 
-    def plot_corrections_graph(self, lists, name, axis, zero):
+    def plot_corrections_graph(self, lists, name, axis, zero, suffix):
         if not zero:
             raise RuntimeError("GAG")
         canvas = xboa.common.make_root_canvas(name)
@@ -267,10 +283,10 @@ class Hacking(object):
         plot_name = name.replace(" ", "_")
         canvas.Update()
         for fmt in ['.png', '.root', '.pdf']:
-            canvas.Print(self.output_dir+plot_name+"_graph"+fmt)
+            canvas.Print(self.output_dir+plot_name+suffix+"_graph"+fmt)
 
 
-    def plot_corrections(self, test_keys, test_targets, plot_routine_str, zero=True):
+    def plot_corrections(self, test_keys, test_targets, plot_routine_str, zero=True, suffix=""):
         for target in test_targets:
             for key_1, key_2 in test_keys:
                 name, lists = self.get_lists(key_1, target, key_2)
@@ -282,7 +298,7 @@ class Hacking(object):
                     "graph":self.plot_corrections_graph,
                     "multigraph":self.plot_corrections_multigraph,
                 }[plot_routine_str]
-                plot_routine(lists, name, axis, zero)
+                plot_routine(lists, name, axis, zero, suffix)
 
     name_map = {
         # old
@@ -384,16 +400,38 @@ def do_upstream(input_dir, emittance_list, absorber_list, output_dir):
         my_hacking.plot_corrections([('crossing_probability', 'migration_matrix')],
                           ['all_upstream'], "graph")
 
-        #raw_input("next set")
+        #us+ds sys errors
+        ##a_file_list = file_list(input_dir, emittance, absorber, "tku_base")+\
+        ##              file_list(input_dir, emittance, absorber, "tku_*")+\
+        ##              file_list(input_dir, emittance, absorber, "tkd_*")
+        ##print "Multigraph of", len(a_file_list), 'files'
+        ##my_hacking.accumulate_corrections([('crossing_probability', 'migration_matrix')],
+        ##                  ['all_upstream'],
+        ##                  a_file_list)
+        ##my_hacking.plot_corrections([('crossing_probability', 'migration_matrix')],
+        ##                  ['all_upstream'], "multigraph")
+
+        #only us errors
         a_file_list = file_list(input_dir, emittance, absorber, "tku_base")+\
-                      file_list(input_dir, emittance, absorber, "tku_*")+\
+                      file_list(input_dir, emittance, absorber, "tku_*")
+                      #file_list(input_dir, emittance, absorber, "tku_*")+\
+                      #file_list(input_dir, emittance, absorber, "tkd_*")
+        print "Multigraph of", len(a_file_list), 'files'
+        my_hacking.accumulate_corrections([('crossing_probability', 'migration_matrix')],
+                          ['all_upstream'],
+                          a_file_list)
+        my_hacking.plot_corrections([('crossing_probability', 'migration_matrix')],
+                          ['all_upstream'], "multigraph", suffix="_us_sys")
+        #only ds errors
+        a_file_list = file_list(input_dir, emittance, absorber, "tku_base")+\
                       file_list(input_dir, emittance, absorber, "tkd_*")
         print "Multigraph of", len(a_file_list), 'files'
         my_hacking.accumulate_corrections([('crossing_probability', 'migration_matrix')],
                           ['all_upstream'],
                           a_file_list)
         my_hacking.plot_corrections([('crossing_probability', 'migration_matrix')],
-                          ['all_upstream'], "multigraph")
+                          ['all_upstream'], "multigraph", suffix="_ds_sys")
+
 
 def do_correction_comparison(input_dir, emittance_list, absorber_list, output_dir, suffix="tku_base"):
     my_hacking = Hacking(output_dir)
@@ -443,10 +481,10 @@ def do_correction_comparison(input_dir, emittance_list, absorber_list, output_di
             raw_ratio = [catch(lambda : (raw-mc_truth_pdf[i])/mc_truth_pdf[i], lambda e : 0) for i, raw in enumerate(raw_reco_pdf)]
             corr_ratio = [catch(lambda : (corr-mc_truth_pdf[i])/mc_truth_pdf[i], lambda e : 0) for i, corr in enumerate(corr_reco_pdf)]
             hist, raw_graph_2 = xboa.common.make_root_graph("Raw", bin_centre, "A [mm]",
-                                                raw_ratio[:20], "(Reco PDF - MC PDF) / MC PDF", ymin=-1, ymax=1)
+                                                raw_ratio[:20], "(Reco PDF - MC PDF) / MC PDF", ymin=-0.3, ymax=0.3)
             raw_graph_2.SetMarkerStyle(26)
             hist, corr_graph_2 = xboa.common.make_root_graph("Corrected", bin_centre, "A [mm]",
-                                                corr_ratio[:20], "(Reco PDF - MC PDF) / MC PDF", ymin=-1, ymax=1)
+                                                corr_ratio[:20], "(Reco PDF - MC PDF) / MC PDF", ymin=-0.3, ymax=0.3)
             corr_graph_2.SetMarkerStyle(22)
             raw_graph_2.SetMarkerColor(ROOT.kRed+1)
             corr_graph_2.SetMarkerColor(ROOT.kRed+1)
@@ -455,7 +493,7 @@ def do_correction_comparison(input_dir, emittance_list, absorber_list, output_di
             raw_graph_2.Draw("SAME P")
             corr_graph_2.Draw("SAME P")
             legend = ROOT.TLegend(0.65, 0.5, 0.85, 0.9)
-            for lgraph, lname in [(raw_graph, "Raw"), (corr_graph, "Corrected")]:
+            for lgraph, lname in [(raw_graph_2, "Raw"), (corr_graph_2, "Corrected")]:
                 legend.AddEntry(lgraph, lname)
             legend.SetX1(0.6)
             legend.SetX2(0.8)
@@ -496,11 +534,22 @@ def do_downstream(input_dir, emittance_list, absorber_list, output_dir):
                           ('inefficiency','pdf_ratio_averaged')],
                           ['all_downstream'], "graph")
 
+        ##a_file_list = file_list(input_dir, emittance, absorber, "tku_base")+\
+        ##              file_list(input_dir, emittance, absorber, "tku_*")+\
+        ##              file_list(input_dir, emittance, absorber, "tkd_*")
+        ##my_hacking.accumulate_corrections(
+        ##                 [('crossing_probability', 'migration_matrix'),
+        ##                  ('inefficiency','pdf_ratio_averaged')],
+        ##                  ['all_downstream'],
+        ##                  a_file_list)
+        ##my_hacking.plot_corrections(
+        ##                 [('crossing_probability', 'migration_matrix'),
+        ##                  ('inefficiency','pdf_ratio_averaged')],
+        ##                  ['all_downstream'], "multigraph")
+
+        #only us errors
         a_file_list = file_list(input_dir, emittance, absorber, "tku_base")+\
-                      file_list(input_dir, emittance, absorber, "tku_*")+\
-                      file_list(input_dir, emittance, absorber, "tkd_*")
-        print "A FILE LIST:"
-        print a_file_list
+                      file_list(input_dir, emittance, absorber, "tku_*")
         my_hacking.accumulate_corrections(
                          [('crossing_probability', 'migration_matrix'),
                           ('inefficiency','pdf_ratio_averaged')],
@@ -509,7 +558,21 @@ def do_downstream(input_dir, emittance_list, absorber_list, output_dir):
         my_hacking.plot_corrections(
                          [('crossing_probability', 'migration_matrix'),
                           ('inefficiency','pdf_ratio_averaged')],
-                          ['all_downstream'], "multigraph")
+                          ['all_downstream'], "multigraph", suffix="_us_sys")
+        #only ds errors
+        a_file_list = file_list(input_dir, emittance, absorber, "tku_base")+\
+                      file_list(input_dir, emittance, absorber, "tkd_*")
+        my_hacking.accumulate_corrections(
+                         [('crossing_probability', 'migration_matrix'),
+                          ('inefficiency','pdf_ratio_averaged')],
+                          ['all_downstream'],
+                          a_file_list)
+        my_hacking.plot_corrections(
+                         [('crossing_probability', 'migration_matrix'),
+                          ('inefficiency','pdf_ratio_averaged')],
+                          ['all_downstream'], "multigraph", suffix="_ds_sys")
+
+
 
 def do_performance_comparison(input_dir, emittance_list, output_dir):
     my_hacking.clean_output_dir()
@@ -561,27 +624,59 @@ def main():
     utilities.root_style.setup_gstyle()
 
     #v107
-    sys_dir = "c7/v107/"
-    output_dir = "output/"+sys_dir+"recon_systematics_summary/"
-    do_copy(sys_dir, ["3", "4", "6", "10"], ['ABS-LH2', 'ABS-SOLID-EMPTY', 'ABS-LH2', 'ABS-LH2'], output_dir)
-    copy_more(sys_dir, output_dir)
-    do_upstream(sys_dir, ["3", "4", "6", "10"], ['ABS-LH2', 'ABS-SOLID-EMPTY', 'ABS-LH2', 'ABS-LH2'], output_dir) # 
-    do_downstream(sys_dir, ["3",  "4", "6", "10"], ['ABS-LH2', 'ABS-SOLID-EMPTY', 'ABS-LH2', 'ABS-LH2'], output_dir) # ,
-    do_correction_comparison(sys_dir, ["3", "4", "6", "10"], ['ABS-LH2', 'ABS-SOLID-EMPTY', 'ABS-LH2', 'ABS-LH2'], output_dir+"sys_corrections") #
-    mc_dir = "c11/v3/v107/"
-    do_correction_comparison(mc_dir, ["3", "4", "6", "10"], ['ABS-LH2', 'ABS-SOLID-EMPTY', 'ABS-LH2', 'ABS-LH2'], output_dir+"officialMC_corrections", None) #
+    #sys_dir = "c7/v107/"
+    #output_dir = "output/"+sys_dir+"recon_systematics_summary/"
+    #do_copy(sys_dir, ["3", "4", "6", "10"], ['ABS-LH2', 'ABS-SOLID-EMPTY', 'ABS-LH2', 'ABS-LH2'], output_dir)
+    ###copy_more(sys_dir, output_dir)
+    #do_upstream(sys_dir, ["3", "4", "6", "10"], ['ABS-LH2', 'ABS-SOLID-EMPTY', 'ABS-LH2', 'ABS-LH2'], output_dir) # 
+    #do_downstream(sys_dir, ["3",  "4", "6", "10"], ['ABS-LH2', 'ABS-SOLID-EMPTY', 'ABS-LH2', 'ABS-LH2'], output_dir) # ,
+    #do_correction_comparison(sys_dir, ["3", "4", "6", "10"], ['ABS-LH2', 'ABS-SOLID-EMPTY', 'ABS-LH2', 'ABS-LH2'], output_dir+"sys_corrections") #
+    #mc_dir = "c11/v3/v107/"
+    #do_correction_comparison(mc_dir, ["3", "4", "6", "10"], ['ABS-LH2', 'ABS-SOLID-EMPTY', 'ABS-LH2', 'ABS-LH2'], output_dir+"officialMC_corrections", None) #
 
     #v109
     #sys_dir = "c7/v109/run1/"
     #output_dir = "output/"+sys_dir+"recon_systematics_summary/"
     #do_copy(sys_dir, ["3", "4", "6", "10"], ['ABS-LH2-EMPTY', 'ABS-SOLID-EMPTY', 'ABS-LH2-EMPTY', 'ABS-LH2-EMPTY'], output_dir)
-    #copy_more(sys_dir, output_dir)
+    ###copy_more(sys_dir, output_dir)
     #do_upstream(sys_dir, ["3", "4", "6", "10"], ['ABS-LH2-EMPTY', 'ABS-SOLID-EMPTY', 'ABS-LH2-EMPTY', 'ABS-LH2-EMPTY'], output_dir) # 
     #do_downstream(sys_dir, ["3",  "4", "6", "10"], ['ABS-LH2-EMPTY', 'ABS-SOLID-EMPTY', 'ABS-LH2-EMPTY', 'ABS-LH2-EMPTY'], output_dir) # ,
     #do_correction_comparison(sys_dir, ["3", "4", "6", "10"], ['ABS-LH2-EMPTY', 'ABS-SOLID-EMPTY', 'ABS-LH2-EMPTY', 'ABS-LH2-EMPTY'], output_dir+"sys_corrections") #
     ##mc_dir = "c11/v3/v107/"
     #mc_dir = "c11/v4/v109/hold/"
     #do_correction_comparison(mc_dir, ["3", "4", "6", "10"], ['ABS-LH2-EMPTY', 'ABS-SOLID-EMPTY', 'ABS-LH2-EMPTY', 'ABS-LH2-EMPTY'], output_dir+"officialMC_corrections", None) #
+
+    #v111
+    #sys_dir = "c7/v111/"
+    #output_dir = "output/"+sys_dir+"recon_systematics_summary/"
+    #do_copy(sys_dir, ["3", "4", "6", "10"], ['ABS-LH2-EMPTY', 'ABS-SOLID-EMPTY', 'ABS-LH2-EMPTY', 'ABS-LH2-EMPTY'], output_dir)
+    ###copy_more(sys_dir, output_dir)
+    #do_upstream(sys_dir, ["3", "4", "6", "10"], ['ABS-LH2-EMPTY', 'ABS-SOLID-EMPTY', 'ABS-LH2-EMPTY', 'ABS-LH2-EMPTY'], output_dir) # 
+    #do_downstream(sys_dir, ["3", "4", "6", "10"], ['ABS-LH2-EMPTY', 'ABS-SOLID-EMPTY', 'ABS-LH2-EMPTY', 'ABS-LH2-EMPTY'], output_dir) # ,
+    #do_correction_comparison(sys_dir, ["3", "4", "6", "10"], ['ABS-LH2-EMPTY', 'ABS-SOLID-EMPTY', 'ABS-LH2-EMPTY', 'ABS-LH2-EMPTY'], output_dir+"sys_corrections") #
+    ##mc_dir = "c11/v4/v109/hold/"
+    ##do_correction_comparison(mc_dir, ["3", ], ['ABS-LH2-EMPTY', ], output_dir+"officialMC_corrections", None) #
+
+    #v111 short
+    sys_dir = "c7/v111/"
+    output_dir = "output/"+sys_dir+"recon_systematics_summary/"
+    do_copy(sys_dir, ["3", "6", "10"], ['ABS-LH2-EMPTY', 'ABS-LH2-EMPTY', 'ABS-LH2-EMPTY'], output_dir)
+    ##copy_more(sys_dir, output_dir)
+    do_upstream(sys_dir, ["3", "6", "10"], ['ABS-LH2-EMPTY', 'ABS-LH2-EMPTY', 'ABS-LH2-EMPTY'], output_dir) # 
+    do_downstream(sys_dir, ["3", "6", "10"], ['ABS-LH2-EMPTY', 'ABS-LH2-EMPTY', 'ABS-LH2-EMPTY'], output_dir) # ,
+    do_correction_comparison(sys_dir, ["3", "6", "10"], ['ABS-LH2-EMPTY', 'ABS-LH2-EMPTY', 'ABS-LH2-EMPTY'], output_dir+"sys_corrections") #
+    #mc_dir = "c11/v4/v109/hold/"
+    #do_correction_comparison(mc_dir, ["3", ], ['ABS-LH2-EMPTY', ], output_dir+"officialMC_corrections", None) #
+
+    #v575
+    ##sys_dir = "c7/v575/"
+    ##output_dir = "output/"+sys_dir+"recon_systematics_summary/"
+    ##do_copy(sys_dir, ["4", ], ['ABS-SOLID-EMPTY',], output_dir)
+    ####copy_more(sys_dir, output_dir)
+    ##do_upstream(sys_dir, ["4", ], ['ABS-SOLID-EMPTY', ], output_dir) # 
+    ##do_downstream(sys_dir, ["4", ], ['ABS-SOLID-EMPTY', ], output_dir) # ,
+    ##do_correction_comparison(sys_dir, ["4", ], ['ABS-SOLID-EMPTY', ], output_dir+"sys_corrections") #
+
 
     # Not yet used..
     #output_dir = "output/"+sys_dir+"performance_systematics_summary/"

@@ -92,5 +92,6 @@ python $here/bin/run_one_analysis.py $configdir/config_${config}_${rn}_full_${SY
 " \
 | tee $here/logs/tmp/${rn}_${jobsuffix}_${SYSTEMATIC}${VERSION}.sh
 chmod +x $here/logs/tmp/${rn}_${jobsuffix}_${SYSTEMATIC}${VERSION}.sh
-bsub -G micegrp -M 20000 -oo $here/logs/${rn}_${jobsuffix}_${SYSTEMATIC}${VERSION}.log -q ${queue} $here/logs/tmp/${rn}_${jobsuffix}_${SYSTEMATIC}${VERSION}.sh
+bsub -G micegrp -M 24000 -oo $here/logs/${rn}_${jobsuffix}_${SYSTEMATIC}${VERSION}.log -q ${queue} $here/logs/tmp/${rn}_${jobsuffix}_${SYSTEMATIC}${VERSION}.sh
+# formerly -M 20000 
 

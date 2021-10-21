@@ -159,5 +159,6 @@ python $here/bin/run_one_analysis.py $configdir/config_${config}_${rn}_full.py
 " \
 | tee $here/logs/tmp/${runnumber}_${jobsuffix}_${VERSION}_${SYSVERS}_movedata.sh
 chmod +x $here/logs/tmp/${runnumber}_${jobsuffix}_${VERSION}_${SYSVERS}_movedata.sh
-bsub -G micegrp -M 20000 -oo $here/logs/${runnumber}_${jobsuffix}_${VERSION}_${SYSVERS}_movedata.log -q ${queue} $here/logs/tmp/${runnumber}_${jobsuffix}_${VERSION}_${SYSVERS}_movedata.sh
+#bsub -G micegrp -M 20000 -oo $here/logs/${runnumber}_${jobsuffix}_${VERSION}_${SYSVERS}_movedata.log -q ${queue} $here/logs/tmp/${runnumber}_${jobsuffix}_${VERSION}_${SYSVERS}_movedata.sh
+bsub -G micegrp -M 24000 -oo $here/logs/${runnumber}_${jobsuffix}_${VERSION}_${SYSVERS}_movedata.log -q ${queue} $here/logs/tmp/${runnumber}_${jobsuffix}_${VERSION}_${SYSVERS}_movedata.sh
 

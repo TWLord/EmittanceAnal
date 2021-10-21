@@ -9,31 +9,57 @@ from cdb import CoolingChannel
 
 MODULE_LIST = ['SSU', 'FCU', 'SSD']
 COIL_LIST = ['SSU-E2', 'SSU-C', 'SSU-E1', 'SSU-M2', 'SSU-M1', 'FCU-C', 'SSD-M1', 'SSD-M2', 'SSD-E1', 'SSD-C', 'SSD-E2']
+MAGNET_LIST = ['Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6', 'Q7', 'Q8', 'Q9', 'D1', 'D2', 'DS']
+
+
 OPTICS_RUN_DICT = {}
 
 def sort_predicate(module_or_coil):
-    module_list = MODULE_LIST+COIL_LIST
+    module_list = MODULE_LIST+COIL_LIST+MAGNET_LIST
     return module_list.index(module_or_coil['name'])
 
-def print_heading(output = sys.stdout):
-    print >> output, "run".ljust(8), "date".ljust(12), "beamline".ljust(20),
-    for coil in COIL_LIST:
-        print >> output, coil.rjust(8),
+def sort_predicate2(module_or_coil):
+    module_list = MODULE_LIST+COIL_LIST+MAGNET_LIST
+    return module_list.index(module_or_coil)
+
+def print_heading(output = sys.stdout, short = False, beam = True, channel = True):
+    if not short:
+        print >> output, "run".ljust(8), "date".ljust(12), "beamline".ljust(20),
+        print >> output, "CC".ljust(8),
+    else:
+        print >> output, "run".ljust(8), "beamline".ljust(14),
+    if beam:
+        for magnet in MAGNET_LIST:
+            print >> output, magnet.rjust(8),
+    print >> output, ' ' ,
+    if channel:
+        for coil in COIL_LIST:
+            print >> output, coil.rjust(8),
     print >> output
 
-def print_run(bl_data, channel_data, output = sys.stdout):
+def print_run(bl_data, channel_data, output = sys.stdout, short = False, beam = True, channel = True):
     global OPTICS_RUN_DICT
     run = bl_data['run_number']
     optics = bl_data["optics"]
+    #magnets = bl_data['magnets']
     if optics not in  OPTICS_RUN_DICT:
          OPTICS_RUN_DICT[optics] = []
     OPTICS_RUN_DICT[optics].append(run)
     start_time = bl_data["start_time"]
-    print >> output, str(run).ljust(8), str(start_time.date()).ljust(12), ('"'+optics+'"').ljust(20),
-    print >> output, channel_data['tag']
-    #for module in sorted(channel_data, key=sort_predicate):
-    #    for coil in sorted(module['coils'], key=sort_predicate):
-    #        print >> output, str(round(coil['iset'], 2)).rjust(8),
+    if not short:
+        print >> output, str(run).ljust(8), str(start_time.date()).ljust(12), ('"'+optics+'"').ljust(20),
+        print >> output, channel_data['tag'],
+    else:
+        print >> output, str(run).ljust(8), ('"'+optics+'"').ljust(14),
+    if beam:
+        for magnet in sorted(bl_data['magnets'], key=sort_predicate2):
+            print >> output, str(round(bl_data['magnets'][magnet]['set_current'], 4)).rjust(8),
+            #print >> output, str(round(bl_data['magnets'][magnet]['set_current'])).rjust(8),
+    if channel:
+        for module in sorted(channel_data['magnets'], key=sort_predicate):
+            for coil in sorted(module['coils'], key=sort_predicate):
+                print >> output, str(round(coil['iset'], 4)).rjust(8),
+                #print >> output, str(round(coil['iset'], 2)).rjust(8),
     print >> output
     output.flush()
 
@@ -54,9 +80,12 @@ def is_channel_okay(bl_data, channel_data):
 def get_settings_by_run(run_start, run_end, run_step, output, do_header = True):
     beamline = Beamline(url='http://cdb.mice.rl.ac.uk')
     channel = CoolingChannel(url='http://cdb.mice.rl.ac.uk')
+    short = True
+    do_beam = True
+    do_channel = False
 
     if do_header:
-        print_heading(output)
+        print_heading(output, short, do_beam, do_channel)
     for run in range(run_start, run_end, run_step): #:
         channel_data, bl_data = None, None
         n_tries = 0
@@ -81,7 +110,7 @@ def get_settings_by_run(run_start, run_end, run_step, output, do_header = True):
         if not is_channel_okay(bl_data, channel_data):
             print "Channel not okay for run", run
             continue
-        print_run(bl_data, channel_data, output)
+        print_run(bl_data, channel_data, output, short, do_beam, do_channel)
         sys.stdout.flush()
         time.sleep(1)
 
