@@ -515,8 +515,59 @@ def performance_errors():
 
             fig.savefig(plot_dir+"errormat_"+beam+".png")
 
+def migration_matrices():
+    plot_dir = os.path.join(dest, "migration_matrix_plots/")
+    if not os.path.exists(plot_dir):
+        os.makedirs(plot_dir)
+    amplitudes_dict = {}
+    mat_dict = {}
+    #us_ds = "upstream"
+    #figs = {}
+    for us_ds in ["downstream"]:
+        for beam in beam_list:
+            base_path = "plots_2017-02-6_"+beam+"_"+base_sys
+            base_amp = load_json(base_path)
+            base_pdf = pull_pdfs(base_amp, us_ds)
+            base_pdf_us = pull_pdfs(base_amp, "upstream")
+            base_mat = pull_migration_usds(base_amp)
+        
+            for sys in sys_list+["tku_base"]:
+            #for sys in performance_list:
+                sys_dir = "plots_2017-02-6_"+beam+"_"+sys
+        
+                src_amplitudes = load_json(sys_dir)
+                amplitudes_dict[sys] = src_amplitudes
+                mat = pull_migration_usds(src_amplitudes)
+                #mat_dict[sys] = pull_migration_usds(src_amplitudes)
+        
+                #pdf_err_dict = get_migration_mat_errs(base_pdf_us, base_mat, mat_dict)
+                #pdf_err_tot = get_migration_mat_err_tot(base_pdf_us, base_mat, mat_dict)
+
+                #err_mat_tot = get_error_mat_tot(base_pdf_us, base_mat, mat_dict)
+                
+                fig,ax = plt.subplots(1,3)
+                fig.tight_layout()
+                fig.subplots_adjust(wspace=0, hspace=0)
+                fig.set_figheight(10)
+                fig.set_figwidth(18)
+
+                fig,axis = plt.subplots(1,1)
+                fig.tight_layout()
+                fig.subplots_adjust(wspace=0, hspace=0)
+                fig.set_figheight(10)
+                fig.set_figwidth(18)
+                im1 = axis.imshow(mat)
+                fig.colorbar(im1, ax=axis)
+                axis.set_title('Performance Error Matrix')
+
+                fig.savefig(plot_dir+"errormat_"+beam+"_"+sys+".png")
+                fig.close()
+
+
+
 if __name__ == "__main__":
-    detector_errors()
-    detector_errors2()
-    performance_errors()
+    #detector_errors()
+    #detector_errors2()
+    #performance_errors()
+    migration_matrices()
 
