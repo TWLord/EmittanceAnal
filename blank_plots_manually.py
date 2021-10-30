@@ -3,7 +3,8 @@ import sys
 sys.argv.append( '-b-' )
 import ROOT
 
-fpath="./output/combinedMC+Data/officialMC/2017-02-6_AngMom_v111/compare_ang_mom/"
+#fpath="./output/combinedMC+Data/officialMC/2017-02-6_AngMom_v111/compare_ang_mom/"
+fpath="./output/combinedMC+Data/officialMC/2017-02-6_AngMom_v111/compare_ang_mom_mc/"
 dest = os.path.join(fpath, "blanked_plots")
 print "DEST:", dest
 #raw_input("...")
@@ -12,10 +13,14 @@ if not os.path.exists(dest):
     os.makedirs(dest)
 
 #replace_list = ["L_canon_ds"]
-replace_list = ["L_canon_ds", "L_field_ds", "L_kin_ds",
-                "L_canon_ds_stat_sys_error", "L_field_ds_stat_sys_error", "L_kin_ds_stat_sys_error",
-                "l_twiddle_3_ds", "beta_4d_ds"
+#replace_list = ["L_canon_ds", "L_field_ds", "L_kin_ds",
+#                "L_canon_ds_stat_sys_error", "L_field_ds_stat_sys_error", "L_kin_ds_stat_sys_error",
+#                "l_twiddle_3_ds", "beta_4d_ds"
+#               ]
+replace_list = ["mean_Bz_residual_ds", "mean_r2_residual_ds", \
+                "L_canon_residual_ds", "L_kin_residual_ds", "L_field_residual_ds"
                ]
+
 
 for fname in replace_list:
     fullname = os.path.join(fpath, fname+".root")
