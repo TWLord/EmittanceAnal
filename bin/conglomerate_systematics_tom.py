@@ -361,7 +361,8 @@ def main():
     #systematics_source_dir = "output/systematics/2017-02-6-c7_v105/"
     #version=105
     #version=107
-    version=109
+    #version=109
+    version=111
 
     #systematics_source_dir = "output/systematics/2017-02-6-c7_v"+str(version)+"/"
     #systematics_source_dir = "output/combinedMC+Data/systematics/2017-02-6-c7_v"+str(version)+"/"
@@ -379,16 +380,18 @@ def main():
       right_labels = ["Empty\nLH2",]
 
     else:
-      target_dir = "output/combinedMC+Data/systematics/2017-02-6-c7_v"+str(version)+"/"
+      #target_dir = "output/combinedMC+Data/systematics/2017-02-6-c7_v"+str(version)+"/"
       #v107
       #top_labels = ["3-140 LH2", "4-140 EMPTY", "6-140 LH2", "10-140 LH2"]
       #lh2_empty_dir_list = [["2017-02-6_3-140_ABS-LH2", "2017-02-6_4-140_ABS-SOLID-EMPTY", "2017-02-6_6-140_ABS-LH2", "2017-02-6_10-140_ABS-LH2",],]
-      abs_list = ["LH2-EMPTY", "SOLID-EMPTY", "LH2-EMPTY", "LH2-EMPTY"]
-      #v109
+      #abs_list = ["LH2-EMPTY", "SOLID-EMPTY", "LH2-EMPTY", "LH2-EMPTY"]
+      #v111
+      target_dir = "output/combinedMC+Data/systematics/2017-02-6-c7_v"+str(version)+"/"
       top_labels = ["3-140 LH2-EMPTY", "4-140 EMPTY", "6-140 LH2-EMPTY", "10-140 LH2-EMPTY"]
       lh2_empty_dir_list = [["2017-02-6_3-140_ABS-LH2-EMPTY", "2017-02-6_4-140_ABS-SOLID-EMPTY", "2017-02-6_6-140_ABS-LH2-EMPTY", "2017-02-6_10-140_ABS-LH2-EMPTY",],]
+      abs_list = ["LH2-EMPTY", "SOLID-EMPTY", "LH2-EMPTY", "LH2-EMPTY"]
       right_labels = ["",]
-      #right_labels = ["LH2 \nNo Abs \nLH2 \nLH2 ",]
+      #right_labels = ["LH2-EMPTY \nNo Abs \nLH2-EMPTY \nLH2-EMPTY ",]
 
 
     systematics_cut_summary(systematics_source_dir, abs_list)

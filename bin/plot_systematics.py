@@ -502,6 +502,7 @@ def do_correction_comparison(input_dir, emittance_list, absorber_list, output_di
             legend.Draw()
             canvas.Update()
             canvas.Print(output_dir+"/"+name+"_ratio.png")
+            canvas.Print(output_dir+"/"+name+"_ratio.pdf")
 
             #gmin = 1.1*raw_graph_2.GetMinimum()
             #gmax = 1.1*raw_graph_2.GetMaximum()
@@ -660,13 +661,14 @@ def main():
     #v111 short
     sys_dir = "c7/v111/"
     output_dir = "output/"+sys_dir+"recon_systematics_summary/"
-    do_copy(sys_dir, ["3", "6", "10"], ['ABS-LH2-EMPTY', 'ABS-LH2-EMPTY', 'ABS-LH2-EMPTY'], output_dir)
-    ##copy_more(sys_dir, output_dir)
-    do_upstream(sys_dir, ["3", "6", "10"], ['ABS-LH2-EMPTY', 'ABS-LH2-EMPTY', 'ABS-LH2-EMPTY'], output_dir) # 
-    do_downstream(sys_dir, ["3", "6", "10"], ['ABS-LH2-EMPTY', 'ABS-LH2-EMPTY', 'ABS-LH2-EMPTY'], output_dir) # ,
-    do_correction_comparison(sys_dir, ["3", "6", "10"], ['ABS-LH2-EMPTY', 'ABS-LH2-EMPTY', 'ABS-LH2-EMPTY'], output_dir+"sys_corrections") #
+    #do_copy(sys_dir, ["3", "4", "6", "10"], ['ABS-LH2-EMPTY', 'ABS-SOLID-EMPTY', 'ABS-LH2-EMPTY', 'ABS-LH2-EMPTY'], output_dir)
+    ###copy_more(sys_dir, output_dir)
+    #do_upstream(sys_dir, ["3", "4", "6", "10"], ['ABS-LH2-EMPTY', 'ABS-SOLID-EMPTY', 'ABS-LH2-EMPTY', 'ABS-LH2-EMPTY'], output_dir) # 
+    #do_downstream(sys_dir, ["3", "4", "6", "10"], ['ABS-LH2-EMPTY', 'ABS-SOLID-EMPTY', 'ABS-LH2-EMPTY', 'ABS-LH2-EMPTY'], output_dir) # ,
+    do_correction_comparison(sys_dir, ["3", "4", "6", "10"], ['ABS-LH2-EMPTY', 'ABS-SOLID-EMPTY', 'ABS-LH2-EMPTY', 'ABS-LH2-EMPTY'], output_dir+"sys_corrections") #
     #mc_dir = "c11/v4/v109/hold/"
-    #do_correction_comparison(mc_dir, ["3", ], ['ABS-LH2-EMPTY', ], output_dir+"officialMC_corrections", None) #
+    mc_dir = "combinedMC+Data/officialMC/2017-02-6_fixed_sys/v4/"
+    do_correction_comparison(mc_dir, ["3", "4", "6", "10"], ['ABS-LH2-EMPTY', 'ABS-SOLID-EMPTY', 'ABS-LH2-EMPTY', 'ABS-LH2-EMPTY'], output_dir+"officialMC_corrections", None) #
 
     #v575
     ##sys_dir = "c7/v575/"

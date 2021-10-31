@@ -1,0 +1,50 @@
+[?1034hBefore doing much of anything..
+phumhf   28951  335  0.0 1127988 49076 pts/38  S+   15:20   0:03 python test_deleting.py
+phumhf   28976  0.0  0.0 106120  1224 pts/38   S+   15:20   0:00 sh -c ps aux | grep phumhf | grep python
+phumhf   28979  0.0  0.0 103272   844 pts/38   S+   15:20   0:00 grep python
+
+Clearing 10000 plots
+phumhf   28951  114  0.1 1195100 116052 pts/38 S+   15:20   0:17 python test_deleting.py
+phumhf   29585  0.0  0.0 106120  1224 pts/38   S+   15:20   0:00 sh -c ps aux | grep phumhf | grep python
+phumhf   29588  0.0  0.0 103272   844 pts/38   S+   15:20   0:00 grep python
+
+After clearing plots:
+phumhf    3553  0.0  0.0 106120  1224 pts/38   S+   15:22   0:00 sh -c ps aux | grep phumhf | grep python
+phumhf    3557  0.0  0.0 103272   848 pts/38   S+   15:22   0:00 grep python
+phumhf   28951  101  0.1 1195624 116792 pts/38 S+   15:20   2:25 python test_deleting.py
+
+After 10k
+phumhf    3558  0.0  0.0 106120  1224 pts/38   S+   15:22   0:00 sh -c ps aux | grep phumhf | grep python
+phumhf    3561  0.0  0.0 103272   848 pts/38   S+   15:22   0:00 grep python
+phumhf   28951  101  0.1 1195624 116792 pts/38 S+   15:20   2:25 python test_deleting.py
+
+Clearing 9999 plots
+phumhf    3582  0.0  0.0 106120  1224 pts/38   S+   15:22   0:00 sh -c ps aux | grep phumhf | grep python
+phumhf    3585  0.0  0.0 103272   844 pts/38   S+   15:22   0:00 grep python
+phumhf   28951  101  0.1 1198316 119420 pts/38 S+   15:20   2:39 python test_deleting.py
+
+After clearing plots:
+phumhf   10930  0.0  0.0 106120  1220 pts/38   S+   15:24   0:00 sh -c ps aux | grep phumhf | grep python
+phumhf   10933  0.0  0.0 103272   848 pts/38   S+   15:24   0:00 grep python
+phumhf   28951  100  0.1 1199172 120148 pts/38 S+   15:20   4:46 python test_deleting.py
+
+After 20k
+phumhf   10935  0.0  0.0 106120  1228 pts/38   S+   15:24   0:00 sh -c ps aux | grep phumhf | grep python
+phumhf   10938  0.0  0.0 103272   848 pts/38   S+   15:24   0:00 grep python
+phumhf   28951  100  0.1 1199172 120148 pts/38 S+   15:20   4:46 python test_deleting.py
+
+Clearing 9999 plots
+phumhf   12341  0.0  0.0 106120  1220 pts/38   S+   15:25   0:00 sh -c ps aux | grep phumhf | grep python
+phumhf   12344  0.0  0.0 103272   848 pts/38   S+   15:25   0:00 grep python
+phumhf   28951  100  0.1 1202740 123832 pts/38 S+   15:20   5:01 python test_deleting.py
+
+After clearing plots:
+phumhf   16116  0.0  0.0 106120  1224 pts/38   S+   15:26   0:00 sh -c ps aux | grep phumhf | grep python
+phumhf   16119  0.0  0.0 103272   844 pts/38   S+   15:26   0:00 grep python
+phumhf   28951  100  0.1 1203532 124552 pts/38 S+   15:20   6:31 python test_deleting.py
+
+After 30k
+phumhf   16120  0.0  0.0 106120  1224 pts/38   S+   15:26   0:00 sh -c ps aux | grep phumhf | grep python
+phumhf   16123  0.0  0.0 103272   848 pts/38   S+   15:26   0:00 grep python
+phumhf   28951  100  0.1 1203532 124552 pts/38 S+   15:20   6:31 python test_deleting.py
+

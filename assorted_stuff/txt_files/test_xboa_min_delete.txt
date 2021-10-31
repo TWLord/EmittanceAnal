@@ -1,0 +1,40 @@
+Error in <TGClient::TGClient>: can't open display "epp-ui01:15.0", switching to batch mode...
+ In case you run from a remote ssh session, reconnect with ssh -Y
+[?1034hBefore doing much of anything..
+phumhf   23615  160  0.1 1492144 115120 pts/0  S+   19:46   0:04 python test_deleting.py
+phumhf   23714  0.0  0.0 106112  1228 pts/0    S+   19:46   0:00 sh -c ps aux | grep phumhf | grep python
+phumhf   23717  0.0  0.0 103264   840 pts/0    S+   19:46   0:00 grep python
+
+loop 0
+Clearing 1000 plots
+phumhf   23615  119 12.1 9360712 7983532 pts/0 S+   19:46   0:14 python test_deleting.py
+phumhf   23876  0.0  0.0 106112  1232 pts/0    S+   19:47   0:00 sh -c ps aux | grep phumhf | grep python
+phumhf   23879  0.0  0.0 103264   840 pts/0    S+   19:47   0:00 grep python
+
+After clearing plots:
+phumhf   23615  112 12.1 9360712 7983540 pts/0 S+   19:46   0:14 python test_deleting.py
+phumhf   23880  5.0  0.0 106112  1232 pts/0    S+   19:47   0:00 sh -c ps aux | grep phumhf | grep python
+phumhf   23883  0.0  0.0 103264   840 pts/0    S+   19:47   0:00 grep python
+
+loop 1
+Clearing 1000 plots
+phumhf   23615  108 24.0 17222980 15845752 pts/0 S+ 19:46   0:25 python test_deleting.py
+phumhf   24065  0.0  0.0 106112  1236 pts/0    S+   19:47   0:00 sh -c ps aux | grep phumhf | grep python
+phumhf   24068  0.0  0.0 103264   840 pts/0    S+   19:47   0:00 grep python
+
+After clearing plots:
+phumhf   23615  105 24.0 17222980 15845752 pts/0 S+ 19:46   0:25 python test_deleting.py
+phumhf   24069  9.0  0.0 106112  1232 pts/0    S+   19:47   0:00 sh -c ps aux | grep phumhf | grep python
+phumhf   24072  0.0  0.0 103264   840 pts/0    S+   19:47   0:00 grep python
+
+loop 2
+Clearing 1000 plots
+phumhf   23615  102 35.9 25085300 23708060 pts/0 S+ 19:46   0:35 python test_deleting.py
+phumhf   24073 16.0  0.0 106112  1232 pts/0    S+   19:47   0:00 sh -c ps aux | grep phumhf | grep python
+phumhf   24076  0.0  0.0 103264   844 pts/0    S+   19:47   0:00 grep python
+
+After clearing plots:
+phumhf   23615  103 35.9 25085300 23708060 pts/0 S+ 19:46   0:36 python test_deleting.py
+phumhf   24077 16.0  0.0 106112  1232 pts/0    S+   19:47   0:00 sh -c ps aux | grep phumhf | grep python
+phumhf   24080  0.0  0.0 103264   840 pts/0    S+   19:47   0:00 grep python
+

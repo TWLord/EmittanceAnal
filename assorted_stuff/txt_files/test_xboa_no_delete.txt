@@ -1,0 +1,22 @@
+Error in <TGClient::TGClient>: can't open display "epp-ui01:15.0", switching to batch mode...
+ In case you run from a remote ssh session, reconnect with ssh -Y
+[?1034hBefore doing much of anything..
+phumhf   18729  128  0.1 1492140 112796 pts/0  S+   19:43   0:05 python test_deleting.py
+phumhf   18760  0.0  0.0 106112  1232 pts/0    S+   19:43   0:00 sh -c ps aux | grep phumhf | grep python
+phumhf   18763  0.0  0.0 103264   840 pts/0    S+   19:43   0:00 grep python
+
+loop 0
+phumhf   18729 87.7 12.1 9360728 7981216 pts/0 S+   19:43   0:19 python test_deleting.py
+phumhf   18998  9.0  0.0 106112  1232 pts/0    S+   19:43   0:00 sh -c ps aux | grep phumhf | grep python
+phumhf   19001  0.0  0.0 103264   840 pts/0    S+   19:43   0:00 grep python
+
+loop 1
+phumhf   18729 93.2 24.0 17222632 15843132 pts/0 S+ 19:43   0:29 python test_deleting.py
+phumhf   19006 17.0  0.0 106112  1232 pts/0    S+   19:44   0:00 sh -c ps aux | grep phumhf | grep python
+phumhf   19009  0.0  0.0 103264   836 pts/0    S+   19:44   0:00 grep python
+
+loop 2
+phumhf   18729 90.7 35.9 25084452 23704976 pts/0 S+ 19:43   0:41 python test_deleting.py
+phumhf   19010 21.0  0.0 106112  1232 pts/0    S+   19:44   0:00 sh -c ps aux | grep phumhf | grep python
+phumhf   19013  0.0  0.0 103264   844 pts/0    S+   19:44   0:00 grep python
+

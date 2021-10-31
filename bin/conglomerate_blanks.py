@@ -55,37 +55,37 @@ class CompareMCConfig(CompareConfig):
 
         self.conglomerate_list = [
             self.get_conglomerate_3("mc_residual_tof01_t", "t", "Res(t_{01}) [ns]",
-                                    None, modifiers = mc_mod("tof01_t", [-1., 1.], 
+                                    None, modifiers = mc_mod("tof01_t", [-0.75, 0.75], 
                                     right_labels, top_labels, [-0.2, 0, 0.2], blank)),
             self.get_conglomerate_3("mc_residual_tku_tp_x", "x", "TKU Res(x) [mm]",
-                                    None, modifiers = mc_mod("tku_x", [-2., 2.], 
+                                    None, modifiers = mc_mod("tku_x", [-2.25, 2.25], 
                                     right_labels, top_labels, [-1, 0, 1], blank)),
             self.get_conglomerate_3("mc_residual_tku_tp_px", "px", "TKU Res(p_{x}) [MeV/c]", 
                                     None, modifiers = mc_mod("tku_px", [-5., 5.], 
                                     right_labels, top_labels, [-2, 0, 2], blank)),
             self.get_conglomerate_3("mc_residual_tku_tp_y", "y", "TKU Res(y) [mm]", 
-                                    None, modifiers = mc_mod("tku_y", [-5., 5.], 
+                                    None, modifiers = mc_mod("tku_y", [-2.25, 2.25], 
                                     right_labels, top_labels, [-1, 0, 1], blank)),
             self.get_conglomerate_3("mc_residual_tku_tp_py", "py", "TKU Res(p_{y}) [MeV/c]", 
                                     None, modifiers = mc_mod("tku_py", [-5., 5.], 
                                     right_labels, top_labels, [-2, 0, 2], blank)),
             self.get_conglomerate_3("mc_residual_tku_tp_pz", "pz", "TKU Res(p_{z}) [MeV/c]", 
-                                    None, modifiers = mc_mod("tku_pz", [-10., 10.], 
+                                    None, modifiers = mc_mod("tku_pz", [-9.5, 9.5], 
                                     right_labels, top_labels, [-2, 0, 2], blank)),
             self.get_conglomerate_3("mc_residual_tkd_tp_x", "x", "TKD Res(x) [mm]", 
-                                    None, modifiers = mc_mod("tkd_x", [-2., 2.], 
+                                    None, modifiers = mc_mod("tkd_x", [-2.25, 2.25], 
                                     right_labels, top_labels, [-1, 0, 1], blank)),
             self.get_conglomerate_3("mc_residual_tkd_tp_px", "px", "TKD Res(p_{x}) [MeV/c]", 
                                     None, modifiers = mc_mod("tkd_px", [-5., 5.], 
                                     right_labels, top_labels, [-2, 0, 2], blank)),
             self.get_conglomerate_3("mc_residual_tkd_tp_y", "y", "TKD Res(y) [mm]", 
-                                    None, modifiers = mc_mod("tkd_y", [-5., 5.], 
+                                    None, modifiers = mc_mod("tkd_y", [-2.25, 2.25], 
                                     right_labels, top_labels, [-1, 0, 1], blank)),
             self.get_conglomerate_3("mc_residual_tkd_tp_py", "py", "TKD Res(p_{y}) [MeV/c]", 
                                     None, modifiers = mc_mod("tkd_py", [-5., 5.], 
                                     right_labels, top_labels, [-2, 0, 2], blank)),
             self.get_conglomerate_3("mc_residual_tkd_tp_pz", "pz", "TKD Res(p_{z}) [MeV/c]", 
-                                    None, modifiers = mc_mod("tkd_pz", [-10., 10.], 
+                                    None, modifiers = mc_mod("tkd_pz", [-9.5, 9.5], 
                                     right_labels, top_labels, [-2, 0, 2], blank)),
         ]
 
@@ -994,6 +994,29 @@ class CompareAmplitudeConfigMC(CompareConfig): # MC corrections
             },
             "rescale_x":amplitude_x_range(beam),
         }
+        demo_modifiers = copy.deepcopy(absolute_modifiers)
+        demo_modifiers["redraw"]["graph"] = {
+                        "draw_option":["p c x0", "p c x0"],
+                        "marker_style":[20, 22],
+                        "marker_color":[ROOT.kOrange+4, ROOT.kGreen+3],
+                        "fill_color":[ROOT.kOrange+4, ROOT.kGreen+3],
+                        "line_color":[ROOT.kOrange+4, ROOT.kGreen+3],
+                        "fill_style":[1001, 1001],
+                        "transparency":[0.5, 0.5],
+                        "draw_order":[0, 1],
+        }
+        demo_modifiers["write_plots"] = {
+                "file_name":"amplitude_pdf_demo",
+                "dir":self.beam_plot_dir,
+                "formats":["png", "root", "pdf"],
+        }
+        demo_modifiers["mice_logo"] = False
+        demo_modifiers_cdf = copy.deepcopy(demo_modifiers)
+        demo_modifiers_cdf["write_plots"] = {
+                "file_name":"amplitude_cdf_demo",
+                "dir":self.beam_plot_dir,
+                "formats":["png", "root", "pdf"],
+        }
 
         if blank is not None:
             ratio_modifiers["redraw"] = {"draw_option":["AXIS","AXIS","AXIS","AXIS"]}
@@ -1019,18 +1042,41 @@ class CompareAmplitudeConfigMC(CompareConfig): # MC corrections
                                         ["Upstream CDF stats", "Upstream CDF sys", "Downstream CDF stats", "Downstream CDF sys"],
                                         y_range = [0.001, 1.399], x_range = [0.01, 99.9], replace_hist = True,
                                         modifiers = absolute_modifiers),
+            self.get_conglomerate_graph("amplitude_pdf_all_mc", "Amplitude [mm]",
+                                        "Number",
+                                        "amplitude_pdf_all_mc", ["Upstream sys hist"],
+                                        ["Upstream stats", "Downstream stats"],
+                                        y_range = [0.001, 1.24], x_range = [0.01, 99.9], replace_hist = True,
+                                        modifiers = demo_modifiers),
+            self.get_conglomerate_graph("amplitude_cdf_all_mc", "Amplitude [mm]",
+                                        "Cumulative density",
+                                        "amplitude_cdf_all_mc", ["Upstream CDF stats hist"],
+                                        ["Upstream CDF stats", "Downstream CDF stats"],
+                                        y_range = [0.001, 1.399], x_range = [0.01, 99.9], replace_hist = True,
+                                        modifiers = demo_modifiers_cdf),
 
-            self.get_conglomerate_graph("pdf_ratio*", "Amplitude [mm]",
+            self.get_conglomerate_graph("pdf_ratio_reco", "Amplitude [mm]",
                                         "P_{Amp}",
                                         "pdf_ratio", ["PDF Ratio stats hist"],
                                         #["PDF Ratio stats", "PDF Ratio sys"], x_range = [0.01, 99.9], y_range = [0.501, 2.499], replace_hist = True,
                                         ["PDF Ratio stats", "PDF Ratio sys"], x_range = [0.01, 99.9], y_range = [0.501, 4.499], replace_hist = True,
                                         graph_draw_option = ["p", "2"], graph_marker_style=[20, 20], graph_marker_color=[ROOT.kRed, ROOT.kRed], graph_draw_order=[1,0], modifiers=ratio_modifiers),
-            self.get_conglomerate_graph("cdf_ratio*", "amplitude [mm]",
+            self.get_conglomerate_graph("cdf_ratio_reco", "amplitude [mm]",
                                         "R_{Amp}",
                                         "cdf_ratio", ["CDF_Ratio stats hist"],
                                         ["CDF_Ratio stats", "CDF_Ratio sys"], x_range = [0.01, 99.9], y_range = [0.601, 1.399], replace_hist = True,
                                         graph_draw_option = ["p", "2"], graph_marker_style=[20, 20], graph_marker_color=[ROOT.kRed, ROOT.kRed], graph_draw_order=[1,0], modifiers=ratio_modifiers),
+            #self.get_conglomerate_graph("pdf_ratio_mc", "Amplitude [mm]",
+            #                            "P_{Amp}",
+            #                            "pdf_ratio", ["PDF Ratio stats hist"],
+            #                            #["PDF Ratio stats", "PDF Ratio sys"], x_range = [0.01, 99.9], y_range = [0.501, 2.499], replace_hist = True,
+            #                            ["PDF Ratio stats", "PDF Ratio sys"], x_range = [0.01, 99.9], y_range = [0.501, 4.499], replace_hist = True,
+            #                            graph_draw_option = ["p", "2"], graph_marker_style=[20, 20], graph_marker_color=[ROOT.kRed, ROOT.kRed], graph_draw_order=[1,0], modifiers=ratio_modifiers),
+            #self.get_conglomerate_graph("cdf_ratio_mc", "amplitude [mm]",
+            #                            "R_{Amp}",
+            #                            "cdf_ratio", ["CDF_Ratio stats hist"],
+            #                            ["CDF_Ratio stats", "CDF_Ratio sys"], x_range = [0.01, 99.9], y_range = [0.601, 1.399], replace_hist = True,
+            #                            graph_draw_option = ["p", "2"], graph_marker_style=[20, 20], graph_marker_color=[ROOT.kRed, ROOT.kRed], graph_draw_order=[1,0], modifiers=ratio_modifiers),
         ]
 
 class CompareAmplitudeConfigData(CompareConfig): # data plots
@@ -1150,11 +1196,11 @@ class CompareAmplitudeConfigData(CompareConfig): # data plots
                                         ["Upstream CDF stats", "Upstream CDF sys", "Downstream CDF stats", "Downstream CDF sys"],
                                         y_range = [0.001, 1.399], x_range = [0.01, 99.9], replace_hist = True,
                                         modifiers = absolute_modifiers),
-            self.get_conglomerate_graph("pdf_ratio*", "Amplitude [mm]",
+            self.get_conglomerate_graph("pdf_ratio_reco", "Amplitude [mm]",
                                         "P_{Amp}",
                                         "pdf_ratio", ["PDF Ratio stats hist"],
-                                        #["PDF Ratio stats", "PDF Ratio sys"], x_range = [0.01, 99.9], y_range = [0.501, 2.499], replace_hist = True,
-                                        ["PDF Ratio stats", "PDF Ratio sys"], x_range = [0.01, 99.9], y_range = [0.501, 4.499], replace_hist = True,
+                                        ["PDF Ratio stats", "PDF Ratio sys"], x_range = [0.01, 99.9], y_range = [0.501, 2.499], replace_hist = True,
+                                        #["PDF Ratio stats", "PDF Ratio sys"], x_range = [0.01, 99.9], y_range = [0.501, 4.499], replace_hist = True,
                                         graph_draw_option = ["p", "2"], graph_marker_style=[20, 20], graph_marker_color=[1, 1], graph_draw_order=[1,0], modifiers=ratio_modifiers),
 ############## new axes for pdf ratio
 #            self.get_conglomerate_graph("pdf_ratio*", "Amplitude [mm]",
@@ -1162,7 +1208,7 @@ class CompareAmplitudeConfigData(CompareConfig): # data plots
 #                                        "pdf_ratio", ["PDF Ratio stats hist"],
 #                                        ["PDF Ratio stats", "PDF Ratio sys"], x_range = [0.01, 59.9], y_range = [0.501, 7.999], replace_hist = True,
 #                                        graph_draw_option = ["p", "2"], graph_marker_style=[20, 20], graph_marker_color=[1, 1], graph_draw_order=[1,0], modifiers=ratio_modifiers),
-            self.get_conglomerate_graph("cdf_ratio*", "Amplitude [mm]",
+            self.get_conglomerate_graph("cdf_ratio_reco", "Amplitude [mm]",
                                         "R_{Amp}",
                                         "cdf_ratio", ["CDF_Ratio_stats hist"],
                                         ["CDF_Ratio stats", "CDF_Ratio sys"], x_range = [0.01, 99.9], y_range = [0.601, 1.399], replace_hist = True,
@@ -1232,7 +1278,7 @@ class CompareAmplitudeConfigBoth(CompareConfig): # comparisons
                                         graph_marker_color=[1, 1, ROOT.kRed-7, ROOT.kRed-7], graph_draw_order=[3, 1, 2, 0,], 
                                         modifiers=ratio_modifiers),
 ############# new axes for pdf ratio
-#            self.get_conglomerate_graph("pdf_ratio*", "Amplitude [mm]",
+#            self.get_conglomerate_graph("pdf_ratio_reco", "Amplitude [mm]",
 #                                        "#frac{Number out}{Number in}",
 #                                        "pdf_ratio", ["PDF Ratio stats_hist"],
 #                                        ["PDF_Ratio stats", "PDF_Ratio sys"], x_range = [0.01, 99.9], y_range = [0.01, 7.99], replace_hist = True,
@@ -1249,7 +1295,7 @@ class CompareAmplitudeConfigBoth(CompareConfig): # comparisons
 
         ]
 #        self.conglomerate_list = [
-#            self.get_conglomerate_graph("pdf_ratio*", "Amplitude [mm]",
+#            self.get_conglomerate_graph("pdf_ratio_reco", "Amplitude [mm]",
 #                                        "#frac{Number out}{Number in}",
 #                                        "pdf_ratio", ["PDF Ratio stats_hist"],
 #                                        ["PDF_Ratio stats", "PDF_Ratio sys"], x_range = [0.01, 99.9], y_range = [0.01, 1.49], replace_hist = True,
@@ -1257,14 +1303,14 @@ class CompareAmplitudeConfigBoth(CompareConfig): # comparisons
 #                                        graph_marker_color=[1, 1, ROOT.kRed-7, ROOT.kRed-7], graph_draw_order=[3, 1, 2, 0,], 
 #                                        modifiers=ratio_modifiers),
 ############## new axes for pdf ratio
-##            self.get_conglomerate_graph("pdf_ratio*", "Amplitude [mm]",
+##            self.get_conglomerate_graph("pdf_ratio_reco", "Amplitude [mm]",
 ##                                        "#frac{Number out}{Number in}",
 ##                                        "pdf_ratio", ["PDF Ratio stats_hist"],
 ##                                        ["PDF_Ratio stats", "PDF_Ratio sys"], x_range = [0.01, 99.9], y_range = [0.01, 7.99], replace_hist = True,
 ##                                        graph_draw_option = ["p", "3", "p", "3"], graph_marker_style=[20, 20, 22, 22], 
 ##                                        graph_marker_color=[1, 1, ROOT.kRed-7, ROOT.kRed-7], graph_draw_order=[3, 1, 2, 0,], 
 ##                                        modifiers=ratio_modifiers),
-#            self.get_conglomerate_graph("cdf_ratio*", "Amplitude [mm]",
+#            self.get_conglomerate_graph("cdf_ratio_reco", "Amplitude [mm]",
 #                                        "R_{Amp}",
 #                                        "cdf_ratio", ["CDF_Ratio_stats hist"],
 #                                        ["CDF_Ratio stats", "CDF_Ratio sys"], x_range = [0.01, 99.9], y_range = [0.601, 1.399], replace_hist = True,
@@ -1406,12 +1452,12 @@ class PressPlotsAmplitudeConfigMC(CompareConfig): # MC corrections
                                         y_range = [0.001, 1.099], x_range = [0.01, 99.9], replace_hist = True,
                                         modifiers = absolute_modifiers),
 
-            self.get_conglomerate_graph("pdf_ratio*", "Amplitude [mm]",
+            self.get_conglomerate_graph("pdf_ratio_reco", "Amplitude [mm]",
                                         "P_{Amp}",
                                         "pdf_ratio", ["PDF Ratio stats hist"],
                                         ["PDF Ratio stats", "PDF Ratio sys"], x_range = [0.01, 99.9], y_range = [0.501, 2.499], replace_hist = True,
                                         graph_draw_option = ["p", "2"], graph_marker_style=[20, 20], graph_marker_color=[ROOT.kRed, ROOT.kRed], graph_draw_order=[1,0], modifiers=ratio_modifiers),
-            self.get_conglomerate_graph("cdf_ratio*", "amplitude [mm]",
+            self.get_conglomerate_graph("cdf_ratio_reco", "amplitude [mm]",
                                         "R_{Amp}",
                                         "cdf_ratio", ["CDF_Ratio stats hist"],
                                         ["CDF_Ratio stats", "CDF_Ratio sys"], x_range = [0.01, 99.9], y_range = [0.801, 1.399], replace_hist = True,
@@ -1536,7 +1582,7 @@ class PressPlotsAmplitudeConfigData(CompareConfig): # data plots
                                         ["Upstream CDF stats", "Upstream CDF sys", "Downstream CDF stats", "Downstream CDF sys"],
                                         y_range = [0.001, 1.399], x_range = [0.01, 99.9], replace_hist = True,
                                         modifiers = absolute_modifiers),
-            self.get_conglomerate_graph("pdf_ratio*", "Amplitude [mm]",
+            self.get_conglomerate_graph("pdf_ratio_reco", "Amplitude [mm]",
                                         "P_{Amp}",
                                         "pdf_ratio", ["PDF Ratio stats hist"],
                                         ["PDF Ratio stats", "PDF Ratio sys"], x_range = [0.01, 99.9], y_range = [0.501, 2.499], replace_hist = True,
@@ -1547,7 +1593,7 @@ class PressPlotsAmplitudeConfigData(CompareConfig): # data plots
 #                                        "pdf_ratio", ["PDF Ratio stats hist"],
 #                                        ["PDF Ratio stats", "PDF Ratio sys"], x_range = [0.01, 59.9], y_range = [0.501, 7.999], replace_hist = True,
 #                                        graph_draw_option = ["p", "2"], graph_marker_style=[20, 20], graph_marker_color=[1, 1], graph_draw_order=[1,0], modifiers=ratio_modifiers),
-            self.get_conglomerate_graph("cdf_ratio*", "Amplitude [mm]",
+            self.get_conglomerate_graph("cdf_ratio_reco", "Amplitude [mm]",
                                         "R_{Amp}",
                                         "cdf_ratio", ["CDF_Ratio_stats hist"],
                                         ["CDF_Ratio stats", "CDF_Ratio sys"], x_range = [0.01, 99.9], y_range = [0.601, 1.399], replace_hist = True,
@@ -1630,7 +1676,608 @@ class PressPlotsAmplitudeConfigBoth(CompareConfig): # comparisons
 
         ]
 
+#class CompareAngMomConfig(CompareConfig):
+#    def __init__(self, beam, target_dir, top_labels, right_labels, blank=None):
+#        dir_list = [
+#            target_dir+"plots_"+beam+"/",
+#            target_dir+"plots_Simulated_"+beam
+#        ]
+#        #self.setup(beam, target_dir, "ang_mom_plots/", "compare_ang_mom/", dir_list)
+#        self.setup(beam, target_dir, "ang_mom/", "compare_ang_mom/", dir_list)
+#        #graphs = ["_source_tku", "_source_tkd", "_virtual_absorber_centre",]
+#        ###graphs = ["_source_tku", "_virtual_absorber_centre",]
+#        graphs = ["_source_mc_tkd", "_source_tkd", "_virtual_absorber_centre",]
+#        #graphs = ["_source_tkd", "_source_mc_tkd",]
+#        #for tof in ["_tof0", "_tof1", "_tof2"]:
+#        #    for element in "_us", "", "_ds":
+#        #        graphs.append(tof+element)
+#        for tracker in ["_tku", "_tkd"]:
+#            for station in range(2, 6)+["tp"]:
+#                graphs.append(tracker+"_"+str(station))
+#        """modifiers = {
+#            "merge_options":{
+#                "right_labels":right_labels,
+#                "top_labels":top_labels
+#            },
+#            "redraw":{
+#                "graph":{
+#                    "marker_style":[20]*12 + [22]*12,
+#                    "marker_color":([ROOT.kBlack]*12) + ([ROOT.kRed]*12),# ,1,1,1,1,1,2,2,2,2,2,2], #None,
+#                    "line_color":None, #[1,2]*12,
+#                    "draw_option":["same lp"]*len(graphs),
+#                    "draw_order":range(2,12)+range(14,24)+[0,1,12,13],  #range(0,24),
+#                    "fill_color":None,
+#                }
+#            },
+#        }"""
+#        modifiers = {
+#            "merge_options":{
+#                "right_labels":right_labels,
+#                "top_labels":top_labels
+#            },
+#            "redraw":{
+#                "graph":{
+#                    "marker_style":[20]*12 + [22] + [20]*12,
+#                    #"marker_color":None,
+#                    "marker_color":([ROOT.kBlack]*12) + [ROOT.kViolet] + ([ROOT.kRed]*12),# ,1,1,1,1,1,2,2,2,2,2,2], #None,
+#                    "line_color":[ROOT.kBlack]*12 + [ROOT.kViolet] + [ROOT.kRed]*12, # None, #[1,2]*12,
+#                    "draw_option":["same lp"]*len(graphs),
+#                    "draw_order":range(2,12)+range(14,24)+[0,1,12,13],  #range(0,24),
+#                    "fill_color":None,
+#                }
+#            },
+#        }
+#        if blank is not None:
+#            modifiers["redraw"]["graph"]["draw_option"] = ["AXIS"]*len(graphs)
+#
+#
+#
+#        self.conglomerate_list = [
+#            self.get_conglomerate_graph("beta_4d_ds", "z [m]", "#beta_{4D} [mm]", graph_list = ["beta_4d_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [0., 1200.0], modifiers = modifiers),
+#            self.get_conglomerate_graph("beta_x_ds",  "z [m]", "#beta_{x} [mm]", graph_list = ["beta_x_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [0., 1200.0], modifiers = modifiers),
+#            self.get_conglomerate_graph("beta_y_ds",  "z [m]", "#beta_{y} [mm]", graph_list = ["beta_y_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [0., 1200.0], modifiers = modifiers),
+#            self.get_conglomerate_graph("mean_p_ds", "z [m]", "P [MeV/c]", graph_list = ["mean_p_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [115., 150.0], modifiers = modifiers),
+#            self.get_conglomerate_graph("mean_x_ds", "z [m]", "x [mm]", graph_list = ["mean_x_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-50., 50.0], modifiers = modifiers),
+#            self.get_conglomerate_graph("mean_y_ds", "z [m]", "y [mm]", graph_list = ["mean_y_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-50., 50.0], modifiers = modifiers),
+#            self.get_conglomerate_graph("mean_r2_ds", "z [m]", "r^{2} [mm]", graph_list = ["mean_r2_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-50., 50.0], modifiers = modifiers),
+#            self.get_conglomerate_graph("mean_px_ds", "z [m]", "P_{x} [MeV/c]", graph_list = ["mean_px_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-10., 10.0], modifiers = modifiers),
+#            self.get_conglomerate_graph("mean_py_ds", "z [m]", "P_{y} [MeV/c]", graph_list = ["mean_py_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-10., 10.0], modifiers = modifiers),
+#            self.get_conglomerate_graph("l_canon_ds", "z [m]", "L_{canon} [MeV/c m]", graph_list = ["l_canon_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-10., 10.0], modifiers = modifiers),
+#            self.get_conglomerate_graph("L_canon_ds", "z [m]", "L_{canon} [MeV/c m]", graph_list = ["L_canon_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-10., 10.0], modifiers = modifiers),
+#            self.get_conglomerate_graph("l_canon_2_ds", "z [m]", "L_{canon} 2 [MeV/c m]", graph_list = ["l_canon_2_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-10., 10.0], modifiers = modifiers),
+#            self.get_conglomerate_graph("l_canon_minus_mean_ds", "z [m]", "L_{canon} minus mean [MeV/c m]", graph_list = ["l_canon_minus_mean_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-10., 10.0], modifiers = modifiers),
+#            self.get_conglomerate_graph("l_kin_ds", "z [m]", "L_{kin} [MeV/c m]", graph_list = ["l_kin_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-10., 10.0], modifiers = modifiers),
+#            self.get_conglomerate_graph("l_field_ds", "z [m]", "L_{field} [MeV/c m]", graph_list = ["l_field_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-10., 10.0], modifiers = modifiers),
+#            self.get_conglomerate_graph("l_centre_ds", "z [m]", "L_{centre} [MeV/c m]", graph_list = ["l_centre_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-10., 10.0], modifiers = modifiers),
+#            #self.get_conglomerate_graph("sigma_0_ds", "z [m]", "#sigma_{x} [mm]", graph_list = ["sigma_0_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [20., 80.0], modifiers = modifiers),
+#            #self.get_conglomerate_graph("sigma_2_ds", "z [m]", "#sigma_{y} [mm]", graph_list = ["sigma_2_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [20., 80.0],  modifiers = modifiers),
+#        ]
+#
+#        mod = {
+#            "merge_options":{
+#                "right_labels":right_labels,
+#                "top_labels":top_labels
+#            },
+#            "redraw":{
+#                "draw_option":["COL"],
+#            },
+#            #"rescale_x":[-10.0, 10.0],
+#            "rescale_y":[-10.0, 10.0],
+#            "canvas_fill_color":root_style.get_frame_fill(),
+#            #"axis_title":{
+#            #    "wide":True,
+#            #},
+#        }
+#
+#        #self.conglomerate_list += [
+#        #    self.get_conglomerate_3("L_canon_res_vs_L_canon_tku", "L_canon_res_vs_L_canon_tku", "L_{canon} tku [MeV/c m]", "{Delta} L_{canon} res [MeV/c m]", modifiers = mod),
+#        #]
+
 class CompareAngMomConfig(CompareConfig):
+    def __init__(self, beam, target_dir, top_labels, right_labels, blank=None):
+        dir_list = [
+            target_dir+"plots_"+beam+"/",
+            target_dir+"plots_Simulated_"+beam
+        ]
+        #self.setup(beam, target_dir, "ang_mom_plots/", "compare_ang_mom/", dir_list)
+        #self.setup(beam, target_dir, "ang_mom_field_plots/", "compare_ang_mom/", dir_list)
+        self.setup(beam, target_dir, "ang_mom/", "compare_ang_mom/", dir_list)
+
+        graphs = ["_source_mc_tkd", "_source_tkd", "_virtual_absorber_centre",]
+
+        for tracker in ["_tku", "_tkd"]:
+            for station in range(2, 6)+["tp"]:
+                graphs.append(tracker+"_"+str(station))
+
+        modifiers = {
+            "merge_options":{
+                "right_labels":right_labels,
+                "top_labels":top_labels
+            },
+            "replace_hist":True,
+            "redraw":{
+                "graph":{
+                    "marker_style":[20]*12 + [22] + [20]*12,
+                    #"marker_color":None,
+                    "marker_color":([ROOT.kBlack]*12) + [ROOT.kViolet] + ([ROOT.kRed]*12),
+                    "line_color":[ROOT.kBlack]*12 + [ROOT.kViolet] + [ROOT.kRed]*12, # None, #[1,2]*12,
+                    "draw_option":["same lp"]*len(graphs),
+                    "draw_order":range(2,12)+range(14,24)+[0,1,12,13],  #range(0,24),
+                    "fill_color":None,
+                }
+            },
+        }
+
+        #if blank is not None:
+        #    modifiers["redraw"]["graph"]["draw_option"] = ["AXIS"]*len(graphs)
+
+        self.conglomerate_list = []
+        mm_units = True
+        """if mm_units:
+            modifiers["axis_title"] = {"wide":True,}
+
+            # with bars
+            self.conglomerate_list = [
+                #self.get_conglomerate_graph("beta_4d_ds", "z [m]", "#beta_{4D} [mm]", graph_list = ["beta_4d_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [0., 1000.0], modifiers = modifiers),
+                #self.get_conglomerate_graph("beta_x_ds",  "z [m]", "#beta_{x} [mm]", graph_list = ["beta_x_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [0., 450.0], modifiers = modifiers),
+                #self.get_conglomerate_graph("beta_y_ds",  "z [m]", "#beta_{y} [mm]", graph_list = ["beta_y_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [0., 450.0], modifiers = modifiers),
+                #self.get_conglomerate_graph("mean_p_ds", "z [m]", "P [MeV/c]", graph_list = ["mean_p_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [115., 150.0], modifiers = modifiers),
+                #self.get_conglomerate_graph("mean_x_ds", "z [m]", "x [mm]", graph_list = ["mean_x_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-15., 15.0], modifiers = modifiers),
+                #self.get_conglomerate_graph("mean_y_ds", "z [m]", "y [mm]", graph_list = ["mean_y_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-10., 10.0], modifiers = modifiers),
+                #self.get_conglomerate_graph("mean_r2_ds", "z [m]", "r^{2} [mm]", graph_list = ["mean_r2_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [0., 10000.0], modifiers = modifiers),
+                #self.get_conglomerate_graph("mean_px_ds", "z [m]", "P_{x} [MeV/c]", graph_list = ["mean_px_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-5., 6.5], modifiers = modifiers),
+                #self.get_conglomerate_graph("mean_py_ds", "z [m]", "P_{y} [MeV/c]", graph_list = ["mean_py_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-5., 6.5], modifiers = modifiers),
+                self.get_conglomerate_graph("l_canon_ds", "z [m]", "L_{canon} [MeV/c mm]", graph_list = ["l_canon_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [0., 400.0], modifiers = modifiers),
+                self.get_conglomerate_graph("L_canon_ds", "z [m]", "L_{canon} [MeV/c mm]", graph_list = ["L_canon_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [0., 400.0], modifiers = modifiers),
+                #self.get_conglomerate_graph("l_canon_2_ds", "z [m]", "L_{canon} 2 [MeV/c m]", graph_list = ["l_canon_2_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-10., 10.0], modifiers = modifiers),
+                self.get_conglomerate_graph("l_canon_plus_mean_ds", "z [m]", "L_{canon} plus mean [MeV/c mm]", graph_list = ["l_canon_plus_mean_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [0., 400.0], modifiers = modifiers),
+                self.get_conglomerate_graph("l_kin_ds", "z [m]", "L_{kin} [MeV/c mm]", graph_list = ["l_kin_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-2500., -100.0], modifiers = modifiers),
+                self.get_conglomerate_graph("l_field_ds", "z [m]", "L_{field} [MeV/c mm]", graph_list = ["l_field_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [250., 2500.0], modifiers = modifiers),
+                self.get_conglomerate_graph("l_centre_ds", "z [m]", "L_{centre} [MeV/c mm]", graph_list = ["l_centre_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-70., 30.0], modifiers = modifiers),
+                #self.get_conglomerate_graph("sigma_0_ds", "z [m]", "#sigma_{x} [mm]", graph_list = ["sigma_0_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [20., 80.0], modifiers = modifiers),
+                #self.get_conglomerate_graph("sigma_2_ds", "z [m]", "#sigma_{y} [mm]", graph_list = ["sigma_2_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [20., 80.0],  modifiers = modifiers),
+                #self.get_conglomerate_graph("l_twiddle_1_ds", "z [m]", "L_{1} ", graph_list = ["l_twiddle_1_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [0.00, 0.4], modifiers = modifiers),
+                #self.get_conglomerate_graph("l_twiddle_3_ds", "z [m]", "L_{3} ", graph_list = ["l_twiddle_3_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [0.0, 0.4], modifiers = modifiers),
+                #self.get_conglomerate_graph("mean_Bz_ds", "z [m]", "Bz [T]", graph_list = ["Bz_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [2., 3.5], modifiers = modifiers),
+                #self.get_conglomerate_graph("L_canon_ds", "z [m]", "L_{canon} [MeV/c mm]", graph_list = ["L_canon_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [0., 400.0], modifiers = modifiers),
+            ]
+
+        else:
+            self.conglomerate_list = [
+                self.get_conglomerate_graph("beta_4d_ds", "z [m]", "#beta_{4D} [mm]", graph_list = ["beta_4d_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [0., 1000.0], modifiers = modifiers),
+                self.get_conglomerate_graph("beta_x_ds",  "z [m]", "#beta_{x} [mm]", graph_list = ["beta_x_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [0., 450.0], modifiers = modifiers),
+                self.get_conglomerate_graph("beta_y_ds",  "z [m]", "#beta_{y} [mm]", graph_list = ["beta_y_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [0., 450.0], modifiers = modifiers),
+                self.get_conglomerate_graph("mean_p_ds", "z [m]", "P [MeV/c]", graph_list = ["mean_p_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [115., 150.0], modifiers = modifiers),
+                self.get_conglomerate_graph("mean_x_ds", "z [m]", "x [mm]", graph_list = ["mean_x_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-15., 15.0], modifiers = modifiers),
+                self.get_conglomerate_graph("mean_y_ds", "z [m]", "y [mm]", graph_list = ["mean_y_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-10., 10.0], modifiers = modifiers),
+                self.get_conglomerate_graph("mean_r2_ds", "z [m]", "r^{2} [mm]", graph_list = ["mean_r2_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [0., 6000.0], modifiers = modifiers),
+                self.get_conglomerate_graph("mean_px_ds", "z [m]", "P_{x} [MeV/c]", graph_list = ["mean_px_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-10., 10.0], modifiers = modifiers),
+                self.get_conglomerate_graph("mean_py_ds", "z [m]", "P_{y} [MeV/c]", graph_list = ["mean_py_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-10., 10.0], modifiers = modifiers),
+
+                self.get_conglomerate_graph("l_canon_ds", "z [m]", "L_{canon} [MeV/c mm]", graph_list = ["l_canon_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [0., 0.4], modifiers = modifiers),
+                self.get_conglomerate_graph("L_canon_ds", "z [m]", "L_{canon} [MeV/c mm]", graph_list = ["L_canon_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [0., 0.4], modifiers = modifiers),
+                #self.get_conglomerate_graph("l_canon_2_ds", "z [m]", "L_{canon} 2 [MeV/c m]", graph_list = ["l_canon_2_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-10., 10.0], modifiers = modifiers),
+                self.get_conglomerate_graph("l_canon_plus_mean_ds", "z [m]", "L_{canon} plus mean [MeV/c mm]", graph_list = ["l_canon_plus_mean_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [0., 0.4], modifiers = modifiers),
+                self.get_conglomerate_graph("l_kin_ds", "z [m]", "L_{kin} [MeV/c mm]", graph_list = ["l_kin_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-2.5, -0.1], modifiers = modifiers),
+                self.get_conglomerate_graph("l_field_ds", "z [m]", "L_{field} [MeV/c mm]", graph_list = ["l_field_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [0.25, 2.5], modifiers = modifiers),
+                self.get_conglomerate_graph("l_centre_ds", "z [m]", "L_{centre} [MeV/c mm]", graph_list = ["l_centre_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-0.07, 0.03], modifiers = modifiers),
+                #self.get_conglomerate_graph("sigma_0_ds", "z [m]", "#sigma_{x} [mm]", graph_list = ["sigma_0_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [20., 80.0], modifiers = modifiers),
+                #self.get_conglomerate_graph("sigma_2_ds", "z [m]", "#sigma_{y} [mm]", graph_list = ["sigma_2_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [20., 80.0],  modifiers = modifiers),
+                self.get_conglomerate_graph("l_twiddle_1_ds", "z [m]", "L_{1} ", graph_list = ["l_twiddle_1_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [0.00, 0.4], modifiers = modifiers),
+                self.get_conglomerate_graph("l_twiddle_3_ds", "z [m]", "L_{3} ", graph_list = ["l_twiddle_3_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [0.0, 0.4], modifiers = modifiers),
+                #self.get_conglomerate_graph("Bz_ds", "z [m]", "Bz [T]", graph_list = ["Bz_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-10., 10.0], modifiers = modifiers),
+                self.get_conglomerate_graph("mean_Bz_ds", "z [m]", "Bz [T]", graph_list = ["Bz_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [2., 3.5], modifiers = modifiers),
+                # with bars
+                #self.get_conglomerate_graph("L_canon_ds", "z [m]", "L_{canon} [MeV/c mm]", graph_list = ["L_canon_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [0., 400.0], modifiers = modifiers),
+            ]"""
+
+
+        #graphs = ["_source_mc_tkd", "_source_tkd"]# "_virtual_absorber_centre",]
+
+        #modifiers["redraw"] = {
+        #        "graph":{
+        #            "marker_style":[20, 22, 20,],
+        #            #"marker_color":None,
+        #            "marker_color":[ROOT.kBlack, ROOT.kViolet, ROOT.kRed],
+        #            "line_color":[ROOT.kBlack, ROOT.kViolet, ROOT.kRed],
+        #            "fill_color":[ROOT.kBlack, ROOT.kViolet, ROOT.kRed],
+        #            "draw_option":["same lp 3", "same lp 3", "same lp 3",], #["same lp"]*len(graphs),
+        #            "draw_order":None, #[0,1,2],  #range(0,24),
+        #        }
+        #}
+
+
+        #self.conglomerate_list += [
+        #    self.get_conglomerate_graph("beta_4d_ds", "z [m]", "#beta_{4D} [mm]", graph_list = ["beta_4d_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [0., 1000.0], modifiers = modifiers),
+        #    self.get_conglomerate_graph("beta_x_ds",  "z [m]", "#beta_{x} [mm]", graph_list = ["beta_x_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [0., 450.0], modifiers = modifiers),
+        #    self.get_conglomerate_graph("beta_y_ds",  "z [m]", "#beta_{y} [mm]", graph_list = ["beta_y_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [0., 450.0], modifiers = modifiers),
+        #    self.get_conglomerate_graph("mean_p_ds", "z [m]", "P [MeV/c]", graph_list = ["mean_p_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [115., 150.0], modifiers = modifiers),
+        #    self.get_conglomerate_graph("mean_x_ds", "z [m]", "x [mm]", graph_list = ["mean_x_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-15., 15.0], modifiers = modifiers),
+        #    self.get_conglomerate_graph("mean_y_ds", "z [m]", "y [mm]", graph_list = ["mean_y_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-10., 10.0], modifiers = modifiers),
+        #    self.get_conglomerate_graph("mean_r2_ds", "z [m]", "r^{2} [mm]", graph_list = ["mean_r2_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [0., 10000.0], modifiers = modifiers),
+        #    self.get_conglomerate_graph("mean_px_ds", "z [m]", "P_{x} [MeV/c]", graph_list = ["mean_px_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-5., 6.5], modifiers = modifiers),
+        #    self.get_conglomerate_graph("mean_py_ds", "z [m]", "P_{y} [MeV/c]", graph_list = ["mean_py_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-5., 6.5], modifiers = modifiers),
+        #    self.get_conglomerate_graph("mean_Bz_ds", "z [m]", "Bz [T]", graph_list = ["Bz_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [2., 3.5], modifiers = modifiers),
+
+        #    self.get_conglomerate_graph("l_twiddle_1_ds", "z [m]", "L_{1} ", graph_list = ["l_twiddle_1_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [0.0, 0.4], modifiers = modifiers),
+        #    self.get_conglomerate_graph("l_twiddle_3_ds", "z [m]", "L_{3} ", graph_list = ["l_twiddle_3_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [0.0, 0.4], modifiers = modifiers),
+        #]
+
+
+        # sys, sys+stats plots without bars
+        #self.setup(beam, target_dir, "ang_mom/", "combined_ang_mom/", dir_list)
+
+        graphs = ["_source_mc_tkd", "_source_tkd", "_errors"]# "_virtual_absorber_centre",]
+
+        modifiers = {
+            "merge_options":{
+                "right_labels":right_labels,
+                "top_labels":top_labels
+            },
+            "replace_hist":True,
+            "redraw":{
+                "graph":{
+                    "marker_style":[20, 20, 22, 20, 20],
+                    #"marker_color":None,
+                    "marker_color":[ROOT.kBlack, ROOT.kBlack, ROOT.kViolet, ROOT.kRed, ROOT.kRed],
+                    "line_color":[ROOT.kBlack, ROOT.kBlack, ROOT.kViolet, ROOT.kRed, ROOT.kRed],
+                    "fill_color":[ROOT.kBlack, ROOT.kBlack, ROOT.kViolet, ROOT.kRed, ROOT.kRed],
+                    "draw_option":["same p 3", "same 3", "same lp 3", "same p 3", "same 3"], #["same lp"]*len(graphs),
+                    "draw_order":None, #[0,1,2],  #range(0,24),
+                    #"fill_color":None,
+                }
+            },
+            "axis_title":{"wide":True,},
+        }
+
+        #if blank is not None:
+        #    modifiers["redraw"]["graph"]["draw_option"] = ["AXIS"]*5
+
+        self.conglomerate_list += [
+            self.get_conglomerate_graph("L_kin_ds", "z [m]", "L_{kin} [MeV/c mm]", graph_list = ["L_kin_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-2750., 0.0], modifiers = modifiers),
+            self.get_conglomerate_graph("L_kin_ds_sys", "z [m]", "L_{kin} [MeV/c mm]", graph_list = ["L_kin_ds_sys"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-2750., 0.0], modifiers = modifiers),
+            self.get_conglomerate_graph("L_kin_ds_stat_sys_error", "z [m]", "L_{kin} [MeV/c mm]", graph_list = ["L_kin_ds_stat_sys_error"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-2750., 0.0], modifiers = modifiers),
+
+            self.get_conglomerate_graph("L_field_ds", "z [m]", "L_{field} [MeV/c mm]", graph_list = ["L_field_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [0., 2799.0], modifiers = modifiers),
+            self.get_conglomerate_graph("L_field_ds_sys", "z [m]", "L_{field} [MeV/c mm]", graph_list = ["L_field_ds_sys"+name for name in graphs], x_range = [12.9, 21.2], y_range = [0., 2799.0], modifiers = modifiers),
+            self.get_conglomerate_graph("L_field_ds_stat_sys_error", "z [m]", "L_{field} [MeV/c mm]", graph_list = ["L_field_ds_stat_sys_error"+name for name in graphs], x_range = [12.9, 21.2], y_range = [0., 2799.0], modifiers = modifiers),
+
+            self.get_conglomerate_graph("L_canon_ds", "z [m]", "L_{canon} [MeV/c mm]", graph_list = ["L_canon_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-10., 400.0], modifiers = modifiers),
+            self.get_conglomerate_graph("L_canon_ds_sys", "z [m]", "L_{canon} [MeV/c mm]", graph_list = ["L_canon_ds_sys"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-10., 400.0], modifiers = modifiers),
+            self.get_conglomerate_graph("L_canon_ds_stat_sys_error", "z [m]", "L_{canon} [MeV/c mm]", graph_list = ["L_canon_ds_stat_sys_error"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-10., 400.0], modifiers = modifiers),
+        ]
+
+
+        ######
+        
+        mod = {
+            "merge_options":{
+                "right_labels":right_labels,
+                "top_labels":top_labels
+            },
+            "redraw":{
+                "draw_option":["COL"],
+            },
+            #"rescale_x":[-10.0, 10.0],
+            "rescale_y":[-10.0, 10.0],
+            "canvas_fill_color":root_style.get_frame_fill(),
+            #"axis_title":{
+            #    "wide":True,
+            #},
+        }
+
+        #self.conglomerate_list += [
+        #    self.get_conglomerate_3("L_canon_res_vs_L_canon_tku", "L_canon_res_vs_L_canon_tku", "L_{canon} tku [MeV/c m]", "{Delta} L_{canon} res [MeV/c m]", modifiers = mod),
+        #]
+
+
+class CompareAngMomField1DConfig(CompareConfig):
+    def __init__(self, beam, target_dir, top_labels, right_labels, blank=None):
+        dir_list = [
+            target_dir+"plots_"+beam+"/",
+            target_dir+"plots_Simulated_"+beam
+        ]
+        #self.setup(beam, target_dir, "ang_mom_field_plots/", "compare_ang_mom_field/", dir_list)
+        self.setup(beam, target_dir, "ang_mom/", "compare_ang_mom_1D/", dir_list)
+
+        modifiers = {
+            #"stats_boxes":{
+            #    "labels":["Data", "MC"],
+            #    "sys_errors":[8.19092729079e-3, 0.918792175005e-3, 11.2908889949e-3, 6.07037110906e-3], # sys errs L_canon_res, 3-4-6-10
+            #    "TextSize":12,
+            #    "sys_errors":[11.2908889949e-3, 6.07037110906e-3], # sys errs L_canon_res, 6-10
+            #    "TextSize":18,
+            #},
+            "merge_options":{
+                "right_labels":right_labels,
+                "top_labels":top_labels
+            }
+        }
+
+        if blank is not None:
+            #modifiers["redraw"]["graph"]["draw_option"] = ["AXIS"]*len(graphs)
+            modifiers["redraw"] = {"draw_option":["AXIS","AXIS"]}
+
+        #self.conglomerate_list = [
+            # without norm range
+            ##self.get_conglomerate_1("tkd_p", "tkd_p", "ds_cut", "p at TKD Reference Plane [MeV/c]",       [89, 270], False, [0.55, 0.7, 0.9, 0.9], modifiers = modifiers),
+            #self.get_conglomerate_1("L_canon_res", "L_canon_res", "ds_cut", "L_{canon}(TKU) - L_{canon}(TKD) [MeV/c m]",       [-20., 40.], True, [0.55, 0.7, 0.9, 0.9], modifiers = vertical([0., 5., 10., 15., 20.], modifiers)),
+            ##self.get_conglomerate_1("L_canon_at_tku_tp_ds_cut",  "pid = -13", "", "L_{canon}(TKU) [MeV/c m]",       [-5., 5.], True, [0.55, 0.7, 0.9, 0.9], modifiers = vertical([0.,], modifiers)),
+            #self.get_conglomerate_1("L_canon_at_tku_tp_ds_cut",  "pid = -13", "", "L_{canon}(TKU) [MeV/c m]",       [-3., 3.], [-2.0, 2.0], [0.55, 0.7, 0.9, 0.9], modifiers = vertical([0.,], modifiers)),
+            #self.get_conglomerate_1("L_canon_at_tkd_tp_ds_cut",  "pid = -13", "", "L_{canon}(TKD) [MeV/c m]",       [-2.5, 3.], True, [0.55, 0.7, 0.9, 0.9], modifiers = vertical([0.,], modifiers)),
+
+            #self.get_conglomerate_1("L_kin_res", "L_kin_res", "ds_cut", "L_{kin}(TKU) - L_{kin}(TKD) [MeV/c m]",       [-20., 40.], True, [0.55, 0.7, 0.9, 0.9], modifiers = vertical([0., 5., 10., 15., 20.], modifiers)),
+            #self.get_conglomerate_1("L_kin_at_tku_tp_ds_cut",  "pid = -13", "", "L_{kin}(TKU) [MeV/c m]",       [-5., 2.], True, [0.55, 0.7, 0.9, 0.9], modifiers = vertical([0.,], modifiers)),
+            #self.get_conglomerate_1("L_kin_at_tkd_tp_ds_cut",  "pid = -13", "", "L_{kin}(TKD) [MeV/c m]",       [-5., 2.], True, [0.55, 0.7, 0.9, 0.9], modifiers = vertical([0.,], modifiers)),
+
+            #self.get_conglomerate_1("L_field_res", "L_field_res", "ds_cut", "L_{field}(TKU) - L_{field}(TKD) [MeV/c m]",       [-20., 40.], True, [0.55, 0.7, 0.9, 0.9], modifiers = vertical([0., 5., 10., 15., 20.], modifiers)),
+            #self.get_conglomerate_1("L_field_at_tku_tp_ds_cut",  "pid = -13", "", "L_{field}(TKU) [MeV/c m]",       [-5., 5.], True, [0.55, 0.7, 0.9, 0.9], modifiers = vertical([0.,], modifiers)),
+            #self.get_conglomerate_1("L_field_at_tkd_tp_ds_cut",  "pid = -13", "", "L_{field}(TKD) [MeV/c m]",       [-5., 5.], True, [0.55, 0.7, 0.9, 0.9], modifiers = vertical([0.,], modifiers)),
+
+            ##self.get_conglomerate_1("tkd_p", "tkd_p", "ds_cut", "p at TKD Reference Plane [MeV/c]",       [89, 270], False, [0.55, 0.7, 0.9, 0.9], modifiers = modifiers),
+            #self.get_conglomerate_1("L_canon_res", "L_canon_res", "ds_cut", "L_{canon}(TKU) - L_{canon}(TKD) [MeV/c m]",       [-20., 40.], True, [0.55, 0.7, 0.9, 0.9], modifiers = vertical([0., 5., 10., 15., 20.], modifiers)),
+            # editing norm range
+            #self.get_conglomerate_1("L_canon_at_tku_tp_ds_cut",  "pid = -13", "", "L_{canon}(TKU) [MeV/c m]",       [-5., 5.], True, [0.55, 0.7, 0.9, 0.9], modifiers = vertical([0.,], modifiers)),
+
+        # Messing with 1D press plot
+        modifiers = {
+            #"stats_boxes":{
+            #    "labels":["Data", "MC"],
+            #    "sys_errors":[8.19092729079e-3, 0.918792175005e-3, 11.2908889949e-3, 6.07037110906e-3], # sys errs L_canon_res, 3-4-6-10
+            #    "TextSize":12,
+            #    "sys_errors":[11.2908889949e-3, 6.07037110906e-3], # sys errs L_canon_res, 6-10
+            #    "TextSize":18,
+            #},
+            #"scaled_norm":[[1.0, 1.0], [0.7802664309, 0.782258679759]], # 6+10 EMPTY/FULL
+            #"scaled_norm":[[1.0, 1.0, 1.0], [0.571384201827, 0.561410171134, 0.591692278029]], # 3+4+6 ABS/LiH 
+            "merge_options":{
+                "right_labels":right_labels,
+                "top_labels":top_labels
+            },
+            "legend":{
+                #"text":["#splitline{Data (Stats }{errors only) }", "MC"],
+                #"text":["#splitline{Data }{(Stats errors only) }", "MC"],
+                "text":["Data", "MC"],
+                "draw_option":["p e1", "f l"],
+            },
+            "axis_title":{
+                "wide":0.08,
+                "y":"Relative Frequency [a.u.]", # "Normalised Density [ (MeV/c m)^{-1}]",
+            },
+            "preliminary":True
+        }
+
+        if blank is not None:
+            #modifiers["redraw"]["graph"]["draw_option"] = ["AXIS"]*len(graphs)
+            modifiers["redraw"] = {"draw_option":["AXIS","AXIS"]}
+
+        self.conglomerate_list = [
+            #self.get_conglomerate_1("L_canon_res", "L_canon_res", "ds_cut", "L_{canon}(TKU) - L_{canon}(TKD) [MeV/c m]", [-3., 3.], True, [0.65, 0.7, 0.9, 0.9], modifiers = vertical([0.], modifiers)),
+            #self.get_conglomerate_1("L_canon_res", "L_canon_res", "ds_cut", "L_{canon}(TKU) - L_{canon}(TKD) [MeV/c m]", [-3., 3.], [-0.05, 0.05], [0.65, 0.7, 0.9, 0.9], modifiers = vertical([0.], modifiers)),
+            ### flipped L canon res
+            #self.get_conglomerate_1("L_canon_res", "L_canon_res", "ds_cut", "L_{canon}(TKD) - L_{canon}(TKU) [MeV/c m]", [-3., 3.], [-0.0, 0.0], [0.65, 0.7, 0.9, 0.9], modifiers = vertical([0.], modifiers)),
+            #self.get_conglomerate_1("L_canon_res", "L_canon_res", "ds_cut", "L_{canon}(TKD) - L_{canon}(TKU) [MeV/c m]", [-3., 3.], True, [0.65, 0.7, 0.9, 0.9], [0., 0.125], modifiers = vertical([0.], modifiers)), # 0.125 for 6-10, 0.25 for 3-4-6
+
+            # bigger legend
+            #self.get_conglomerate_1("L_canon_res", "L_canon_res", "ds_cut", "L_{canon}(TKD) - L_{canon}(TKU) [MeV/c m]", [-3., 3.], "peak", [0.6, 0.6, 0.9, 0.9], [0., 1.05], modifiers = vertical([0.], modifiers)),
+            # Press Plottiest Plot
+            #self.get_conglomerate_1("L_canon_res", "L_canon_res", "ds_cut", "L_{canon}(TKD) - L_{canon}(TKU) [MeV/c m]", [-3., 3.], "peak", [0.65, 0.7, 0.9, 0.9], [1e-3, 1.05], modifiers = vertical([0.], modifiers)),
+            self.get_conglomerate_1("L_canon_res2", "L_canon_res2", "ds_cut", "L_{canon}(TKD) - L_{canon}(TKU) [MeV/c m]", [-3., 3.], "peak", [0.65, 0.7, 0.9, 0.9], [1e-3, 1.05], modifiers = vertical([0.], modifiers)),
+        ]
+
+        # Removing sys errors
+        #del modifiers["stats_boxes"]["sys_errors"]
+        ##modifiers["stats_boxes"] = {
+        ##        "labels":["Data", "MC"],
+        ##}
+
+        self.conglomerate_list += [
+            self.get_conglomerate_1("L_canon_at_tku_tp_ds_cut",  "pid = -13", "", "L_{canon}(TKU) [MeV/c m]",       [-3., 3.], True, [0.65, 0.7, 0.9, 0.9], modifiers = vertical([0.,], modifiers)),
+            self.get_conglomerate_1("L_canon_at_tkd_tp_ds_cut",  "pid = -13", "", "L_{canon}(TKD) [MeV/c m]",       [-3., 3.], True, [0.65, 0.7, 0.9, 0.9], modifiers = vertical([0.,], modifiers)),
+
+            self.get_conglomerate_1("L_kin_res", "L_kin_res", "ds_cut", "L_{kin}(TKU) - L_{kin}(TKD) [MeV/c m]", [-20., 40.], True, [0.65, 0.7, 0.9, 0.9], modifiers = vertical([0., 5., 10., 15., 20.], modifiers)),
+            self.get_conglomerate_1("L_kin_at_tku_tp_ds_cut",  "pid = -13", "", "L_{kin}(TKU) [MeV/c m]",       [-5., 2.], True, [0.1, 0.7, 0.4, 0.9], modifiers = vertical([0.,], modifiers)),
+            self.get_conglomerate_1("L_kin_at_tkd_tp_ds_cut",  "pid = -13", "", "L_{kin}(TKD) [MeV/c m]",       [-5., 2.], True, [0.1, 0.7, 0.4, 0.9], modifiers = vertical([0.,], modifiers)),
+
+            self.get_conglomerate_1("L_field_res", "L_field_res", "ds_cut", "L_{field}(TKU) - L_{field}(TKD) [MeV/c m]", [-20., 40.], True, [0.65, 0.7, 0.9, 0.9], modifiers = vertical([0., 5., 10., 15., 20.], modifiers)),
+            self.get_conglomerate_1("L_field_at_tku_tp_ds_cut",  "pid = -13", "", "L_{field}(TKU) [MeV/c m]",       [0., 5.], True, [0.55, 0.7, 0.9, 0.9], modifiers = vertical([0.,], modifiers)),
+            self.get_conglomerate_1("L_field_at_tkd_tp_ds_cut",  "pid = -13", "", "L_{field}(TKD) [MeV/c m]",       [0., 5.], True, [0.55, 0.7, 0.9, 0.9], modifiers = vertical([0.,], modifiers)),
+
+            #self.get_conglomerate_1("L_canon_res", "L_canon_res", "ds_cut", "L_{canon}(TKU) - L_{canon}(TKD) [MeV/c m]", [-20., 40.], [-0.5, 0.5], [0.55, 0.7, 0.9, 0.9], modifiers = vertical([0., 5., 10., 15., 20.], modifiers)),
+            #self.get_conglomerate_1("L_canon_at_tku_tp_ds_cut",  "pid = -13", "", "L_{canon}(TKU) [MeV/c m]",       [-3., 3.], [-0.5, 0.5], [0.55, 0.7, 0.9, 0.9], modifiers = vertical([0.,], modifiers)),
+            #self.get_conglomerate_1("L_canon_at_tkd_tp_ds_cut",  "pid = -13", "", "L_{canon}(TKD) [MeV/c m]",       [-3., 3.], [-0.5, 0.5], [0.55, 0.7, 0.9, 0.9], modifiers = vertical([0.,], modifiers)),
+
+            #self.get_conglomerate_1("L_kin_res", "L_kin_res", "ds_cut", "L_{kin}(TKU) - L_{kin}(TKD) [MeV/c m]", [-20., 40.], [-0.5, 0.5], [0.55, 0.7, 0.9, 0.9], modifiers = vertical([0., 5., 10., 15., 20.], modifiers)),
+            #self.get_conglomerate_1("L_kin_at_tku_tp_ds_cut",  "pid = -13", "", "L_{kin}(TKU) [MeV/c m]",       [-5., 2.], [-0.5, 0.5], [0.55, 0.7, 0.9, 0.9], modifiers = vertical([0.,], modifiers)),
+            #self.get_conglomerate_1("L_kin_at_tkd_tp_ds_cut",  "pid = -13", "", "L_{kin}(TKD) [MeV/c m]",       [-5., 2.], [-0.5, 0.5], [0.55, 0.7, 0.9, 0.9], modifiers = vertical([0.,], modifiers)),
+
+            #self.get_conglomerate_1("L_field_res", "L_field_res", "ds_cut", "L_{field}(TKU) - L_{field}(TKD) [MeV/c m]", [-20., 40.], [-0.5, 0.5], [0.55, 0.7, 0.9, 0.9], modifiers = vertical([0., 5., 10., 15., 20.], modifiers)),
+            #self.get_conglomerate_1("L_field_at_tku_tp_ds_cut",  "pid = -13", "", "L_{field}(TKU) [MeV/c m]",       [0., 5.], [-0.5, 0.5], [0.55, 0.7, 0.9, 0.9], modifiers = vertical([0.,], modifiers)),
+            #self.get_conglomerate_1("L_field_at_tkd_tp_ds_cut",  "pid = -13", "", "L_{field}(TKD) [MeV/c m]",       [0., 5.], [-0.5, 0.5], [0.55, 0.7, 0.9, 0.9], modifiers = vertical([0.,], modifiers)),
+
+        ]
+
+
+        mod = {
+            "merge_options":{
+                "right_labels":right_labels,
+                "top_labels":top_labels
+            },
+            "redraw":{
+                "draw_option":["COL"],
+            },
+            #"rescale_x":[-10.0, 10.0],
+            "rescale_y":[-10.0, 10.0],
+            "canvas_fill_color":root_style.get_frame_fill(),
+            #"axis_title":{
+            #    "wide":True,
+            #},
+        }
+
+        #self.conglomerate_list += [
+        #    self.get_conglomerate_3("L_canon_res_vs_L_canon_tku", "L_canon_res_vs_L_canon_tku", "L_{canon} tku [MeV/c m]", "{Delta} L_{canon} res [MeV/c m]", modifiers = mod),
+        #]
+
+
+class CompareAngMomMCConfig(CompareConfig):
+    def __init__(self, beam, target_dir, top_labels, right_labels, blank=None):
+        dir_list = [
+            #target_dir+"plots_"+beam+"/",
+            target_dir+"plots_Simulated_"+beam
+        ]
+        self.setup(beam, target_dir, "ang_mom/", "compare_ang_mom_mc/", dir_list)
+
+        graphs = ["_source_tkd", "_virtual_absorber_centre",]
+        #graphs = ["_source_tkd",]
+
+        #for tracker in ["_tku", "_tkd"]:
+        #    for station in range(2, 6)+["tp"]:
+        #        graphs.append(tracker+"_"+str(station))
+
+        modifiers = {
+            "merge_options":{
+                "right_labels":right_labels,
+                "top_labels":top_labels
+            },
+            "replace_hist":True,
+            "redraw":{
+                "graph":{
+                    #"marker_style":[20]*12 + [22] + [20]*12,
+                    #"marker_color":([ROOT.kBlack]*12) + [ROOT.kViolet] + ([ROOT.kRed]*12),
+                    #"line_color":[ROOT.kBlack]*12 + [ROOT.kViolet] + [ROOT.kRed]*12, # None, #[1,2]*12,
+                    "marker_color":[20, 22],
+                    "marker_color":[ROOT.kBlue, ROOT.kRed],
+                    "line_color":[ROOT.kBlack, ROOT.kBlack], # None, #[1,2]*12,
+                    "draw_option":["same lp"]*len(graphs),
+                    #"draw_order":range(2,12)+range(14,24)+[0,1,12,13],  #range(0,24),
+                    "fill_color":None,
+                }
+            },
+        }
+
+        #if blank is not None:
+        #    modifiers["redraw"]["graph"]["draw_option"] = ["AXIS"]*len(graphs)
+
+        modifiers["axis_title"] = {"wide":True,}
+
+        self.conglomerate_list = [
+            self.get_conglomerate_graph("mean_Bz_residual_ds", "z [m]", "Bz reco - truth [T]", graph_list = ["mean_Bz_residual_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-0.001, 0.001], modifiers = modifiers),
+            self.get_conglomerate_graph("mean_r2_residual_ds", "z [m]", "r^{2} reco - truth [mm]", graph_list = ["mean_r2_residual_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-45., 40.0], modifiers = modifiers),
+
+            self.get_conglomerate_graph("L_canon_residual_ds", "z [m]", "L_{canon} residual [MeV/c mm]", graph_list = ["L_canon_residual_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-40., 40.0], modifiers = modifiers),
+            self.get_conglomerate_graph("L_kin_residual_ds", "z [m]", "L_{kin} residual [MeV/c mm]", graph_list = ["L_kin_residual_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-40., 40.0], modifiers = modifiers),
+            self.get_conglomerate_graph("L_field_residual_ds", "z [m]", "L_{field} residual [MeV/c mm]", graph_list = ["L_field_residual_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-40., 40.0], modifiers = modifiers),
+        ]
+
+
+class CompareAngMomField2DConfig(CompareConfig):
+    def __init__(self, beam, target_dir, top_labels, right_labels, blank=None):
+        dir_list = [
+            target_dir+"plots_"+beam+"/",
+            #target_dir+"plots_Simulated_"+beam
+        ]
+        self.setup(beam, target_dir, "ang_mom/", "compare_ang_mom_2D/", dir_list)
+        """mod = {
+            "merge_options":{
+                "right_labels":right_labels,
+                "top_labels":top_labels
+            },
+            "redraw":{
+                "draw_option":["COL"],
+            },
+            "canvas_fill_color":root_style.get_frame_fill(),
+            "extra_lines":{
+                "verticals":[
+                  {"x_value":x_value, "line_color":ROOT.kRed+2, "line_style":2, "line_width":2} for x_value in [0, 20]
+                ],
+                "horizontals":[],
+            },
+            "axis_title":{
+                "wide":True,
+            },
+        }"""
+
+        mod = {
+            "merge_options":{
+                "right_labels":right_labels,
+                "top_labels":top_labels
+            },
+            "redraw":{
+                "draw_option":["COL"],
+            },
+            "rescale_x":[0, 150.0],
+            "rescale_y":[-5., 5.],
+            "canvas_fill_color":root_style.get_frame_fill(),
+            "extra_lines":{
+                "verticals":[
+                #  {"x_value":x_value, "line_color":ROOT.kRed+2, "line_style":2, "line_width":2} for x_value in [0,]
+                ],
+                "horizontals":[],
+            },
+            "axis_title":{
+                "wide":True,
+            },
+        }
+
+        if blank is not None:
+            mod["redraw"]["draw_option"] = ["AXIS"]
+
+        self.conglomerate_list = [
+            self.get_conglomerate_3("r_vs_L_canon_at_tku_tp_us_cut", "r_vs_L_canon_at_tku_tp_us_cut", "r [mm]", "L_{canon} [MeV/c m]", modifiers = mod),
+            self.get_conglomerate_3("r_vs_L_canon_at_tku_tp_ds_cut", "r_vs_L_canon_at_tku_tp_ds_cut", "r [mm]", "L_{canon} [MeV/c m]", modifiers = mod),
+            self.get_conglomerate_3("r_vs_L_canon_at_tkd_tp_ds_cut", "r_vs_L_canon_at_tkd_tp_ds_cut", "r [mm]", "L_{canon} [MeV/c m]", modifiers = mod),
+        ]
+
+        mod["rescale_y"] = [-5.0, 5.0]
+        self.conglomerate_list += [
+            self.get_conglomerate_3("r_vs_L_kin_at_tku_tp_us_cut", "r_vs_L_kin_at_tku_tp_us_cut", "r [mm]", "L_{kin} [MeV/c m]", modifiers = mod),
+            self.get_conglomerate_3("r_vs_L_kin_at_tku_tp_ds_cut", "r_vs_L_kin_at_tku_tp_ds_cut", "r [mm]", "L_{kin} [MeV/c m]", modifiers = mod),
+            self.get_conglomerate_3("r_vs_L_kin_at_tkd_tp_ds_cut", "r_vs_L_kin_at_tkd_tp_ds_cut", "r [mm]", "L_{kin} [MeV/c m]", modifiers = mod),
+        ]
+
+        mod["rescale_y"] = [-0.5, 5.0]
+        self.conglomerate_list += [
+            self.get_conglomerate_3("r_vs_L_field_at_tku_tp_us_cut", "r_vs_L_field_at_tku_tp_us_cut", "r [mm]", "L_{field} [MeV/c m]", modifiers = mod),
+            self.get_conglomerate_3("r_vs_L_field_at_tku_tp_ds_cut", "r_vs_L_field_at_tku_tp_ds_cut", "r [mm]", "L_{field} [MeV/c m]", modifiers = mod),
+            self.get_conglomerate_3("r_vs_L_field_at_tkd_tp_ds_cut", "r_vs_L_field_at_tkd_tp_ds_cut", "r [mm]", "L_{field} [MeV/c m]", modifiers = mod),
+        ]
+
+
+
+        mod["rescale_x"] = [-2.0, 1.5]
+        mod["rescale_y"] = [-3.0, 3.0]
+        self.conglomerate_list += [
+            self.get_conglomerate_3("L_kin_res_vs_L_kin_tku", "L_kin_res_vs_L_kin_tku", "L_{kin} tku [MeV/c m]", "L_{kin} tku - L_{kin} tkd [MeV/c m]", modifiers = mod),
+            #self.get_conglomerate_3("L_field_res_vs_L_field_tku", "L_field_res_vs_L_field_tku", "L_{field} tku [MeV/c m]", "L_{field} tku - L_{field} tkd [MeV/c m]", modifiers = mod),
+            #self.get_conglomerate_3("L_canon_res_vs_L_canon_tku", "L_canon_res_vs_L_canon_tku", "L_{canon} [MeV/c m]", "L_{canon} tku - L_{canon} tkd [MeV/c m]", modifiers = mod),
+        ]
+
+
+        mod["rescale_x"] = [0.0, 2.0]
+        mod["rescale_y"] = [-3.0, 3.0]
+        self.conglomerate_list += [
+            self.get_conglomerate_3("L_field_res_vs_L_field_tku", "L_field_res_vs_L_field_tku", "L_{field} tku [MeV/c m]", "L_{field} tku - L_{field} tkd [MeV/c m]", modifiers = mod),
+        ]
+
+        #mod["rescale_x"] = [-1.5, 1.5]
+        mod["rescale_x"] = [-2., 2.]
+        mod["rescale_y"] = [-1.5, 1.5]
+        self.conglomerate_list += [
+            self.get_conglomerate_3("L_canon_res_vs_L_canon_tku", "L_canon_res_vs_L_canon_tku", "L_{canon} tku [MeV/c m]", "L_{canon} tku - L_{canon} tkd [MeV/c m]", modifiers = mod),
+        ]
+
+
+        mod["rescale_x"] = [-3.5, 1.5]
+        mod["rescale_y"] = [-0.5, 2.5]
+        self.conglomerate_list += [
+            self.get_conglomerate_3("L_kin_vs_L_field_at_tku_tp_us_cut", "L_kin_vs_L_field_at_tku_tp_us_cut", "L_{kin} [MeV/c m]", "L_{field} [MeV/c m]", modifiers = mod),
+            self.get_conglomerate_3("L_kin_vs_L_field_at_tkd_tp_us_cut", "L_kin_vs_L_field_at_tkd_tp_us_cut", "L_{kin} [MeV/c m]", "L_{field} [MeV/c m]", modifiers = mod),
+        ]
+
+
+
+
+class CompareAngMomFieldCorrected(CompareConfig):
     def __init__(self, beam, target_dir, top_labels, right_labels, blank=None):
         dir_list = [
             target_dir+"plots_"+beam+"/",
@@ -1639,7 +2286,7 @@ class CompareAngMomConfig(CompareConfig):
         self.setup(beam, target_dir, "ang_mom_plots/", "compare_ang_mom/", dir_list)
         #graphs = ["_source_tku", "_source_tkd", "_virtual_absorber_centre",]
         ###graphs = ["_source_tku", "_virtual_absorber_centre",]
-        graphs = ["_source_mc_tkd", "_source_tkd", "_virtual_absorber_centre",]
+        graphs = ["_", "_source_tkd", "_virtual_absorber_centre",]
         #graphs = ["_source_tkd", "_source_mc_tkd",]
         #for tof in ["_tof0", "_tof1", "_tof2"]:
         #    for element in "_us", "", "_ds":
@@ -1681,46 +2328,21 @@ class CompareAngMomConfig(CompareConfig):
             },
         }
 
+        if blank is not None:
+            modifiers["redraw"]["graph"]["draw_option"] = ["AXIS"]*len(graphs)
 
-        self.conglomerate_list = [
-            self.get_conglomerate_graph("beta_4d_ds", "z [m]", "#beta_{4D} [mm]", graph_list = ["beta_4d_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [0., 1200.0], modifiers = modifiers),
-            self.get_conglomerate_graph("beta_x_ds",  "z [m]", "#beta_{x} [mm]", graph_list = ["beta_x_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [0., 1200.0], modifiers = modifiers),
-            self.get_conglomerate_graph("beta_y_ds",  "z [m]", "#beta_{y} [mm]", graph_list = ["beta_y_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [0., 1200.0], modifiers = modifiers),
-            self.get_conglomerate_graph("mean_p_ds", "z [m]", "P [MeV/c]", graph_list = ["mean_p_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [115., 150.0], modifiers = modifiers),
-            self.get_conglomerate_graph("mean_x_ds", "z [m]", "x [mm]", graph_list = ["mean_x_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-50., 50.0], modifiers = modifiers),
-            self.get_conglomerate_graph("mean_y_ds", "z [m]", "y [mm]", graph_list = ["mean_y_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-50., 50.0], modifiers = modifiers),
-            self.get_conglomerate_graph("mean_r2_ds", "z [m]", "r^{2} [mm]", graph_list = ["mean_r2_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-50., 50.0], modifiers = modifiers),
-            self.get_conglomerate_graph("mean_px_ds", "z [m]", "P_{x} [MeV/c]", graph_list = ["mean_px_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-10., 10.0], modifiers = modifiers),
-            self.get_conglomerate_graph("mean_py_ds", "z [m]", "P_{y} [MeV/c]", graph_list = ["mean_py_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-10., 10.0], modifiers = modifiers),
-            self.get_conglomerate_graph("l_canon_ds", "z [m]", "L_{canon} [MeV/c m]", graph_list = ["l_canon_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-10., 10.0], modifiers = modifiers),
-            self.get_conglomerate_graph("l_canon_2_ds", "z [m]", "L_{canon} 2 [MeV/c m]", graph_list = ["l_canon_2_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-10., 10.0], modifiers = modifiers),
-            self.get_conglomerate_graph("l_canon_minus_mean_ds", "z [m]", "L_{canon} minus mean [MeV/c m]", graph_list = ["l_canon_minus_mean_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-10., 10.0], modifiers = modifiers),
-            self.get_conglomerate_graph("l_kin_ds", "z [m]", "L_{kin} [MeV/c m]", graph_list = ["l_kin_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-10., 10.0], modifiers = modifiers),
-            self.get_conglomerate_graph("l_field_ds", "z [m]", "L_{field} [MeV/c m]", graph_list = ["l_field_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-10., 10.0], modifiers = modifiers),
-            self.get_conglomerate_graph("l_centre_ds", "z [m]", "L_{centre} [MeV/c m]", graph_list = ["l_centre_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [-10., 10.0], modifiers = modifiers),
-            #self.get_conglomerate_graph("sigma_0_ds", "z [m]", "#sigma_{x} [mm]", graph_list = ["sigma_0_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [20., 80.0], modifiers = modifiers),
-            #self.get_conglomerate_graph("sigma_2_ds", "z [m]", "#sigma_{y} [mm]", graph_list = ["sigma_2_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [20., 80.0],  modifiers = modifiers),
-        ]
+        mm_units = True
+        if mm_units:
+            modifiers["axis_title"] = {"wide":True,}
 
-        mod = {
-            "merge_options":{
-                "right_labels":right_labels,
-                "top_labels":top_labels
-            },
-            "redraw":{
-                "draw_option":["COL"],
-            },
-            #"rescale_x":[-10.0, 10.0],
-            "rescale_y":[-10.0, 10.0],
-            "canvas_fill_color":root_style.get_frame_fill(),
-            #"axis_title":{
-            #    "wide":True,
-            #},
-        }
+            self.conglomerate_list = [
+                self.get_conglomerate_graph("L_canon_corr_frac_corrected_ds", "z [m]", "L_{canon} [MeV/c mm]", graph_list = ["L_canon_corr_frac_corrected_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [0., 1000.0], modifiers = modifiers),
+            ]
 
-        #self.conglomerate_list += [
-        #    self.get_conglomerate_3("L_canon_res_vs_L_canon_tku", "L_canon_res_vs_L_canon_tku", "L_{canon} tku [MeV/c m]", "{Delta} L_{canon} res [MeV/c m]", modifiers = mod),
-        #]
+        else:
+            self.conglomerate_list = [
+                self.get_conglomerate_graph("L_canon_corr_frac_corrected_ds", "z [m]", "L_{canon} [MeV/c m]", graph_list = ["L_canon_corr_frac_corrected_ds"+name for name in graphs], x_range = [12.9, 21.2], y_range = [0., 1000.0], modifiers = modifiers),
+            ]
 
 
 
@@ -1895,10 +2517,13 @@ def main_paper(batch_level = 0):
 
     #target_dir_list = ["/data/mice/phumhf/backupOutput/combinedMC+Data/officialMC/2017-02-6-c3-OfficialMC_v3+c10_redo2/"]
 
-    target_dir_list = ["output/combinedMC+Data/officialMC/2017-02-6_selection/v3/"]
+    #target_dir_list = ["output/combinedMC+Data/officialMC/2017-02-6_selection/v3/"]
     #target_dir_list = ["output/combinedMC+Data/officialMC/2017-02-6_amp/v4_v107/"]
     #target_dir_list = ["output/combinedMC+Data/officialMC/2017-02-6_amp/v4_v107_data/"]
     #target_dir_list = ["output/combinedMC+Data/officialMC/2017-02-6_amp/v4/"]
+
+    #target_dir_list = ["output/combinedMC+Data/officialMC/2017-02-6_fixed_sys/v4/"]
+    target_dir_list = ["output/combinedMC+Data/officialMC/2017-02-6_AngMom_v111/"]
 
     batch_level = 0
     hide_root_errors = True
@@ -1947,6 +2572,7 @@ def main_paper(batch_level = 0):
         #### copied
         ["2017-02-6_3-140_ABS-LH2-EMPTY", "2017-02-6_3-140_ABS-LH2-EMPTY", "2017-02-6_6-140_ABS-LH2-EMPTY", "2017-02-6_10-140_ABS-LH2-EMPTY",], # TomL
         ["2017-02-6_3-140_ABS-LH2", "2017-02-6_3-140_ABS-LH2", "2017-02-6_6-140_ABS-LH2", "2017-02-6_10-140_ABS-LH2",], # TomL
+        #["2017-02-6_4-140_ABS-SOLID-EMPTY", "2017-02-6_4-140_ABS-SOLID-EMPTY", "2017-02-6_6-140_ABS-SOLID-EMPTY", "2017-02-6_10-140_ABS-SOLID-EMPTY",], # TomL
         ["2017-02-6_3-140_ABS-SOLID-EMPTY", "2017-02-6_4-140_ABS-SOLID-EMPTY", "2017-02-6_6-140_ABS-SOLID-EMPTY", "2017-02-6_10-140_ABS-SOLID-EMPTY",], # TomL
         ["2017-02-6_3-140_ABS-SOLID-LiH", "2017-02-6_4-140_ABS-SOLID-LiH", "2017-02-6_6-140_ABS-SOLID-LiH", "2017-02-6_10-140_ABS-SOLID-EMPTY",],
         #["2017-02-6_3-140_ABS-LH2-EMPTY", "2017-02-6_4-140_ABS-SOLID-EMPTY", "2017-02-6_6-140_ABS-SOLID-EMPTY", "2017-02-6_10-140_ABS-SOLID-EMPTY",], # TomL
@@ -2118,12 +2744,12 @@ def main_paper(batch_level = 0):
 
 
     for target_dir in target_dir_list:
-        config_list = [CompareCutsConfig, CompareData1DConfig,
-                       CompareOpticsConfig, CompareOpticsMCConfig,
+        config_list = [#CompareCutsConfig, CompareData1DConfig,
+                       #CompareOpticsConfig, CompareOpticsMCConfig,
                        CompareGlobalsConfig, CompareMCConfig,
-                       CompareData2DConfig, CompareData2DMCConfig,
+                       #CompareData2DConfig, CompareData2DMCConfig,
                       ]
-        fd_0 = run_conglomerate(batch_level, config_list, my_dir_list, do_cuts_summary, target_dir, top_labels, right_labels, blanks)
+        #fd_0 = run_conglomerate(batch_level, config_list, my_dir_list, do_cuts_summary, target_dir, top_labels, right_labels, blanks)
         #config_list = [CompareAmplitudeConfigBoth,]
 
         config_list = [
@@ -2151,16 +2777,19 @@ def main_paper(batch_level = 0):
         #fd_4 = run_conglomerate(batch_level, config_list, my_dir_list, False, target_dir, top_labels, right_labels, blanks)
 
         config_list = [
-                       CompareAngMomConfig,
+                       #CompareAngMomConfig,
+                       #CompareAngMomField1DConfig,
+                       #CompareAngMomField2DConfig,
+                       CompareAngMomMCConfig,
         ]
-        #fd_5 = run_conglomerate(batch_level, config_list, my_dir_list, False, target_dir, top_labels, right_labels, blanks)
+        fd_5 = run_conglomerate(batch_level, config_list, my_dir_list, False, target_dir, top_labels, right_labels, blanks)
 
-        print_fail_dict(fd_0) # Data + cuts etc
+        #print_fail_dict(fd_0) # Data + cuts etc
         #print_fail_dict(fd_1) # Amp
         #print_fail_dict(fd_2) # Density
         #print_fail_dict(fd_3) # PressPlotsData
         #print_fail_dict(fd_4) # PressPlotsAmp
-        #print_fail_dict(fd_5) # AngMom
+        print_fail_dict(fd_5) # AngMom
 
 
 if __name__ == "__main__":
